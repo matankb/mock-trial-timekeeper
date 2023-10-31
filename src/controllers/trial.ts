@@ -143,8 +143,6 @@ const getTrialTimeChangeObject = (
   newValue: number,
   stage: string,
 ): any => {
-  const { times } = trial;
-
   switch (stage) {
     case 'open.pros':
       return { open: { pros: newValue } };

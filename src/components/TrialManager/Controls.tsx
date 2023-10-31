@@ -81,11 +81,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: "gray",
-    // borderWidth: 2,
-    // borderColor: "#91b0ff",
     backgroundColor: '#e5ebf8',
-    // backgroundColor: "#d9e4ff",
     borderRadius: 5,
   },
 });

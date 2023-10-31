@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AllLossSelector from './AllLossSelector';
 import TrialNameInput from './TrialNameInput';
 import colors from '../../constants/colors';
+import { ScreenName } from '../../constants/screen-names';
 import { TrialsContext } from '../../context/TrialsContext';
 import { createNewTrial } from '../../controllers/trial';
 import Button from '../Button';
@@ -43,7 +44,7 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
     setTrials([...trials, trial]);
 
     navigation.goBack(); // close modal
-    navigation.navigate('TrialManager', {
+    navigation.navigate(ScreenName.TRIAL_MANAGER, {
       trialId: trial.id,
       trialName: trial.name,
     });

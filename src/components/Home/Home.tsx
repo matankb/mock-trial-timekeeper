@@ -5,6 +5,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 
 import AirplaneModeWarning from './AirplaneModeWarning';
 import TrialsList from './TrialsList';
+import { ScreenName } from '../../constants/screen-names';
 import { TrialsContext } from '../../context/TrialsContext';
 import { Trial, getTrialsFromStorage } from '../../controllers/trial';
 import Button from '../Button';
@@ -13,13 +14,13 @@ interface HomeProps {
   navigation: NavigationProp<any>;
 }
 
-const MAX_TRIALS = 9;
+const MAX_DISPLAYED_TRIALS = 9;
 
 const Home: FC<HomeProps> = ({ navigation }) => {
   const [trials, setTrials] = useContext(TrialsContext);
 
   const handleTrialSelect = (trial: Trial) => {
-    navigation.navigate('TrialManager', {
+    navigation.navigate(ScreenName.TRIAL_MANAGER, {
       trialId: trial.id,
       trialName: trial.name, // name included to set as header title
     });
@@ -42,14 +43,16 @@ const Home: FC<HomeProps> = ({ navigation }) => {
     <ScrollView contentContainerStyle={styles.container}>
       <View>
         <TrialsList
-          trials={trials.sort((a, b) => b.date - a.date).slice(0, MAX_TRIALS)}
+          trials={trials
+            .sort((a, b) => b.date - a.date)
+            .slice(0, MAX_DISPLAYED_TRIALS)}
           handleSelect={handleTrialSelect}
-          showAllTrialsLink={trials.length > MAX_TRIALS}
-          onAllTrialsPress={() => navigation.navigate('All_Trials')}
+          showAllTrialsLink={trials.length > MAX_DISPLAYED_TRIALS}
+          onAllTrialsPress={() => navigation.navigate(ScreenName.ALL_TRIALS)}
         />
         <Button
           title="New Trial"
-          onPress={() => navigation.navigate('CreateTrial')}
+          onPress={() => navigation.navigate(ScreenName.CREATE_TRIAL)}
         />
       </View>
       <AirplaneModeWarning />

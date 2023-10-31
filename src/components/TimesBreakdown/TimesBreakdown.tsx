@@ -28,7 +28,6 @@ const TimeBreakdown: React.FC<TimeBreakdownProps> = ({ route, navigation }) => {
 
   const trial = trials.find((trial) => trial.id === route.params.trialId);
 
-  // TODO: add this in App.tsx to prevent flickering
   useEffect(() => {
     navigation.setOptions({
       headerRight: () =>

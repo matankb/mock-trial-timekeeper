@@ -1,12 +1,13 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { FC } from 'react';
 import {
-  View,
   StyleSheet,
   ActionSheetIOS,
   TouchableOpacity,
   Alert,
 } from 'react-native';
+
+import colors from '../../constants/colors';
 
 interface OptionsMenuProps {
   trialName: string;
@@ -74,7 +75,7 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
       <MaterialCommunityIcons
         name="dots-horizontal-circle-outline"
         size={24}
-        color="#007AFF"
+        color={colors.HEADER_BLUE}
       />
     </TouchableOpacity>
   );

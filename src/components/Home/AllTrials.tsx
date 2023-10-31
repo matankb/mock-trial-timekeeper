@@ -3,6 +3,7 @@ import React, { FC, useContext } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 
 import TrialsList from './TrialsList';
+import { ScreenName } from '../../constants/screen-names';
 import { TrialsContext } from '../../context/TrialsContext';
 import { Trial } from '../../controllers/trial';
 
@@ -14,7 +15,7 @@ const AllTrials: FC<AllTrialsProps> = ({ navigation }) => {
   const [trials] = useContext(TrialsContext);
 
   const handleTrialSelect = (trial: Trial) => {
-    navigation.navigate('TrialManager', {
+    navigation.navigate(ScreenName.TRIAL_MANAGER, {
       trialId: trial.id,
       trialName: trial.name, // name included to set as header title
     });

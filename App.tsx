@@ -6,6 +6,7 @@ import { FC, useState } from 'react';
 import AMTAPolicy from './src/components/About/AMTAPolicy';
 import About from './src/components/About/About';
 import Disclaimer from './src/components/About/Disclaimer';
+import Button from './src/components/Button';
 import CreateTrial from './src/components/CreateTrial/CreateTrial';
 import CreateTrialHeaderIcon from './src/components/CreateTrial/CreateTrialHeaderIcon';
 import ErrorBoundary from './src/components/ErrorBoundary';
@@ -14,6 +15,7 @@ import Home from './src/components/Home/Home';
 import HomeHeaderIcon from './src/components/Home/HomeHeaderIcon';
 import TimesBreakdown from './src/components/TimesBreakdown/TimesBreakdown';
 import TrialManager from './src/components/TrialManager/TrialManager';
+import { ScreenName } from './src/constants/screen-names';
 import { TrialsContext } from './src/context/TrialsContext';
 import { Trial } from './src/controllers/trial';
 
@@ -30,7 +32,7 @@ const App: FC = () => {
         <TrialsContext.Provider value={[trials, setTrials]}>
           <Stack.Navigator>
             <Stack.Screen
-              name="home"
+              name={ScreenName.HOME}
               options={({ navigation }) => ({
                 title: 'Mock Trial Timekeeper',
                 headerLeft: () => <HomeHeaderIcon navigation={navigation} />,
@@ -38,7 +40,7 @@ const App: FC = () => {
               component={Home}
             />
             <Stack.Screen
-              name="All_Trials"
+              name={ScreenName.ALL_TRIALS}
               options={{
                 title: 'All Trials',
                 headerBackTitle: 'Home',
@@ -46,7 +48,7 @@ const App: FC = () => {
               component={AllTrials}
             />
             <Stack.Screen
-              name="TrialManager"
+              name={ScreenName.TRIAL_MANAGER}
               component={TrialManager}
               options={({ route }) => ({
                 title: route.params.trialName,
@@ -54,28 +56,29 @@ const App: FC = () => {
               })}
             />
             <Stack.Screen
-              name="breakdown"
+              name={ScreenName.TIMES_BREAKDOWN}
               options={({ route }) => ({
                 title: `${route.params.trialName} Individual Times`,
                 headerBackTitleVisible: false,
+                headerRight: () => <Button title="Edit" onPress={() => {}} />,
               })}
               component={TimesBreakdown}
             />
             <Stack.Screen
-              name="About"
+              name={ScreenName.ABOUT}
               options={{
                 headerBackTitle: 'Home',
               }}
               component={About}
             />
-            <Stack.Screen name="Disclaimer" component={Disclaimer} />
+            <Stack.Screen name={ScreenName.DISCLAIMER} component={Disclaimer} />
             <Stack.Screen
-              name="AMTA_Policy"
+              name={ScreenName.AMTA_POLICY}
               options={{ title: 'AMTA Policy' }}
               component={AMTAPolicy}
             />
             <Stack.Screen
-              name="CreateTrial"
+              name={ScreenName.CREATE_TRIAL}
               options={({ navigation }) => ({
                 presentation: 'modal',
                 title: 'Create Trial',

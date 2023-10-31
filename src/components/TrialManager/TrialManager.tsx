@@ -8,6 +8,7 @@ import AllLoss from './AllLoss';
 import Controls from './Controls';
 import OptionsMenu from './OptionsMenu';
 import TimeSummaries from './TimeSummaries/TimeSummaries';
+import { ScreenName } from '../../constants/screen-names';
 import {
   getNextStage,
   getPrevStage,
@@ -158,9 +159,10 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
 
   // when this is called, the user has already confirmed
   const handleDelete = () => {
-    setAllTrials(
-      allTrials.filter((trial) => trial.id !== props.route.params.trialId),
+    const filteredTrials = allTrials.filter(
+      (trial) => trial.id !== props.route.params.trialId,
     );
+    setAllTrials(filteredTrials);
     deleteTrial(trial.id);
     props.navigation.goBack();
   };
@@ -182,19 +184,14 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
     return null;
   }
 
-  const { stage } = trial;
+  const handleIndividualTimesPress = () => {
+    props.navigation.navigate(ScreenName.TIMES_BREAKDOWN, {
+      trialId: trial.id,
+      trialName: trial.name, // name included to set as header title
+    });
+  };
 
-  const breakdownLink = (
-    <Link
-      title="Individual Times"
-      onPress={() => {
-        props.navigation.navigate('breakdown', {
-          trialId: trial.id,
-          trialName: trial.name, // name included to set as header title
-        });
-      }}
-    />
-  );
+  const { stage } = trial;
 
   return (
     <ScrollView
@@ -204,7 +201,7 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
       <View style={{ width: '100%', marginBottom: 10 }}>
         <AllLoss allLossTime={trial.setup.allLoss} />
         <TimeSummaries trial={trial} />
-        {breakdownLink}
+        <Link title="Individual Times" onPress={handleIndividualTimesPress} />
       </View>
       <Controls
         currentStageName={getStageName(stage)}
@@ -220,7 +217,6 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    // height: "100%",
     flexGrow: 1,
     display: 'flex',
     width: '100%',

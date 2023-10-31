@@ -3,10 +3,11 @@
 import { NavigationProp } from '@react-navigation/native';
 import Constants from 'expo-constants';
 import * as Linking from 'expo-linking';
+import { FC } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { ScreenName } from '../../constants/screen-names';
 import Card from '../Card';
-import ErrorBoundary from '../ErrorBoundary';
 import Link from '../Link';
 
 interface AboutProps {
@@ -42,11 +43,11 @@ const About: FC<AboutProps> = ({ navigation }) => {
         />
         <Link
           title="Disclaimer"
-          onPress={() => navigation.navigate('Disclaimer')}
+          onPress={() => navigation.navigate(ScreenName.DISCLAIMER)}
         />
         <Link
           title="AMTA Policy"
-          onPress={() => navigation.navigate('AMTA_Policy')}
+          onPress={() => navigation.navigate(ScreenName.AMTA_POLICY)}
         />
       </View>
       <View style={styles.footer}>
