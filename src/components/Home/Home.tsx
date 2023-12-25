@@ -1,18 +1,23 @@
-import { NavigationProp } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { FC, useContext, useEffect } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import AirplaneModeWarning from './AirplaneModeWarning';
+import HomeHeaderIcon from './HomeHeaderIcon';
 import TrialsList from './TrialsList';
+import { RouteProps } from '../../App';
 import { ScreenName } from '../../constants/screen-names';
 import { TrialsContext } from '../../context/TrialsContext';
 import { Trial, getTrialsFromStorage } from '../../controllers/trial';
 import Button from '../Button';
 
-interface HomeProps {
-  navigation: NavigationProp<any>;
-}
+type HomeProps = NativeStackScreenProps<RouteProps, ScreenName.HOME>;
+
+export const homeScreenOptions = ({ navigation, route }) => ({
+  title: 'Mock Trial Timekeeper',
+  headerLeft: () => <HomeHeaderIcon navigation={navigation} route={route} />,
+});
 
 const MAX_DISPLAYED_TRIALS = 9;
 

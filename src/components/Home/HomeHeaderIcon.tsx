@@ -1,14 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
-import { NavigationProp } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { FC } from 'react';
 import { TouchableOpacity } from 'react-native';
 
+import { RouteProps } from '../../App';
 import colors from '../../constants/colors';
 import { ScreenName } from '../../constants/screen-names';
 
-interface HomeHeaderIconProps {
-  navigation: NavigationProp<any>;
-}
+type HomeHeaderIconProps = NativeStackScreenProps<RouteProps, ScreenName.HOME>;
+
 const HomeHeaderIcon: FC<HomeHeaderIconProps> = ({ navigation }) => (
   <TouchableOpacity onPress={() => navigation.navigate(ScreenName.ABOUT)}>
     <Ionicons

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { View, ViewStyle } from 'react-native';
 
 interface CardProps {
   style?: ViewStyle;
@@ -10,19 +10,24 @@ const Card = (props: CardProps) => {
   return (
     <View
       style={{
-        width: '90%',
-        backgroundColor: 'white',
-        borderRadius: 10,
-        padding: 10,
-        // paddingTop: 0,
-        marginTop: 10,
-        alignSelf: 'center',
+        ...styles.container,
         ...props.style,
       }}
     >
       {props.children}
     </View>
   );
+};
+
+const styles = {
+  container: {
+    width: '90%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 10,
+    alignSelf: 'center',
+  },
 };
 
 export default Card;

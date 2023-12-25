@@ -1,18 +1,19 @@
-// import Card from "./Card/Card";
-
-import { NavigationProp } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack/lib/typescript/src/types';
 import Constants from 'expo-constants';
 import * as Linking from 'expo-linking';
 import { FC } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { RouteProps } from '../../App';
 import { ScreenName } from '../../constants/screen-names';
 import Card from '../Card';
 import Link from '../Link';
 
-interface AboutProps {
-  navigation: NavigationProp<any>;
-}
+type AboutProps = NativeStackScreenProps<RouteProps, ScreenName.ABOUT>;
+
+export const aboutScreenOptions = {
+  headerBackTitle: 'Home',
+};
 
 const About: FC<AboutProps> = ({ navigation }) => {
   return (

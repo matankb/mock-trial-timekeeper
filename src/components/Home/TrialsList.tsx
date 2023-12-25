@@ -1,15 +1,5 @@
-import { MaterialIcons } from '@expo/vector-icons';
 import React, { FC } from 'react';
-import {
-  View,
-  StyleSheet,
-  Pressable,
-  Text,
-  TouchableHighlight,
-  TouchableNativeFeedback,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
 import TrialListItem from './TrialListItem';
 import { Trial } from '../../controllers/trial';
@@ -21,6 +11,11 @@ interface TrialsListProps {
   showAllTrialsLink: boolean;
   onAllTrialsPress?: () => void;
 }
+
+/**
+ * @param param0
+ * @returns
+ */
 
 const TrialsList: FC<TrialsListProps> = ({
   trials,

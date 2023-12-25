@@ -1,12 +1,6 @@
-import { MaterialIcons, Entypo } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 import React from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  Pressable,
-  TouchableOpacity,
-} from 'react-native';
+import { Text, View, StyleSheet, Pressable } from 'react-native';
 
 import colors from '../../constants/colors';
 
@@ -54,6 +48,7 @@ const styles = StyleSheet.create({
     left: 'auto',
     right: 'auto',
     backgroundColor: 'white',
+    // backgroundColor: 'blue',
     borderRadius: 10,
     width: '90%',
     paddingHorizontal: 10,

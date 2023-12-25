@@ -1,15 +1,19 @@
-import { NavigationProp } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { FC, useContext } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import TrialsList from './TrialsList';
+import { RouteProps } from '../../App';
 import { ScreenName } from '../../constants/screen-names';
 import { TrialsContext } from '../../context/TrialsContext';
 import { Trial } from '../../controllers/trial';
 
-interface AllTrialsProps {
-  navigation: NavigationProp<any>;
-}
+type AllTrialsProps = NativeStackScreenProps<RouteProps, ScreenName.ALL_TRIALS>;
+
+export const allTrialsScreenOptions = {
+  title: 'All Trials',
+  headerBackTitle: 'Home',
+};
 
 const AllTrials: FC<AllTrialsProps> = ({ navigation }) => {
   const [trials] = useContext(TrialsContext);
@@ -32,5 +36,4 @@ const AllTrials: FC<AllTrialsProps> = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({});
 export default AllTrials;

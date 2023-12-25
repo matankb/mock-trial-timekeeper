@@ -1,22 +1,36 @@
-import { NavigationProp } from '@react-navigation/native';
+import {
+  NativeStackNavigationOptions,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack/lib/typescript/src/types';
 import React, { FC, useContext } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Platform, View, StyleSheet, Alert } from 'react-native';
 
 import AllLossSelector from './AllLossSelector';
+import CreateTrialHeaderIcon from './CreateTrialHeaderIcon';
 import TrialNameInput from './TrialNameInput';
-import colors from '../../constants/colors';
+import { RouteProps } from '../../App';
 import { ScreenName } from '../../constants/screen-names';
 import { TrialsContext } from '../../context/TrialsContext';
 import { createNewTrial } from '../../controllers/trial';
 import Button from '../Button';
-import Card from '../Card';
 
 const ALL_LOSS_MINUTES = 180;
 
-interface CreateTrialProps {
-  navigation: NavigationProp<any>;
-}
+type CreateTrialProps = NativeStackScreenProps<
+  RouteProps,
+  ScreenName.CREATE_TRIAL
+>;
+
+export const createTrialScreenOptions = ({
+  navigation,
+}): NativeStackNavigationOptions => ({
+  presentation: 'modal',
+  title: 'Create Trial',
+  headerLeft:
+    Platform.OS === 'ios'
+      ? () => <CreateTrialHeaderIcon navigation={navigation} />
+      : () => <View />,
+});
 
 const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
   const [trials, setTrials] = useContext(TrialsContext);
@@ -72,4 +86,5 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
 });
+
 export default CreateTrial;
