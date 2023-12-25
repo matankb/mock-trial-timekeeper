@@ -24,3 +24,18 @@ export function formatTimeWords(seconds: number) {
 
   return `${hours}h ${minutes}m`;
 }
+
+function getPiSideName() {
+  // 2023-2024 season P = Prosecution, 2024-2025 season P = Plaintiff, etc.
+  const year = new Date().getFullYear()
+  const yearFromStart = year - 2023;
+  const isEven = yearFromStart % 2 === 0;
+  const isFirstHalfOfSeason = new Date().getMonth() >= 5; // Season starts in August
+  if ((isEven && isFirstHalfOfSeason) || (!isEven && !isFirstHalfOfSeason)) {
+    return 'Prosecution';
+  }
+  return 'Plaintiff';
+}
+
+// presumably, this will stay the same for the entire session
+export const piSideName = getPiSideName();

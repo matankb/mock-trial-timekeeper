@@ -1,3 +1,5 @@
+import { piSideName } from '../utils';
+
 export const stages = [
   'open.pros',
   'open.def',
@@ -36,21 +38,21 @@ export const getPrevStage = (stage: string) => {
 
 export const getStageName = (stage: string) => {
   const map: Record<string, string> = {
-    'open.pros': 'Prosecution Opening',
+    'open.pros': `${piSideName} Opening`,
     'open.def': 'Defense Opening',
-    'cic.pros.one.direct': 'Prosecution Witness #1 - Direct',
-    'cic.pros.one.cross': 'Prosecution Witness #1 - Cross',
-    'cic.pros.two.direct': 'Prosecution Witness #2 - Direct',
-    'cic.pros.two.cross': 'Prosecution Witness #2 - Cross',
-    'cic.pros.three.direct': 'Prosecution Witness #3 - Direct',
-    'cic.pros.three.cross': 'Prosecution Witness #3 - Cross',
+    'cic.pros.one.direct': `${piSideName} Witness #1 - Direct`,
+    'cic.pros.one.cross': `${piSideName} Witness #1 - Cross`,
+    'cic.pros.two.direct': `${piSideName} Witness #2 - Direct`,
+    'cic.pros.two.cross': `${piSideName} Witness #2 - Cross`,
+    'cic.pros.three.direct': `${piSideName} Witness #3 - Direct`,
+    'cic.pros.three.cross': `${piSideName} Witness #3 - Cross`,
     'cic.def.one.direct': 'Defense Witness #1 - Direct',
     'cic.def.one.cross': 'Defense Witness #1 - Cross',
     'cic.def.two.direct': 'Defense Witness #2 - Direct',
     'cic.def.two.cross': 'Defense Witness #2 - Cross',
     'cic.def.three.direct': 'Defense Witness #3 - Direct',
     'cic.def.three.cross': 'Defense Witness #3 - Cross',
-    'close.pros': 'Prosecution Closing',
+    'close.pros': `${piSideName} Closing`,
     'close.def': 'Defense Closing',
     rebuttal: 'Rebuttal',
   };
