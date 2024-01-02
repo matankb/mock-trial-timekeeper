@@ -3,6 +3,8 @@ import React from 'react';
 import { Text, View, StyleSheet, Pressable } from 'react-native';
 
 import colors from '../../constants/colors';
+import { Theme } from '../../context/ThemeContext';
+import useTheme from '../../hooks/useTheme';
 
 interface ControlsProps {
   currentStageName: string;
@@ -15,27 +17,53 @@ interface ControlsProps {
 }
 
 const Controls = (props: ControlsProps) => {
-  const ICON_COLOR = '#347cc3';
+  const theme = useTheme();
+  const ICON_COLOR = theme === Theme.LIGHT ? '#347cc3' : '#57abff';
+
+  const buttonStyle = {
+    ...styles.button,
+    backgroundColor: theme === Theme.LIGHT ? '#e5ebf8' : '#383838',
+  }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.currentStageLabel}>Current Stage&nbsp;&nbsp;</Text>
-      <Text style={styles.currentStage}>{props.currentStageName}</Text>
+    <View
+      style={{
+        ...styles.container,
+        backgroundColor:
+          theme === Theme.LIGHT ? 'white' : colors.BACKGROUND_GRAY,
+      }}
+    >
+      <Text
+        style={{
+          ...styles.currentStageLabel,
+          color: theme === Theme.LIGHT ? 'gray' : 'darkgray',
+        }}
+      >
+        Current Stage&nbsp;&nbsp;
+      </Text>
+      <Text
+        style={{
+          ...styles.currentStage,
+          ...(theme === Theme.DARK && { color: 'white' }),
+        }}
+      >
+        {props.currentStageName}
+      </Text>
       <View style={styles.buttonsContainer}>
-        <Pressable style={styles.button} onPress={props.handlePrevious}>
+        <Pressable style={buttonStyle} onPress={props.handlePrevious}>
           <Entypo name="chevron-left" size={55} color={ICON_COLOR} />
         </Pressable>
         {!props.isPaused ? (
-          <Pressable style={styles.button} onPress={props.handlePause}>
+          <Pressable style={buttonStyle} onPress={props.handlePause}>
             <Entypo name="controller-paus" size={50} color="orange" />
           </Pressable>
         ) : (
-          <Pressable style={styles.button} onPress={props.handlePlay}>
+          <Pressable style={buttonStyle} onPress={props.handlePlay}>
             <Entypo name="controller-play" size={60} color={colors.GREEN} />
           </Pressable>
         )}
 
-        <Pressable style={styles.button} onPress={props.handleNext}>
+        <Pressable style={buttonStyle} onPress={props.handleNext}>
           <Entypo name="chevron-right" size={55} color={ICON_COLOR} />
         </Pressable>
       </View>
@@ -47,8 +75,6 @@ const styles = StyleSheet.create({
   container: {
     left: 'auto',
     right: 'auto',
-    backgroundColor: 'white',
-    // backgroundColor: 'blue',
     borderRadius: 10,
     width: '90%',
     paddingHorizontal: 10,
@@ -61,7 +87,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   currentStageLabel: {
-    color: 'gray',
     paddingHorizontal: 10,
   },
   buttonsContainer: {
@@ -76,7 +101,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e5ebf8',
     borderRadius: 5,
   },
 });

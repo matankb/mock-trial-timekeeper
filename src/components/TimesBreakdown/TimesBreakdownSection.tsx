@@ -2,7 +2,10 @@ import React, { FC } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
 import TimeEditor, { TimeEditHandler } from './TimeEditor';
+import { Theme } from '../../context/ThemeContext';
+import useTheme from '../../hooks/useTheme';
 import { formatTime } from '../../utils';
+import Card from '../Card';
 
 type TimeItem = [string, number, TimeEditHandler];
 type TimeSection = TimeItem[];
@@ -21,40 +24,62 @@ const TimesBreakdownSection: FC<TimesBreakdownSectionProps> = ({
   times,
   editing,
 }) => {
+  const theme = useTheme();
+
   const createTimeSection = (timeSection: TimeSection) =>
     timeSection.map(([name, value, onEdit]) => (
       <View style={styles.row} key={name}>
-        <Text style={styles.name}>{name}</Text>
+        <Text
+          style={{
+            ...styles.name,
+            ...(theme === Theme.DARK && { color: 'white' }),
+          }}
+        >
+          {name}
+        </Text>
         {editing ? (
           <TimeEditor value={value} name={name} onChange={onEdit} />
         ) : (
-          <Text style={styles.time}>{formatTime(value)}</Text>
+          <Text
+            style={{
+              ...styles.time,
+              ...(theme === Theme.DARK && { color: 'white' }),
+            }}
+          >
+            {formatTime(value)}
+          </Text>
         )}
       </View>
     ));
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
+    <Card>
+      <Text
+        style={{
+          ...styles.title,
+          ...(theme === Theme.DARK && { color: 'white' }),
+        }}
+      >
+        {title}
+      </Text>
       {times.map((timeSection, i) => (
         <View key={i}>
-          {i > 0 && <View style={styles.divider} />}
+          {i > 0 && (
+            <View
+              style={{
+                ...styles.divider,
+                ...(theme === Theme.DARK && { borderColor: 'gray' }),
+              }}
+            />
+          )}
           {createTimeSection(timeSection)}
         </View>
       ))}
-    </View>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
-  // TODO: potentially replace with Card
-  container: {
-    width: '90%',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 10,
-    marginTop: 10,
-  },
   title: {
     padding: 10,
     paddingTop: 7,
@@ -65,6 +90,7 @@ const styles = StyleSheet.create({
   divider: {
     borderBottomWidth: 1,
     borderColor: 'lightgray',
+
     marginBottom: 5,
     marginLeft: 10,
   },

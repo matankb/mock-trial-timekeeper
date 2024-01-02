@@ -1,6 +1,9 @@
 import React, { FC } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
+import colors from '../../../constants/colors';
+import { Theme } from '../../../context/ThemeContext';
+import useTheme from '../../../hooks/useTheme';
 import { formatTime } from '../../../utils';
 
 interface TimeSummaryRowProps {
@@ -11,14 +14,23 @@ interface TimeSummaryRowProps {
 }
 
 const TimeSummaryRow: FC<TimeSummaryRowProps> = (props) => {
+  const theme = useTheme();
+
+  const defaultRowBackground =
+    theme === Theme.LIGHT ? 'white' : colors.BACKGROUND_GRAY;
+
   const rowStyle = {
     ...styles.row,
-    backgroundColor: props.highlighted ? props.highlightColor : 'white',
+    backgroundColor: props.highlighted
+      ? props.highlightColor
+      : defaultRowBackground,
   };
+
+  const defaultTextColor = theme === Theme.LIGHT ? 'black' : 'white';
 
   const textStyle = {
     ...styles.text,
-    color: props.highlighted ? 'white' : 'black',
+    color: props.highlighted ? 'white' : defaultTextColor,
   };
 
   return (

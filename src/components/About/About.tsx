@@ -4,31 +4,41 @@ import * as Linking from 'expo-linking';
 import { FC } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { RouteProps } from '../../App';
+import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
+import { Theme } from '../../context/ThemeContext';
+import useTheme from '../../hooks/useTheme';
 import Card from '../Card';
 import Link from '../Link';
 
 type AboutProps = NativeStackScreenProps<RouteProps, ScreenName.ABOUT>;
 
 export const aboutScreenOptions = {
+  title: 'About',
   headerBackTitle: 'Home',
 };
 
 const About: FC<AboutProps> = ({ navigation }) => {
+  const theme = useTheme();
+
+  const textStyle = {
+    ...styles.text,
+    ...(theme === Theme.DARK && { color: 'white' }),
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View>
         <Card style={{ marginBottom: 10 }}>
-          <Text style={styles.text}>
+          <Text style={textStyle}>
             Mock Trial Timekeeper helps you timekeep for AMTA Mock Trial
             competitions!
           </Text>
-          <Text style={styles.text}>
+          <Text style={textStyle}>
             This app is permitted at all AMTA-sanctioned tournaments (see AMTA
             Policy for more). Not affiliated with or endorsed by AMTA.
           </Text>
-          <Text style={styles.text}>
+          <Text style={textStyle}>
             If you like Mock Trial Timekeeper, please leave a review!
           </Text>
         </Card>

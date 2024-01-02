@@ -1,28 +1,32 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import * as SplashScreen from 'expo-splash-screen';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { FC, useContext } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import AirplaneModeWarning from './AirplaneModeWarning';
-import HomeHeaderIcon from './HomeHeaderIcon';
+import { HomeHeaderIconLeft, HomeHeaderIconRight } from './HomeHeaderIcons';
 import TrialsList from './TrialsList';
-import { RouteProps } from '../../App';
+import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
 import { TrialsContext } from '../../context/TrialsContext';
-import { Trial, getTrialsFromStorage } from '../../controllers/trial';
+import { Trial } from '../../controllers/trial';
 import Button from '../Button';
 
 type HomeProps = NativeStackScreenProps<RouteProps, ScreenName.HOME>;
 
 export const homeScreenOptions = ({ navigation, route }) => ({
   title: 'Mock Trial Timekeeper',
-  headerLeft: () => <HomeHeaderIcon navigation={navigation} route={route} />,
+  headerLeft: () => (
+    <HomeHeaderIconLeft navigation={navigation} route={route} />
+  ),
+  headerRight: () => (
+    <HomeHeaderIconRight navigation={navigation} route={route} />
+  ),
 });
 
 const MAX_DISPLAYED_TRIALS = 9;
 
 const Home: FC<HomeProps> = ({ navigation }) => {
-  const [trials, setTrials] = useContext(TrialsContext);
+  const [trials] = useContext(TrialsContext);
 
   const handleTrialSelect = (trial: Trial) => {
     navigation.navigate(ScreenName.TRIAL_MANAGER, {
@@ -30,15 +34,6 @@ const Home: FC<HomeProps> = ({ navigation }) => {
       trialName: trial.name, // name included to set as header title
     });
   };
-
-  useEffect(() => {
-    if (!trials) {
-      getTrialsFromStorage().then((trials) => {
-        setTrials(trials);
-        SplashScreen.hideAsync();
-      });
-    }
-  }, [trials]);
 
   if (!trials) {
     return;

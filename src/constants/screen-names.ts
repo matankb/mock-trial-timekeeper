@@ -7,4 +7,5 @@ export enum ScreenName {
   DISCLAIMER = 'disclaimer',
   AMTA_POLICY = 'amta-policy',
   CREATE_TRIAL = 'create-trial',
+  SETTINGS = 'settings'
 }

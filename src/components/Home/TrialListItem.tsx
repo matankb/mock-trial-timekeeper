@@ -2,6 +2,9 @@ import { MaterialIcons } from '@expo/vector-icons';
 import React, { FC } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 
+import { Theme } from '../../context/ThemeContext';
+import useTheme from '../../hooks/useTheme';
+
 interface TrialListItemProps {
   title: string;
   divider: boolean;
@@ -9,13 +12,35 @@ interface TrialListItemProps {
 }
 
 const TrialListItem: FC<TrialListItemProps> = ({ title, divider, onPress }) => {
+  const theme = useTheme();
+
+  const nameComponent = (
+    <Text
+      style={{
+        ...styles.name,
+        color: theme === Theme.LIGHT ? 'black' : 'white',
+      }}
+    >
+      {title}
+    </Text>
+  );
+
+  const dividerComponent = (
+    <View
+      style={{
+        ...styles.divider,
+        borderColor: theme === Theme.LIGHT ? 'lightgray' : 'gray',
+      }}
+    />
+  );
+
   return (
     <View>
       <TouchableOpacity onPress={() => onPress()} style={styles.row}>
-        <Text style={styles.name}>{title}</Text>
+        {nameComponent}
         <MaterialIcons name="navigate-next" size={25} color="gray" />
       </TouchableOpacity>
-      {divider && <View style={styles.divider} />}
+      {divider && dividerComponent}
     </View>
   );
 };
@@ -32,10 +57,12 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 16,
+    color: 'white',
   },
   divider: {
-    borderColor: 'lightgray',
+    borderColor: 'gray',
     borderTopWidth: 1,
   },
 });
+
 export default TrialListItem;
