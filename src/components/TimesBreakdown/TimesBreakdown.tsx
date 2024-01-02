@@ -1,26 +1,38 @@
-import { MaterialIcons } from '@expo/vector-icons';
-import { NavigationProp, RouteProp } from '@react-navigation/native';
+import {
+  NativeStackNavigationOptions,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
 import { StyleSheet, ScrollView, SafeAreaView, Button } from 'react-native';
 
 import { TimeEditHandler } from './TimeEditor';
 import TimesBreakdownSection from './TimesBreakdownSection';
+import { RouteProps } from '../../App';
+import { ScreenName } from '../../constants/screen-names';
 import { TrialsContext } from '../../context/TrialsContext';
 import {
-  Trial,
-  getTrialFromStorage,
   setTrialToStorage,
   calculateNewTrialTime,
 } from '../../controllers/trial';
+import { piSideName } from '../../utils';
 
-interface TimeBreakdownRouteParams {
+type TimeBreakdownProps = NativeStackScreenProps<
+  RouteProps,
+  ScreenName.TIMES_BREAKDOWN
+>;
+
+export interface TimeBreakdownRouteProps {
   trialId: string;
+  trialName: string;
 }
 
-interface TimeBreakdownProps {
-  route: RouteProp<any>;
-  navigation: NavigationProp<any>;
-}
+export const timesBreakdownScreenOptions = ({
+  route,
+}): NativeStackNavigationOptions => ({
+  title: `${route.params.trialName} Individual Times`,
+  headerBackTitleVisible: false,
+  headerRight: () => <Button title="Edit" onPress={() => {}} />,
+});
 
 const TimeBreakdown: React.FC<TimeBreakdownProps> = ({ route, navigation }) => {
   const [trials, setTrials] = React.useContext(TrialsContext);
@@ -70,7 +82,7 @@ const TimeBreakdown: React.FC<TimeBreakdownProps> = ({ route, navigation }) => {
           times={[
             [
               [
-                'Prosecution Opening',
+                `${piSideName} Opening`,
                 times.open.pros,
                 createEditHandler('open.pros'),
               ],
@@ -84,7 +96,7 @@ const TimeBreakdown: React.FC<TimeBreakdownProps> = ({ route, navigation }) => {
           editing={editing}
         />
         <TimesBreakdownSection
-          title="Prosecution Case in Chief"
+          title={`${piSideName} Case in Chief`}
           times={[
             [
               [
@@ -172,7 +184,7 @@ const TimeBreakdown: React.FC<TimeBreakdownProps> = ({ route, navigation }) => {
           times={[
             [
               [
-                'Prosecution Closing',
+                `${piSideName} Closing`,
                 times.close.pros,
                 createEditHandler('close.pros'),
               ],

@@ -4,6 +4,7 @@ import { View, StyleSheet } from 'react-native';
 import TimeSummary, { TimeSummaryRowType } from './TimeSummary';
 import colors from '../../../constants/colors';
 import { Trial } from '../../../controllers/trial';
+import { piSideName } from '../../../utils';
 
 interface TimeSummariesProps {
   trial: Trial;
@@ -69,7 +70,7 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial }) => {
   return (
     <View style={styles.container}>
       <TimeSummary
-        title="Prosecution"
+        title={piSideName}
         color={colors.RED}
         highlightRow={getHighlightedRow('pros')}
         timeRemaining={prosecutionTimeRemaining}
