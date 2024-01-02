@@ -1,5 +1,8 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { FC, useContext } from 'react';
+import {
+  NativeStackNavigationOptions,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
+import React, { FC, useContext, useEffect } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import AirplaneModeWarning from './AirplaneModeWarning';
@@ -13,19 +16,13 @@ import Button from '../Button';
 
 type HomeProps = NativeStackScreenProps<RouteProps, ScreenName.HOME>;
 
-export const homeScreenOptions = ({ navigation, route }) => ({
+export const homeScreenOptions = (): NativeStackNavigationOptions => ({
   title: 'Mock Trial Timekeeper',
-  headerLeft: () => (
-    <HomeHeaderIconLeft navigation={navigation} route={route} />
-  ),
-  headerRight: () => (
-    <HomeHeaderIconRight navigation={navigation} route={route} />
-  ),
 });
 
 const MAX_DISPLAYED_TRIALS = 9;
 
-const Home: FC<HomeProps> = ({ navigation }) => {
+const Home: FC<HomeProps> = ({ navigation, route }) => {
   const [trials] = useContext(TrialsContext);
 
   const handleTrialSelect = (trial: Trial) => {
@@ -35,12 +32,29 @@ const Home: FC<HomeProps> = ({ navigation }) => {
     });
   };
 
+  // This is a workaround to prevent a known issue
+  // Ideally, options would be set in homeScreenOptions
+  // see: https://github.com/react-navigation/react-navigation/issues/8657
+  const setHeaderButtons = () => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <HomeHeaderIconLeft navigation={navigation} route={route} />
+      ),
+      headerRight: () => (
+        <HomeHeaderIconRight navigation={navigation} route={route} />
+      ),
+    });
+  };
+
   if (!trials) {
     return;
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      onLayout={() => setHeaderButtons()}
+    >
       <View>
         <TrialsList
           trials={trials
