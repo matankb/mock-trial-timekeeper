@@ -34,6 +34,17 @@ const Disclaimer = () => {
         competition, or any other problems that may arise from using this
         application in any other situation.
       </Text>
+      <Text style={textStyle}>
+        In addition to the above disclaimer, we especially warn against using
+        this application improperly during a competition. In particular, any
+        mobile devices used during rounds must be in Airplane Mode and
+        disconnected from WiFi. While this application attempts to detect and
+        warn against these conditions, it is not guaranteed to do so correctly.
+        It is the user's responsibility to ensure that their device is in
+        Airplane Mode and disconnected from WiFi before using this application
+        during a competition. We are not responsible for any sanction that may
+        result from improperly using this application during a competition.
+      </Text>
     </View>
   );
 };
