@@ -1,6 +1,13 @@
-import { createContext } from 'react';
+import { createContext, useContext } from 'react';
 
-import { Trial } from '../controllers/trial';
+import { Trial, getTrialsFromStorage } from '../controllers/trial';
 
 export const TrialsContext =
   createContext<[Trial[], React.Dispatch<Trial[]>]>(null);
+
+export async function initializeTrialsContext(
+  setTrials: React.Dispatch<Trial[]>,
+) {
+  const trials = await getTrialsFromStorage();
+  setTrials(trials);
+}
