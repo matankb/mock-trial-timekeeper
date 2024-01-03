@@ -18,25 +18,26 @@ interface ControlsProps {
 
 const Controls = (props: ControlsProps) => {
   const theme = useTheme();
-  const ICON_COLOR = theme === Theme.LIGHT ? '#347cc3' : '#57abff';
+  const isLightTheme = theme === Theme.LIGHT;
+  const ICON_COLOR = isLightTheme ? '#347cc3' : '#57abff';
+  const START_COLOR = isLightTheme ? colors.GREEN : colors.BRIGHT_GREEN;
 
   const buttonStyle = {
     ...styles.button,
-    backgroundColor: theme === Theme.LIGHT ? '#e5ebf8' : '#383838',
-  }
+    backgroundColor: isLightTheme ? '#e5ebf8' : '#383838',
+  };
 
   return (
     <View
       style={{
         ...styles.container,
-        backgroundColor:
-          theme === Theme.LIGHT ? 'white' : colors.BACKGROUND_GRAY,
+        backgroundColor: isLightTheme ? 'white' : colors.BACKGROUND_GRAY,
       }}
     >
       <Text
         style={{
           ...styles.currentStageLabel,
-          color: theme === Theme.LIGHT ? 'gray' : 'darkgray',
+          color: isLightTheme ? 'gray' : 'darkgray',
         }}
       >
         Current Stage&nbsp;&nbsp;
@@ -44,7 +45,7 @@ const Controls = (props: ControlsProps) => {
       <Text
         style={{
           ...styles.currentStage,
-          ...(theme === Theme.DARK && { color: 'white' }),
+          ...(!isLightTheme && { color: 'white' }),
         }}
       >
         {props.currentStageName}
@@ -59,7 +60,7 @@ const Controls = (props: ControlsProps) => {
           </Pressable>
         ) : (
           <Pressable style={buttonStyle} onPress={props.handlePlay}>
-            <Entypo name="controller-play" size={60} color={colors.GREEN} />
+            <Entypo name="controller-play" size={60} color={START_COLOR} />
           </Pressable>
         )}
 
