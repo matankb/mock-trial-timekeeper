@@ -2,6 +2,10 @@ import * as SplashScreen from 'expo-splash-screen';
 import React, { FC, useEffect, useState } from 'react';
 import { Appearance, useColorScheme } from 'react-native';
 
+import {
+  AirplaneBlockerContext,
+  AirplaneBlockerState,
+} from './AirplaneBlockerContext';
 import { Theme, ThemeContext } from './ThemeContext';
 import { TrialsContext } from './TrialsContext';
 import {
@@ -17,6 +21,10 @@ interface ContextProviderProps {
 const ContextProviders: FC<ContextProviderProps> = ({ children }) => {
   const [trials, setTrials] = useState<Trial[]>(null);
   const [theme, setTheme] = useState<Theme>(null);
+  const [airplaneBlockerState, setAirplaneBlockerState] =
+    useState<AirplaneBlockerState>({
+      hide: false,
+    });
 
   // Trials
 
@@ -35,14 +43,12 @@ const ContextProviders: FC<ContextProviderProps> = ({ children }) => {
     getSettings().then((settings) => {
       setTheme(settingsThemeToThemeContextTheme(settings.theme));
     });
-    console.log('adding listener');
-    
+
     Appearance.addChangeListener(() => {
-      console.log('Appearance changed');
       getSettings().then((settings) => {
         setTheme(settingsThemeToThemeContextTheme(settings.theme));
       });
-    })
+    });
   }, []);
 
   // Splash Screen
@@ -56,7 +62,11 @@ const ContextProviders: FC<ContextProviderProps> = ({ children }) => {
   return (
     <TrialsContext.Provider value={[trials, setTrials]}>
       <ThemeContext.Provider value={[theme, setTheme]}>
-        {children}
+        <AirplaneBlockerContext.Provider
+          value={[airplaneBlockerState, setAirplaneBlockerState]}
+        >
+          {children}
+        </AirplaneBlockerContext.Provider>
       </ThemeContext.Provider>
     </TrialsContext.Provider>
   );
