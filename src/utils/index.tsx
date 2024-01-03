@@ -39,3 +39,8 @@ function getPiSideName() {
 
 // presumably, this will stay the same for the entire session
 export const piSideName = getPiSideName();
+
+export const duration = {
+  minutes: (n: number) => n * 60,
+  hours: (n: number) => n * 60 * 60,
+};
