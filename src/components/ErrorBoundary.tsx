@@ -1,7 +1,7 @@
-import { FC, useState } from 'react';
+import { MaterialIcons } from '@expo/vector-icons';
+import { FC } from 'react';
 import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary';
 import { Linking, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import Button from './Button';
 
@@ -9,6 +9,13 @@ const ErrorFallback = ({ error, resetErrorBoundary }) => {
   // reset: clear loaded trials, go back home
   return (
     <View style={styles.container}>
+      <MaterialIcons
+        name="error-outline"
+        size={60}
+        color="#636363"
+        style={styles.icon}
+      />
+
       <Text style={styles.text}>Something went wrong.</Text>
       <Text style={styles.instructions}>
         Please restart the app and try again. If the problem persists, please
@@ -51,6 +58,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     marginBottom: 50,
+  },
+  icon: {
+    textAlign: 'center',
+    marginBottom: 20,
   },
   text: {
     textAlign: 'center',
