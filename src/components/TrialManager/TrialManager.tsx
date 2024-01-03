@@ -4,10 +4,12 @@ import React, { FC, useContext, useEffect } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import merge from 'ts-deepmerge';
 
+import AirplaneModeBlocker from './AirplaneModeBlocker/AirplaneModeBlocker';
 import AllLoss from './AllLoss';
 import Controls from './Controls';
 import OptionsMenu from './OptionsMenu';
 import TimeSummaries from './TimeSummaries/TimeSummaries';
+import { RouteProps } from '../../App';
 import { ScreenName } from '../../constants/screen-names';
 import {
   getNextStage,
@@ -24,16 +26,24 @@ import {
 } from '../../controllers/trial';
 import Link from '../Link';
 
-interface TrialManagerProps {
-  setTrialState: (newTrialState: Trial) => void;
-  handleDelete: () => void;
-  navigation: NavigationProp<any>;
-  route: RouteProp<any>; // TODO: type this better :)
+type TrialManagerProps = NativeStackScreenProps<
+  RouteProps,
+  ScreenName.TRIAL_MANAGER
+>;
+
+export interface TrialManagerRouteProps {
+  trialName: string;
+  trialId: string;
 }
+
+export const trialManagerScreenOptions = ({ route }: TrialManagerProps) => ({
+  title: route.params.trialName,
+  headerBackTitle: 'Home',
+});
 
 const TrialManager: FC<TrialManagerProps> = (props) => {
   const intervalId = React.useRef<NodeJS.Timeout>();
-  const [counting, setCounting] = React.useState(null);
+  const [counting, setCounting] = useState(null);
   const startedCounting = React.useRef<number>(null);
   const timeBeforeCounting = React.useRef<number>(null);
   const [allTrials, setAllTrials] = useContext(TrialsContext);
@@ -194,24 +204,27 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
   const { stage } = trial;
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.container}
-      style={{ height: '100%' }}
-    >
-      <View style={{ width: '100%', marginBottom: 10 }}>
-        <AllLoss allLossTime={trial.setup.allLoss} />
-        <TimeSummaries trial={trial} />
-        <Link title="Individual Times" onPress={handleIndividualTimesPress} />
-      </View>
-      <Controls
-        currentStageName={getStageName(stage)}
-        isPaused={!counting}
-        handlePause={pauseTimer}
-        handlePrevious={prevStage}
-        handleNext={nextStage}
-        handlePlay={startTimer}
-      />
-    </ScrollView>
+    <AirplaneModeBlocker>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        style={{ height: '100%' }}
+      >
+        <View style={{ width: '100%', marginBottom: 10 }}>
+          <AllLoss allLossTime={trial.setup.allLoss} />
+          <TimeSummaries trial={trial} />
+          <Link title="Individual Times" onPress={handleIndividualTimesPress} />
+          <Link title="Sync" onPress={handleSyncPress} />
+        </View>
+        <Controls
+          currentStageName={getStageName(stage)}
+          isPaused={!counting}
+          handlePause={pauseTimer}
+          handlePrevious={prevStage}
+          handleNext={nextStage}
+          handlePlay={startTimer}
+        />
+      </ScrollView>
+    </AirplaneModeBlocker>
   );
 };
 
