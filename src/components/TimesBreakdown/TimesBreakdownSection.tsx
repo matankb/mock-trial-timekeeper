@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
-import TimeEditor, { TimeEditHandler } from './TimeEditor';
 import { Theme } from '../../context/ThemeContext';
 import useTheme from '../../hooks/useTheme';
 import { formatTime } from '../../utils';
 import Card from '../Card';
+import TimeEditor, { TimeEditHandler } from '../TimeEditor/TimeEditor';
 
 type TimeItem = [string, number, TimeEditHandler];
 type TimeSection = TimeItem[];

@@ -19,18 +19,18 @@ export interface Settings {
   setup: TrialSetup;
 }
 
-const defaultSettings = {
+export const defaultSettings: Settings = {
   theme: SettingsTheme.LIGHT,
   setup: {
     pretrialEnabled: false,
-    statementsCombined: true,
-    pretrialTime: null,
+    statementsSeparate: false,
+    allLossEnabled: true,
+    pretrialTime: duration.minutes(5),
     statementTime: duration.minutes(14),
-    openTime: null,
-    closeTime: null,
+    openTime: duration.minutes(7),
+    closeTime: duration.minutes(7),
     directTime: duration.minutes(25),
     crossTime: duration.minutes(25),
-    allLoss: duration.hours(3),
   },
 };
 
@@ -39,7 +39,6 @@ const SETTINGS_SCHEMA_VERSION_KEY = 'settings_schema_version';
 
 export async function getSettings(): Promise<Settings> {
   const settings = await AsyncStorage.getItem('settings');
-  console.log('in here', settings);
   return settings ? JSON.parse(settings) : defaultSettings;
 }
 

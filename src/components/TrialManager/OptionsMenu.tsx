@@ -20,12 +20,14 @@ import colors from '../../constants/colors';
 
 interface OptionsMenuProps {
   trialName: string;
+  handleSync: () => void;
   handleDelete: () => void;
   handleRename: (name: string) => void;
 }
 
 const OptionsMenu: FC<OptionsMenuProps> = ({
   trialName,
+  handleSync,
   handleDelete,
   handleRename,
 }) => {
@@ -36,14 +38,16 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
   const handleOptionsPress = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        options: ['Cancel', 'Rename', 'Delete'],
-        destructiveButtonIndex: 2,
+        options: ['Cancel', 'Sync', 'Rename', 'Delete'],
+        destructiveButtonIndex: 3,
         cancelButtonIndex: 0,
       },
       (buttonIndex) => {
         if (buttonIndex === 1) {
-          showIosRenamePrompt();
+          handleSync();
         } else if (buttonIndex === 2) {
+          showIosRenamePrompt();
+        } else if (buttonIndex === 3) {
           showDeleteConfirmation();
         }
       },

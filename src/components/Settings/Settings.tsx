@@ -35,7 +35,6 @@ const Settings = () => {
 
   useEffect(() => {
     getSettings().then((settings) => {
-      console.log(settings);
       setCurrentSettings(settings);
     });
   }, []);
@@ -70,6 +69,9 @@ const Settings = () => {
       <Card>
         <Text style={{ fontSize: 16, fontWeight: 'bold', padding: 10 }}>
           Trial Setup
+        </Text>
+        <Text style={{ padding: 10, paddingVertical: 5, color: 'gray' }}>
+          Changes will only apply to new trials
         </Text>
 
         <SetupSettings

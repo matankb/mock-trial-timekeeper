@@ -1,6 +1,6 @@
-import { NavigationProp, RouteProp } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useKeepAwake } from 'expo-keep-awake';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import merge from 'ts-deepmerge';
 
@@ -9,7 +9,7 @@ import AllLoss from './AllLoss';
 import Controls from './Controls';
 import OptionsMenu from './OptionsMenu';
 import TimeSummaries from './TimeSummaries/TimeSummaries';
-import { RouteProps } from '../../App';
+import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
 import {
   getNextStage,
@@ -102,6 +102,7 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
     const optionsMenu = (
       <OptionsMenu
         trialName={trial.name}
+        handleSync={handleSyncPress}
         handleDelete={handleDelete}
         handleRename={handleRename}
       />
@@ -140,14 +141,14 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
   const nextStage = () => {
     pauseTimer();
     updateTrial({
-      stage: getNextStage(trial.stage),
+      stage: getNextStage(trial),
     });
   };
 
   const prevStage = () => {
     pauseTimer();
     updateTrial({
-      stage: getPrevStage(trial.stage),
+      stage: getPrevStage(trial),
     });
   };
 
@@ -201,6 +202,12 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
     });
   };
 
+  const handleSyncPress = () => {
+    props.navigation.navigate(ScreenName.SYNC_TRIAL, {
+      trialId: trial.id,
+    });
+  };
+
   const { stage } = trial;
 
   return (
@@ -210,10 +217,9 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
         style={{ height: '100%' }}
       >
         <View style={{ width: '100%', marginBottom: 10 }}>
-          <AllLoss allLossTime={trial.setup.allLoss} />
+          {trial.setup.allLossEnabled && <AllLoss allLossTime={trial.loss} />}
           <TimeSummaries trial={trial} />
           <Link title="Individual Times" onPress={handleIndividualTimesPress} />
-          <Link title="Sync" onPress={handleSyncPress} />
         </View>
         <Controls
           currentStageName={getStageName(stage)}

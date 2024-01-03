@@ -2,6 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 import merge from 'ts-deepmerge';
 
+import { defaultSettings, getSettings } from './settings';
+
 export interface Trial {
   id: string;
   name: string;
@@ -9,13 +11,19 @@ export interface Trial {
   setup: TrialSetup;
   stage: string;
   times: TrialTimes;
+  loss: number;
 }
 
 export interface TrialSetup {
-  statementTime: number;
+  pretrialEnabled: boolean;
+  statementsSeparate: boolean;
+  allLossEnabled: boolean;
+  pretrialTime?: number;
+  statementTime?: number;
+  openTime?: number;
+  closeTime?: number;
   directTime: number;
   crossTime: number;
-  allLoss: number; // time of all-loss
 }
 
 export interface StatementTimeSet {
@@ -35,6 +43,7 @@ export interface CaseInChief {
 }
 
 export interface TrialTimes {
+  pretrial: StatementTimeSet;
   open: StatementTimeSet;
   close: StatementTimeSet;
   prosCic: CaseInChief;
@@ -43,16 +52,49 @@ export interface TrialTimes {
 }
 
 const TRIALS_KEY = 'trials';
+const TRIALS_SCHEMA_VERSION = '2.1.0';
 const TRIAL_SCHEMA_VERSION_KEY = 'trials_schema_version';
+
+function migrateSchemaVersion(oldTrials: any, oldVersion: string): Trial[] {
+  if (oldVersion === '1.0.0') {
+    return oldTrials.map((trial: any) => {
+      const newTrial: Trial = {
+        ...trial,
+        times: {
+          ...trial.times,
+          pretrial: generateEmptyStatementTimeSet(),
+        },
+        loss: trial.setup.allLoss,
+        // Version 1.0.0 only had default setups
+        setup: defaultSettings.setup,
+      };
+
+      return newTrial;
+    });
+  }
+
+  return oldTrials;
+}
 
 export async function getTrialsFromStorage(): Promise<Trial[]> {
   const trials = await AsyncStorage.getItem(TRIALS_KEY);
-  return trials ? JSON.parse(trials) : [];
-}
+  const schemaVersion = await AsyncStorage.getItem(TRIAL_SCHEMA_VERSION_KEY);
 
-export async function getTrialFromStorage(id: string) {
-  const trials = await getTrialsFromStorage();
-  return trials.find((trial) => trial.id === id);
+  if (!trials) {
+    return [];
+  }
+
+  if (schemaVersion !== TRIALS_SCHEMA_VERSION) {
+    const migratedTrials = migrateSchemaVersion(
+      JSON.parse(trials),
+      schemaVersion,
+    );
+    await AsyncStorage.setItem(TRIALS_KEY, JSON.stringify(migratedTrials));
+    await AsyncStorage.setItem(TRIAL_SCHEMA_VERSION_KEY, TRIALS_SCHEMA_VERSION);
+    return migratedTrials;
+  }
+
+  return JSON.parse(trials);
 }
 
 export async function setTrialToStorage(trial: Trial) {
@@ -65,7 +107,7 @@ export async function setTrialToStorage(trial: Trial) {
     trials[trialIndex] = trial;
   }
 
-  AsyncStorage.setItem(TRIAL_SCHEMA_VERSION_KEY, '1.0.0');
+  AsyncStorage.setItem(TRIAL_SCHEMA_VERSION_KEY, TRIALS_SCHEMA_VERSION);
   return AsyncStorage.setItem(TRIALS_KEY, JSON.stringify(trials));
 }
 
@@ -76,6 +118,13 @@ export async function deleteTrial(id: string) {
     trials.splice(trialIndex, 1);
   }
   return AsyncStorage.setItem(TRIALS_KEY, JSON.stringify(trials));
+}
+
+function generateEmptyStatementTimeSet(): StatementTimeSet {
+  return {
+    pros: 0,
+    def: 0,
+  };
 }
 
 function generateEmptyWitnessTimeSet(): WitnessTimeSet {
@@ -93,6 +142,18 @@ function generateEmptyCaseInChief(): CaseInChief {
   };
 }
 
+function generateEmptyTrialTimes(): TrialTimes {
+  return {
+    // pretrial is always generated, is hidden by UI if not enabled
+    pretrial: generateEmptyStatementTimeSet(),
+    open: generateEmptyStatementTimeSet(),
+    close: generateEmptyStatementTimeSet(),
+    rebuttal: 0,
+    prosCic: generateEmptyCaseInChief(),
+    defCic: generateEmptyCaseInChief(),
+  };
+}
+
 /**
  * DEFAULT SETUP:
   {
@@ -104,32 +165,23 @@ function generateEmptyCaseInChief(): CaseInChief {
 
 export async function createNewTrial(
   name: string,
-  // setup: TrialSetup
   allLoss: number,
 ): Promise<Trial> {
   const id = uuid.v4() as string;
   const date = new Date().valueOf();
 
-  const setup = {
-    statementTime: 14 * 60,
-    directTime: 25 * 60,
-    crossTime: 25 * 60,
-    allLoss,
-  };
+  const { setup } = await getSettings();
+
+  const stage = setup.pretrialEnabled ? 'pretrial.pros' : 'open.pros';
 
   const trial: Trial = {
     id,
     name,
     date,
     setup,
-    stage: 'open.pros',
-    times: {
-      open: { pros: 0, def: 0 },
-      close: { pros: 0, def: 0 },
-      rebuttal: 0,
-      prosCic: generateEmptyCaseInChief(),
-      defCic: generateEmptyCaseInChief(),
-    },
+    loss: allLoss,
+    stage,
+    times: generateEmptyTrialTimes(),
   };
 
   await setTrialToStorage(trial);
@@ -144,6 +196,10 @@ const getTrialTimeChangeObject = (
   stage: string,
 ): any => {
   switch (stage) {
+    case 'pretrial.pros':
+      return { pretrial: { pros: newValue } };
+    case 'pretrial.def':
+      return { pretrial: { def: newValue } };
     case 'open.pros':
       return { open: { pros: newValue } };
     case 'open.def':
@@ -243,6 +299,10 @@ export const getStageTime = (trial: Trial, stage: string): any => {
   const { times } = trial;
 
   switch (stage) {
+    case 'pretrial.pros':
+      return times.pretrial.pros;
+    case 'pretrial.def':
+      return times.pretrial.def;
     case 'open.pros':
       return times.open.pros;
     case 'open.def':

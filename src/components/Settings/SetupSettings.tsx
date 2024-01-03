@@ -44,7 +44,8 @@ const SetupSettings: FC<SetupSettingsProps> = ({
 
   return (
     <View>
-      {createSetupToggleOption('Enable Pretrial', 'pretrialEnabled')}
+      {createSetupToggleOption('Enable Pretrial Timer', 'pretrialEnabled')}
+      {createSetupToggleOption('Enable All-Loss Timer', 'allLossEnabled')}
       {createSetupToggleOption(
         'Separate Statement Times',
         'statementsSeparate',

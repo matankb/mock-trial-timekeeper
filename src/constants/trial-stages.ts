@@ -1,6 +1,9 @@
+import { Trial } from '../controllers/trial';
 import { piSideName } from '../utils';
 
 export const stages = [
+  'pretrial.pros',
+  'pretrial.def',
   'open.pros',
   'open.def',
   'cic.pros.one.direct',
@@ -20,24 +23,39 @@ export const stages = [
   'rebuttal',
 ];
 
-export const getNextStage = (stage: string) => {
-  const index = stages.indexOf(stage);
-  if (index === stages.length - 1) {
-    return stages[0];
+// get the stages that are in use for this trial
+function getTrialStages(trial: Trial) {
+  console.log(trial.setup.pretrialEnabled);
+  if (trial.setup.pretrialEnabled) {
+    return stages;
   }
-  return stages[index + 1];
+
+  return stages.filter((stage) => !stage.includes('pretrial'));
+}
+
+export const getNextStage = (trial: Trial) => {
+  const trialStages = getTrialStages(trial);
+  console.log(trialStages);
+  const index = trialStages.indexOf(trial.stage);
+  if (index === trialStages.length - 1) {
+    return trialStages[0];
+  }
+  return trialStages[index + 1];
 };
 
-export const getPrevStage = (stage: string) => {
-  const index = stages.indexOf(stage);
+export const getPrevStage = (trial: Trial) => {
+  const trialStages = getTrialStages(trial);
+  const index = trialStages.indexOf(trial.stage);
   if (index === 0) {
-    return stages[stages.length - 1];
+    return trialStages[trialStages.length - 1];
   }
-  return stages[index - 1];
+  return trialStages[index - 1];
 };
 
 export const getStageName = (stage: string) => {
   const map: Record<string, string> = {
+    'pretrial.pros': `${piSideName} Pretrial`,
+    'pretrial.def': 'Defense Pretrial',
     'open.pros': `${piSideName} Opening`,
     'open.def': 'Defense Opening',
     'cic.pros.one.direct': `${piSideName} Witness #1 - Direct`,

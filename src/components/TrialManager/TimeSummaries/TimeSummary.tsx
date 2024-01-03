@@ -1,24 +1,32 @@
 import React, { FC } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
 import TimeSummaryRow from './TimeSummaryRow';
+import { TrialSetup } from '../../../controllers/trial';
 import Card from '../../Card';
 
 interface TimeSummaryProps {
   title: string;
   color: string;
+  setup: TrialSetup;
   timeRemaining: TimeRemaining;
   highlightRow: TimeSummaryRowType;
 }
 
 interface TimeRemaining {
+  pretrial: number;
   statements: number;
+  open: number;
+  close: number;
   direct: number;
   cross: number;
 }
 
 export enum TimeSummaryRowType {
+  Pretrial,
   Statements,
+  Open,
+  Close,
   Direct,
   Cross,
 }
@@ -28,6 +36,7 @@ const TimeSummary: FC<TimeSummaryProps> = ({
   color,
   timeRemaining,
   highlightRow,
+  setup,
 }) => {
   return (
     <Card>
@@ -40,12 +49,31 @@ const TimeSummary: FC<TimeSummaryProps> = ({
         {title} Time Remaining
       </Text>
 
-      <TimeSummaryRow
-        name="Statements"
-        time={timeRemaining.statements}
-        highlighted={highlightRow === TimeSummaryRowType.Statements}
-        highlightColor={color}
-      />
+      {setup.pretrialEnabled && (
+        <TimeSummaryRow
+          name="Pretrial"
+          time={timeRemaining.pretrial}
+          highlighted={highlightRow === TimeSummaryRowType.Pretrial}
+          highlightColor={color}
+        />
+      )}
+
+      {setup.statementsSeparate && (
+        <TimeSummaryRow
+          name="Opening Statement"
+          time={timeRemaining.open}
+          highlighted={highlightRow === TimeSummaryRowType.Open}
+          highlightColor={color}
+        />
+      )}
+      {!setup.statementsSeparate && (
+        <TimeSummaryRow
+          name="Statements"
+          time={timeRemaining.statements}
+          highlighted={highlightRow === TimeSummaryRowType.Statements}
+          highlightColor={color}
+        />
+      )}
       <TimeSummaryRow
         name="Direct Examinations"
         time={timeRemaining.direct}
@@ -58,6 +86,14 @@ const TimeSummary: FC<TimeSummaryProps> = ({
         highlighted={highlightRow === TimeSummaryRowType.Cross}
         highlightColor={color}
       />
+      {setup.statementsSeparate && (
+        <TimeSummaryRow
+          name="Closing Statement"
+          time={timeRemaining.close}
+          highlighted={highlightRow === TimeSummaryRowType.Close}
+          highlightColor={color}
+        />
+      )}
     </Card>
   );
 };

@@ -2,17 +2,18 @@ import {
   NativeStackNavigationOptions,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack/lib/typescript/src/types';
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import { Platform, View, StyleSheet, Alert } from 'react-native';
 
 import AllLossSelector from './AllLossSelector';
 import CreateTrialHeaderIcon from './CreateTrialHeaderIcon';
 import TrialNameInput from './TrialNameInput';
-import { RouteProps } from '../../App';
+import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
 import { TrialsContext } from '../../context/TrialsContext';
 import { createNewTrial } from '../../controllers/trial';
 import Button from '../Button';
+import { Settings, getSettings } from '../../controllers/settings';
 
 const ALL_LOSS_MINUTES = 180;
 
@@ -33,11 +34,16 @@ export const createTrialScreenOptions = ({
 });
 
 const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
+  const [settings, setSettings] = React.useState<Settings>(null);
   const [trials, setTrials] = useContext(TrialsContext);
   const [name, setName] = React.useState('');
   const [allLossTime, setAllLossTime] = React.useState(
     Date.now() + ALL_LOSS_MINUTES * 60 * 1000,
   );
+
+  useEffect(() => {
+    getSettings().then(setSettings);
+  }, []);
 
   const validateInputs = () => {
     if (name === '') {
@@ -64,14 +70,20 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
     });
   };
 
+  if (!settings) {
+    return null;
+  }
+
   return (
     <View style={styles.container}>
       <View>
         <TrialNameInput name={name} setName={setName} />
-        <AllLossSelector
-          allLossTime={allLossTime}
-          setAllLossTime={setAllLossTime}
-        />
+        {settings.setup.allLossEnabled && (
+          <AllLossSelector
+            allLossTime={allLossTime}
+            setAllLossTime={setAllLossTime}
+          />
+        )}
         <Button title="Create Trial" onPress={handleCreatePress} />
       </View>
     </View>

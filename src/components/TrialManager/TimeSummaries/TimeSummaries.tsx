@@ -14,9 +14,12 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial }) => {
   const { setup, times } = trial;
 
   const prosecutionTimeRemaining = {
+    pretrial: setup.pretrialTime - times.pretrial.pros,
     statements:
       setup.statementTime -
       (times.open.pros + times.close.pros + times.rebuttal),
+    open: setup.openTime - times.open.pros,
+    close: setup.closeTime - times.close.pros,
     direct:
       setup.directTime -
       (times.prosCic.witnessOne.direct +
@@ -30,7 +33,10 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial }) => {
   };
 
   const defenseTimeRemaining = {
+    pretrial: setup.pretrialTime - times.pretrial.def,
     statements: setup.statementTime - (times.open.def + times.close.def),
+    open: setup.openTime - times.open.def,
+    close: setup.closeTime - times.close.def,
     direct:
       setup.directTime -
       (times.defCic.witnessOne.direct +
@@ -44,19 +50,30 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial }) => {
   };
 
   const getHighlightedRow = (side: string) => {
-    const isOpenOrClose =
-      (trial.stage.includes('open') || trial.stage.includes('close')) &&
-      trial.stage.includes(side);
+    const isPretrial =
+      trial.stage.includes('pretrial') && trial.stage.includes(side);
+    const isOpen = trial.stage.includes('open') && trial.stage.includes(side);
+    const isClose = trial.stage.includes('close') && trial.stage.includes(side);
     const isRebuttal = trial.stage === 'rebuttal' && side === 'pros';
-    const statementsHighlighted = isOpenOrClose || isRebuttal;
 
+    const statementsHighlighted = isOpen || isClose || isRebuttal;
     const directHighlighted =
       trial.stage.includes(side) && trial.stage.includes('direct');
 
     const crossHighlighted =
       !trial.stage.includes(side) && trial.stage.includes('cross');
 
-    if (statementsHighlighted) {
+    if (isPretrial) {
+      return TimeSummaryRowType.Pretrial;
+    } else if (statementsHighlighted) {
+      if (setup.statementsSeparate) {
+        if (isOpen) {
+          return TimeSummaryRowType.Open;
+        } else if (isClose || isRebuttal) {
+          return TimeSummaryRowType.Close;
+        }
+      }
+
       return TimeSummaryRowType.Statements;
     } else if (directHighlighted) {
       return TimeSummaryRowType.Direct;
@@ -74,12 +91,14 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial }) => {
         color={colors.RED}
         highlightRow={getHighlightedRow('pros')}
         timeRemaining={prosecutionTimeRemaining}
+        setup={setup}
       />
       <TimeSummary
         title="Defense"
         color={colors.BLUE}
         highlightRow={getHighlightedRow('def')}
         timeRemaining={defenseTimeRemaining}
+        setup={setup}
       />
     </View>
   );
