@@ -1,14 +1,8 @@
-import { useTheme } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Switch,
-} from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 
 import AppearenceSettings from './AppearenceSettings';
+import SetupSettings from './SetupSettings';
 import { ThemeContext } from '../../context/ThemeContext';
 import {
   Settings as SettingsData,
@@ -20,9 +14,6 @@ import {
 import { TrialSetup } from '../../controllers/trial';
 import Card from '../Card';
 import Text from '../Text';
-import TimeEditor from '../TimeEditor/TimeEditor';
-import SetupSettings from './SetupSettings';
-import colors from '../../constants/colors';
 
 export const settingsScreenOptions = {
   title: 'Settings',
@@ -30,7 +21,7 @@ export const settingsScreenOptions = {
 };
 
 const Settings = () => {
-  const [theme, setTheme] = useContext(ThemeContext);
+  const [, setTheme] = useContext(ThemeContext);
   const [currentSettings, setCurrentSettings] = useState<SettingsData>(null);
 
   useEffect(() => {
@@ -57,20 +48,17 @@ const Settings = () => {
   return (
     <ScrollView>
       <Card>
-        <Text style={{ fontSize: 16, fontWeight: 'bold', padding: 10 }}>
-          Appearence
-        </Text>
+        <Text style={styles.sectionName}>Appearence</Text>
 
         <AppearenceSettings
           theme={currentSettings.theme}
           handleThemeChange={handleThemeChange}
         />
       </Card>
+
       <Card>
-        <Text style={{ fontSize: 16, fontWeight: 'bold', padding: 10 }}>
-          Trial Setup
-        </Text>
-        <Text style={{ padding: 10, paddingVertical: 5, color: 'gray' }}>
+        <Text style={styles.sectionName}>Trial Setup</Text>
+        <Text style={styles.sectionDescription}>
           Changes will only apply to new trials
         </Text>
 
@@ -83,6 +71,17 @@ const Settings = () => {
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  sectionName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    padding: 10,
+  },
+  sectionDescription: {
+    padding: 10,
+    paddingVertical: 5,
+    color: 'gray',
+  },
+});
 
 export default Settings;

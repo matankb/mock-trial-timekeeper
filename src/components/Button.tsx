@@ -5,7 +5,7 @@ import colors from '../constants/colors';
 
 interface ButtonProps {
   title: string;
-  style: ViewStyle;
+  style?: ViewStyle;
   onPress: () => void;
 }
 
