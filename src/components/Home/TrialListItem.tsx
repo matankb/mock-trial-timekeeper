@@ -20,6 +20,7 @@ const TrialListItem: FC<TrialListItemProps> = ({ title, divider, onPress }) => {
         ...styles.name,
         color: theme === Theme.LIGHT ? 'black' : 'white',
       }}
+      numberOfLines={1}
     >
       {title}
     </Text>
@@ -57,6 +58,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 16,
+    flex: 1,
     color: 'white',
   },
   divider: {
