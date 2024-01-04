@@ -20,12 +20,15 @@ const TimeEditorAndroidDialog: FC<TimeEditorAndroidDialogProps> = (props) => {
 
   return (
     <Dialog.Container visible={props.visible}>
-      <Dialog.Title>Enter a new {props.field} value</Dialog.Title>
+      <Dialog.Title style={styles.title}>
+        Enter a new {props.field} value
+      </Dialog.Title>
       <Dialog.Description>For {props.stage}</Dialog.Description>
       <Dialog.Input
         value={value}
         onChangeText={setValue}
         keyboardType="numeric"
+        style={styles.input}
       />
       <Dialog.Button label="Cancel" onPress={props.handleCancel} />
       <Dialog.Button label="Save" onPress={() => props.handleSave(value)} />
@@ -33,5 +36,12 @@ const TimeEditorAndroidDialog: FC<TimeEditorAndroidDialogProps> = (props) => {
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  title: {
+    color: 'black',
+  },
+  input: {
+    color: 'black',
+  },
+});
 export default TimeEditorAndroidDialog;

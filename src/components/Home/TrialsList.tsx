@@ -1,9 +1,10 @@
 import React, { FC } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import TrialListItem from './TrialListItem';
 import { Trial } from '../../controllers/trial';
 import Card from '../Card';
+import Text from '../Text';
 
 interface TrialsListProps {
   trials: Trial[];

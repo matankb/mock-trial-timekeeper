@@ -9,11 +9,14 @@ import AllLossSelector from './AllLossSelector';
 import CreateTrialHeaderIcon from './CreateTrialHeaderIcon';
 import TrialNameInput from './TrialNameInput';
 import { RouteProps } from '../../Navigation';
+import colors from '../../constants/colors';
 import { ScreenName } from '../../constants/screen-names';
 import { TrialsContext } from '../../context/TrialsContext';
 import { Settings, getSettings } from '../../controllers/settings';
 import { createNewTrial } from '../../controllers/trial';
 import Button from '../Button';
+import { Theme } from '../../context/ThemeContext';
+import useTheme from '../../hooks/useTheme';
 
 const ALL_LOSS_MINUTES = 180;
 
@@ -33,6 +36,8 @@ export const createTrialScreenOptions = ({
 });
 
 const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
+  const theme = useTheme();
+
   const [settings, setSettings] = React.useState<Settings>(null);
   const [trials, setTrials] = useContext(TrialsContext);
   const [name, setName] = React.useState('');
@@ -74,7 +79,14 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        ...styles.container,
+        ...(theme === Theme.DARK && {
+          backgroundColor: colors.BACKGROUND_GRAY,
+        }),
+      }}
+    >
       <View>
         <TrialNameInput name={name} setName={setName} />
         {settings.setup.allLossEnabled && (

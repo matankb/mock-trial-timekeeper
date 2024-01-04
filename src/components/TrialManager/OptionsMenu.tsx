@@ -17,6 +17,8 @@ import {
 } from 'react-native-popup-menu';
 
 import colors from '../../constants/colors';
+import { Theme } from '../../context/ThemeContext';
+import useTheme from '../../hooks/useTheme';
 
 interface OptionsMenuProps {
   trialName: string;
@@ -130,9 +132,13 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
 
   const androidRenameDialog = (
     <Dialog.Container visible={androidRenameDialogShown}>
-      <Dialog.Title>Rename</Dialog.Title>
+      <Dialog.Title style={{ color: 'black' }}>Rename</Dialog.Title>
       <Dialog.Description>Enter a new name for {trialName}</Dialog.Description>
-      <Dialog.Input value={androidNewName} onChangeText={setAndroidNewName} />
+      <Dialog.Input
+        value={androidNewName}
+        onChangeText={setAndroidNewName}
+        style={styles.androidInput}
+      />
       <Dialog.Button
         label="Cancel"
         onPress={() => {
@@ -169,6 +175,13 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 16,
+  },
+  androidTitle: {
+    // in dark mode, the title and background are both white by default
+    color: 'black',
+  },
+  androidInput: {
+    color: 'black',
   },
 });
 
