@@ -36,6 +36,7 @@ import TrialManager, {
 import { ScreenName } from './constants/screen-names';
 import { Theme } from './context/ThemeContext';
 import useTheme from './hooks/useTheme';
+import { StatusBar } from 'expo-status-bar';
 
 const Stack = createNativeStackNavigator();
 
@@ -55,9 +56,11 @@ export type RouteProps = {
 const Navigation = () => {
   const theme = useTheme();
   const navigationTheme = theme === Theme.DARK ? DarkTheme : DefaultTheme;
+  const statusBarTheme = theme === Theme.DARK ? 'light' : 'dark';
 
   return (
     <NavigationContainer theme={navigationTheme}>
+      <StatusBar style={statusBarTheme} />
       <Stack.Navigator initialRouteName={ScreenName.HOME}>
         <Stack.Screen
           name={ScreenName.HOME}
