@@ -18,6 +18,7 @@ type HomeProps = NativeStackScreenProps<RouteProps, ScreenName.HOME>;
 
 export const homeScreenOptions = (): NativeStackNavigationOptions => ({
   title: 'Mock Trial Timekeeper',
+  headerTitleAlign: 'center',
 });
 
 const MAX_DISPLAYED_TRIALS = 9;

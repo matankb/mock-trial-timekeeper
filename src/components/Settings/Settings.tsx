@@ -46,7 +46,7 @@ const Settings = () => {
   }
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={styles.container}>
       <Card>
         <Text style={styles.sectionName}>Appearence</Text>
 
@@ -72,6 +72,9 @@ const Settings = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 10,
+  },
   sectionName: {
     fontSize: 16,
     fontWeight: 'bold',

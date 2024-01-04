@@ -11,9 +11,9 @@ import TrialNameInput from './TrialNameInput';
 import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
 import { TrialsContext } from '../../context/TrialsContext';
+import { Settings, getSettings } from '../../controllers/settings';
 import { createNewTrial } from '../../controllers/trial';
 import Button from '../Button';
-import { Settings, getSettings } from '../../controllers/settings';
 
 const ALL_LOSS_MINUTES = 180;
 
@@ -25,12 +25,11 @@ type CreateTrialProps = NativeStackScreenProps<
 export const createTrialScreenOptions = ({
   navigation,
 }): NativeStackNavigationOptions => ({
-  presentation: 'modal',
   title: 'Create Trial',
-  headerLeft:
-    Platform.OS === 'ios'
-      ? () => <CreateTrialHeaderIcon navigation={navigation} />
-      : () => <View />,
+  ...(Platform.OS === 'ios' && {
+    presentation: 'modal',
+    headerLeft: () => <CreateTrialHeaderIcon navigation={navigation} />,
+  }),
 });
 
 const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {

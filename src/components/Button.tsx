@@ -26,7 +26,9 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.BLUE,
     padding: 15,
-    marginHorizontal: 20,
+    // marginHorizontal: 20,
+    width: '90%',
+    alignSelf: 'center',
     marginTop: 20,
     borderRadius: 10,
   },

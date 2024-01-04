@@ -3,7 +3,13 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
-import { StyleSheet, ScrollView, SafeAreaView, Button } from 'react-native';
+import {
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+  Button,
+  Platform,
+} from 'react-native';
 
 import { TimeEditHandler } from './TimeEditor';
 import TimesBreakdownSection from './TimesBreakdownSection';
@@ -15,6 +21,7 @@ import {
   calculateNewTrialTime,
 } from '../../controllers/trial';
 import { piSideName } from '../../utils';
+import LinkButton from '../LinkButton';
 
 type TimeBreakdownProps = NativeStackScreenProps<
   RouteProps,
@@ -29,9 +36,12 @@ export interface TimeBreakdownRouteProps {
 export const timesBreakdownScreenOptions = ({
   route,
 }): NativeStackNavigationOptions => ({
-  title: `${route.params.trialName} Individual Times`,
+  title:
+    Platform.OS === 'ios'
+      ? `${route.params.trialName} Individual Times`
+      : 'Individual Times',
   headerBackTitleVisible: false,
-  headerRight: () => <Button title="Edit" onPress={() => {}} />,
+  headerRight: () => <LinkButton title="Edit" onPress={() => {}} />,
 });
 
 const TimeBreakdown: React.FC<TimeBreakdownProps> = ({ route, navigation }) => {
@@ -44,9 +54,9 @@ const TimeBreakdown: React.FC<TimeBreakdownProps> = ({ route, navigation }) => {
     navigation.setOptions({
       headerRight: () =>
         editing ? (
-          <Button title="Done" onPress={() => setEditing(false)} />
+          <LinkButton title="Done" onPress={() => setEditing(false)} />
         ) : (
-          <Button title="Edit" onPress={() => setEditing(true)} />
+          <LinkButton title="Edit" onPress={() => setEditing(true)} />
         ),
     });
   }, [editing]);
@@ -208,6 +218,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    paddingBottom: 10,
   },
 });
 

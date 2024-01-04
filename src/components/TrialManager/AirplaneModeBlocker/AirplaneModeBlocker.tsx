@@ -14,6 +14,7 @@ import { AirplaneBlockerContext } from '../../../context/AirplaneBlockerContext'
 import { Theme } from '../../../context/ThemeContext';
 import useTheme from '../../../hooks/useTheme';
 import Button from '../../Button';
+import LinkButton from '../../LinkButton';
 import Text from '../../Text';
 
 interface AirplaneModeBlockerProps {
@@ -85,7 +86,7 @@ const AirplaneModeBlocker: FC<AirplaneModeBlockerProps> = ({ children }) => {
           onPress={() => checkNetworkConnected()}
         />
       </View>
-      <UIButton title="Continue Anyways" onPress={handleOverridePress} />
+      <LinkButton title="Continue Anyways" onPress={handleOverridePress} />
     </View>
   );
 };
