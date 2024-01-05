@@ -190,11 +190,15 @@ export async function createNewTrial(
 
 // TODO: there *must* be something better than this, jeez
 
+type DeepPartial<T> = {
+  [P in keyof T]?: DeepPartial<T[P]>;
+};
+
 const getTrialTimeChangeObject = (
   trial: Trial,
   newValue: number,
   stage: string,
-): any => {
+): DeepPartial<TrialTimes> => {
   switch (stage) {
     case 'pretrial.pros':
       return { pretrial: { pros: newValue } };
@@ -208,16 +212,14 @@ const getTrialTimeChangeObject = (
     case 'cic.pros.one.direct':
       return {
         prosCic: {
-          one: { direct: newValue },
+          witnessOne: { direct: newValue },
         },
       };
     case 'cic.pros.one.cross':
       return {
-        cic: {
-          pros: {
-            one: {
-              cross: newValue,
-            },
+        prosCic: {
+          witnessOne: {
+            cross: newValue,
           },
         },
       };
@@ -249,13 +251,13 @@ const getTrialTimeChangeObject = (
     case 'cic.def.one.direct':
       return {
         defCic: {
-          one: { direct: newValue },
+          witnessOne: { direct: newValue },
         },
       };
     case 'cic.def.one.cross':
       return {
         defCic: {
-          one: { cross: newValue },
+          witnessOne: { cross: newValue },
         },
       };
     case 'cic.def.two.direct':
