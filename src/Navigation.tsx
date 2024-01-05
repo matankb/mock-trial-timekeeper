@@ -4,6 +4,7 @@ import {
   NavigationContainer,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 
 import AMTAPolicy, {
@@ -36,7 +37,6 @@ import TrialManager, {
 import { ScreenName } from './constants/screen-names';
 import { Theme } from './context/ThemeContext';
 import useTheme from './hooks/useTheme';
-import { StatusBar } from 'expo-status-bar';
 
 const Stack = createNativeStackNavigator();
 

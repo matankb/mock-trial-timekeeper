@@ -8,5 +8,5 @@ export enum ScreenName {
   AMTA_POLICY = 'amta-policy',
   CREATE_TRIAL = 'create-trial',
   SYNC_TRIAL = 'sync-trial',
-  SETTINGS = 'settings'
+  SETTINGS = 'settings',
 }

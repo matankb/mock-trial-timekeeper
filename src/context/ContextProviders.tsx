@@ -1,6 +1,6 @@
 import * as SplashScreen from 'expo-splash-screen';
 import React, { FC, useEffect, useState } from 'react';
-import { Appearance, useColorScheme } from 'react-native';
+import { Appearance } from 'react-native';
 
 import {
   AirplaneBlockerContext,
@@ -17,6 +17,8 @@ import { Trial, getTrialsFromStorage } from '../controllers/trial';
 interface ContextProviderProps {
   children: React.ReactNode;
 }
+
+// TODO: try to figure out a way to move the initializers to their own hook files
 
 const ContextProviders: FC<ContextProviderProps> = ({ children }) => {
   const [trials, setTrials] = useState<Trial[]>(null);

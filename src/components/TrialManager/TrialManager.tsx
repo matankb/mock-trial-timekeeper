@@ -62,35 +62,6 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
     };
   }, [counting, trial]);
 
-  // React.useEffect(
-  //   () =>
-  //     props.navigation.addListener("beforeRemove", (e) => {
-  //       if (!counting) {
-  //         return;
-  //       }
-
-  //       // Prevent default behavior of leaving the screen
-  //       e.preventDefault();
-
-  //       // Prompt the user before leaving the screen
-  //       Alert.alert(
-  //         "Pause timer?",
-  //         "The timer is currently running. Are you sure you want to go back and pause the timer?",
-  //         [
-  //           { text: "Don't leave", style: "cancel", onPress: () => {} },
-  //           {
-  //             text: "Discard",
-  //             style: "destructive",
-  //             // If the user confirmed, then we dispatch the action we blocked earlier
-  //             // This will continue the action that had triggered the removal of the screen
-  //             onPress: () => navigation.dispatch(e.data.action),
-  //           },
-  //         ]
-  //       );
-  //     }),
-  //   [navigation, hasUnsavedChanges]
-  // );
-
   useEffect(() => {
     if (!trial) {
       return;

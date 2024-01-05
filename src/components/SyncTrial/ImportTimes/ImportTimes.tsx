@@ -22,14 +22,12 @@ const ImportTimes: FC<ImportTimesProps> = ({ trialId, handleClose }) => {
   const [trial, setTrial] = useTrial(trialId);
 
   const [importedData, setImportedData] =
-    useState<SyncTrialTransferredData>(trial);
+    useState<SyncTrialTransferredData>(null);
 
   const handleScan = (data: string) => {
     setImportedData(JSON.parse(data));
   };
 
-  // stages is an array of stage names to import
-  // TODO: this might be too generic?
   const handleImportConfirm = async (mode: ImportMode, stage: string) => {
     if (!importedData) {
       return;

@@ -3,7 +3,7 @@ import React, { FC, useContext } from 'react';
 import { ScrollView } from 'react-native';
 
 import TrialsList from './TrialsList';
-import { RouteProps } from '../../App';
+import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
 import { TrialsContext } from '../../context/TrialsContext';
 import { Trial } from '../../controllers/trial';

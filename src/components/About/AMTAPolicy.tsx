@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import useTheme from '../../hooks/useTheme';
+
 import { Theme } from '../../context/ThemeContext';
+import useTheme from '../../hooks/useTheme';
 
 export const amtaPolicyScreenOptions = {
   title: 'AMTA Policy',

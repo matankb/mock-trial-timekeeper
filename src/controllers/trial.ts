@@ -194,6 +194,7 @@ type DeepPartial<T> = {
   [P in keyof T]?: DeepPartial<T[P]>;
 };
 
+// TODO: can the first arg be removed?
 const getTrialTimeChangeObject = (
   trial: Trial,
   newValue: number,

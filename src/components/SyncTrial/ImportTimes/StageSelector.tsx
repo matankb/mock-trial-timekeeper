@@ -13,8 +13,8 @@ import { View, StyleSheet, Pressable } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { getStageName } from '../../../constants/trial-stages';
-import Text from '../../Text';
 import LinkButton from '../../LinkButton';
+import Text from '../../Text';
 
 interface StageSelectorProps {
   stage: string;

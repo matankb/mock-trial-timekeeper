@@ -90,7 +90,6 @@ const TimeEditor: FC<TimeEditorProps> = ({ value, name, onChange }) => {
       stage={name}
       value={minutes}
       handleSave={(newMinutes) => {
-        console.log('saving new minutes', newMinutes);
         setAndroidMinutesDialogShown(false);
         handleMinutesSave(newMinutes);
       }}

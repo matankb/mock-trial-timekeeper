@@ -2,7 +2,7 @@ import {
   NativeStackNavigationOptions,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { FC, useContext } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import AirplaneModeWarning from './AirplaneModeWarning';

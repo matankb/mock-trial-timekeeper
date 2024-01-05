@@ -1,7 +1,7 @@
+import { FontAwesome } from '@expo/vector-icons';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import React, { FC, useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
 
 import colors from '../../../constants/colors';
 import Text from '../../Text';
