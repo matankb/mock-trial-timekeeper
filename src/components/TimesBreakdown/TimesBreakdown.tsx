@@ -22,6 +22,7 @@ import {
 } from '../../controllers/trial';
 import { piSideName } from '../../utils';
 import LinkButton from '../LinkButton';
+import useTrial from '../../hooks/useTrial';
 
 type TimeBreakdownProps = NativeStackScreenProps<
   RouteProps,
@@ -45,10 +46,8 @@ export const timesBreakdownScreenOptions = ({
 });
 
 const TimeBreakdown: React.FC<TimeBreakdownProps> = ({ route, navigation }) => {
-  const [trials, setTrials] = React.useContext(TrialsContext);
+  const [trial, setTrial] = useTrial(route.params.trialId);
   const [editing, setEditing] = React.useState(false);
-
-  const trial = trials.find((trial) => trial.id === route.params.trialId);
 
   useEffect(() => {
     navigation.setOptions({
@@ -70,17 +69,7 @@ const TimeBreakdown: React.FC<TimeBreakdownProps> = ({ route, navigation }) => {
   const createEditHandler = (stage: string): TimeEditHandler => {
     return (newTime: number) => {
       const newTrial = calculateNewTrialTime(trial, newTime, stage);
-
-      // TODO: use reducer here instead of this mess
-      const newTrials = trials.map((t) => {
-        if (t.id === newTrial.id) {
-          return newTrial;
-        }
-        return trial;
-      });
-
-      setTrials(newTrials);
-      setTrialToStorage(newTrial);
+      setTrial(newTrial);
     };
   };
 

@@ -18,12 +18,11 @@ import {
 } from '../../constants/trial-stages';
 import { TrialsContext } from '../../context/TrialsContext';
 import {
-  Trial,
   deleteTrial,
-  setTrialToStorage,
   getStageTime,
   calculateNewTrialTime,
 } from '../../controllers/trial';
+import useTrial from '../../hooks/useTrial';
 import Link from '../Link';
 
 type TrialManagerProps = NativeStackScreenProps<
@@ -42,15 +41,13 @@ export const trialManagerScreenOptions = ({ route }: TrialManagerProps) => ({
 });
 
 const TrialManager: FC<TrialManagerProps> = (props) => {
+  const [trial, setTrial] = useTrial(props.route.params.trialId);
+
   const intervalId = React.useRef<NodeJS.Timeout>();
   const [counting, setCounting] = useState(null);
   const startedCounting = React.useRef<number>(null);
   const timeBeforeCounting = React.useRef<number>(null);
   const [allTrials, setAllTrials] = useContext(TrialsContext);
-
-  const trial = allTrials.find(
-    (trial) => trial.id === props.route.params.trialId,
-  );
 
   useKeepAwake();
 
@@ -113,19 +110,6 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
     });
   }, [trial]);
 
-  const updateTrial = (newTrialState: Partial<Trial>) => {
-    // TODO: def use reducers here
-    const newTrial = merge(trial, newTrialState);
-    const newTrials = allTrials.map((trial) => {
-      if (trial.id === newTrial.id) {
-        return newTrial;
-      }
-      return trial;
-    });
-    setAllTrials(newTrials);
-    setTrialToStorage(newTrial);
-  };
-
   const startTimer = () => {
     startedCounting.current = Date.now();
     timeBeforeCounting.current = getStageTime(trial, trial.stage);
@@ -140,14 +124,14 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
 
   const nextStage = () => {
     pauseTimer();
-    updateTrial({
+    setTrial({
       stage: getNextStage(trial),
     });
   };
 
   const prevStage = () => {
     pauseTimer();
-    updateTrial({
+    setTrial({
       stage: getPrevStage(trial),
     });
   };
@@ -165,7 +149,7 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
     const seconds = Math.floor((Date.now() - startedCounting.current) / 1000);
     const timeToSet = timeBeforeCounting.current + seconds;
 
-    updateTrial(calculateNewTrialTime(trial, timeToSet, trial.stage));
+    setTrial(calculateNewTrialTime(trial, timeToSet, trial.stage));
   };
 
   // when this is called, the user has already confirmed
@@ -179,16 +163,8 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
   };
 
   const handleRename = (name: string) => {
-    setAllTrials(
-      allTrials.map((trial) => {
-        if (trial.id === props.route.params.trialId) {
-          return { ...trial, name };
-        }
-        return trial;
-      }),
-    );
     props.navigation.setOptions({ title: name });
-    updateTrial({ name });
+    setTrial({ name });
   };
 
   if (!trial) {

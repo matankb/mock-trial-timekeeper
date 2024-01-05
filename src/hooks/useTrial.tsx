@@ -20,10 +20,10 @@ export default function useTrial(id: string): UseTrial {
     const newTrialData = merge({}, trial, newTrial);
 
     const newTrials = allTrials.map((t) => {
-      if (t.id === newTrial.id) {
+      if (t.id === id) {
         return newTrialData;
       }
-      return trial;
+      return t;
     });
 
     setAllTrials(newTrials);

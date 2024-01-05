@@ -25,7 +25,6 @@ export const stages = [
 
 // get the stages that are in use for this trial
 export function getTrialStages(trial: Trial) {
-  console.log(trial.setup.pretrialEnabled);
   if (trial.setup.pretrialEnabled) {
     return stages;
   }
@@ -35,7 +34,6 @@ export function getTrialStages(trial: Trial) {
 
 export const getNextStage = (trial: Trial) => {
   const trialStages = getTrialStages(trial);
-  console.log(trialStages);
   const index = trialStages.indexOf(trial.stage);
   if (index === trialStages.length - 1) {
     return trialStages[0];
