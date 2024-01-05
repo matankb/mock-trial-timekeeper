@@ -11,12 +11,12 @@ import TrialNameInput from './TrialNameInput';
 import { RouteProps } from '../../Navigation';
 import colors from '../../constants/colors';
 import { ScreenName } from '../../constants/screen-names';
+import { Theme } from '../../context/ThemeContext';
 import { TrialsContext } from '../../context/TrialsContext';
 import { Settings, getSettings } from '../../controllers/settings';
 import { createNewTrial } from '../../controllers/trial';
-import Button from '../Button';
-import { Theme } from '../../context/ThemeContext';
 import useTheme from '../../hooks/useTheme';
+import Button from '../Button';
 
 const ALL_LOSS_MINUTES = 180;
 

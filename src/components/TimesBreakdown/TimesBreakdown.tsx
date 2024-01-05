@@ -3,26 +3,16 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
-import {
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
-  Button,
-  Platform,
-} from 'react-native';
+import { StyleSheet, ScrollView, SafeAreaView, Platform } from 'react-native';
 
-import { TimeEditHandler } from './TimeEditor';
 import TimesBreakdownSection from './TimesBreakdownSection';
-import { RouteProps } from '../../App';
+import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
-import { TrialsContext } from '../../context/TrialsContext';
-import {
-  setTrialToStorage,
-  calculateNewTrialTime,
-} from '../../controllers/trial';
+import { calculateNewTrialTime } from '../../controllers/trial';
+import useTrial from '../../hooks/useTrial';
 import { piSideName } from '../../utils';
 import LinkButton from '../LinkButton';
-import useTrial from '../../hooks/useTrial';
+import { TimeEditHandler } from '../TimeEditor/TimeEditor';
 
 type TimeBreakdownProps = NativeStackScreenProps<
   RouteProps,

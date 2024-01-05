@@ -1,12 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import React, { FC } from 'react';
-import {
-  View,
-  StyleSheet,
-  Pressable,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import Card from './Card';
 import { Theme } from '../context/ThemeContext';

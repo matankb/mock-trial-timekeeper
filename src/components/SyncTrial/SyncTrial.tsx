@@ -30,16 +30,22 @@ export enum SyncTrialMode {
   Export,
 }
 
-const SyncTrial: FC<SyncTrialProps> = ({ route }) => {
+const SyncTrial: FC<SyncTrialProps> = ({ navigation, route }) => {
   const { trialId } = route.params;
 
   const [mode, setMode] = useState(SyncTrialMode.Import);
+
+  const handleClose = () => {
+    navigation.goBack();
+  };
 
   return (
     <BottomSheetModalProvider>
       <ScrollView>
         <SyncTrialTabs mode={mode} setMode={setMode} />
-        {mode === SyncTrialMode.Import && <ImportTimes trialId={trialId} />}
+        {mode === SyncTrialMode.Import && (
+          <ImportTimes trialId={trialId} handleClose={handleClose} />
+        )}
         {mode === SyncTrialMode.Export && <ExportTimes trialId={trialId} />}
       </ScrollView>
     </BottomSheetModalProvider>

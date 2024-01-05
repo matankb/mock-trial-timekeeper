@@ -1,12 +1,5 @@
 import React, { FC } from 'react';
-import {
-  View,
-  StyleSheet,
-  StyleProp,
-  ViewStyle,
-  Pressable,
-  Text,
-} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import SyncTrialTab from './SyncTrialTab';
 import { SyncTrialMode } from '../SyncTrial';

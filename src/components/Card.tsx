@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ViewStyle } from 'react-native';
+import { StyleSheet, View, ViewStyle } from 'react-native';
 
 import colors from '../constants/colors';
 import { Theme } from '../context/ThemeContext';
@@ -15,19 +15,21 @@ const Card = (props: CardProps) => {
 
   return (
     <View
-      style={{
-        ...styles.container,
-        ...props.style,
-        backgroundColor:
-          theme === Theme.LIGHT ? 'white' : colors.BACKGROUND_GRAY,
-      }}
+      style={[
+        styles.container,
+        props.style,
+        {
+          backgroundColor:
+            theme === Theme.LIGHT ? 'white' : colors.BACKGROUND_GRAY,
+        },
+      ]}
     >
       {props.children}
     </View>
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     width: '90%',
     borderRadius: 10,
@@ -35,6 +37,6 @@ const styles = {
     marginTop: 10,
     alignSelf: 'center',
   },
-};
+});
 
 export default Card;

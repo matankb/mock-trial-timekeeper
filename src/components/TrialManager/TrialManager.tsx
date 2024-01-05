@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useKeepAwake } from 'expo-keep-awake';
 import React, { FC, useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import merge from 'ts-deepmerge';
 
 import AirplaneModeBlocker from './AirplaneModeBlocker/AirplaneModeBlocker';
 import AllLoss from './AllLoss';

@@ -12,7 +12,7 @@ const ALERT_CUTOFF_MINUTES = 20;
 
 const AllLoss: FC<AllLossProps> = ({ allLossTime }) => {
   const interval = React.useRef<NodeJS.Timeout>();
-  const [refresh, setRefresh] = React.useState(0);
+  const [, setRefresh] = React.useState(0);
 
   const timeRemaining = Math.floor((allLossTime - Date.now()) / 1000);
   const allLossPassed = timeRemaining <= 0;

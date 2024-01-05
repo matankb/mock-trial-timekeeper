@@ -1,14 +1,7 @@
-import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Portal } from '@gorhom/portal';
 import { Picker } from '@react-native-picker/picker';
-import React, {
-  FC,
-  useCallback,
-  useMemo,
-  useRef,
-  useEffect,
-  useState,
-} from 'react';
+import React, { FC, useRef, useEffect, useState } from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 

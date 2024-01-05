@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Dialog from 'react-native-dialog';
 
 interface TimeEditorAndroidDialogProps {

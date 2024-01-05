@@ -3,7 +3,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { FC } from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { RouteProps } from '../../App';
+import { RouteProps } from '../../Navigation';
 import colors from '../../constants/colors';
 import { ScreenName } from '../../constants/screen-names';
 

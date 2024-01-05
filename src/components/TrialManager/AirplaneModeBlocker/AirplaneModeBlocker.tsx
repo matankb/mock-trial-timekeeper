@@ -1,13 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { getNetworkStateAsync, isAirplaneModeEnabledAsync } from 'expo-network';
 import React, { FC, useContext, useEffect, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  Alert,
-  Button as UIButton,
-  Platform,
-} from 'react-native';
+import { View, StyleSheet, Alert, Platform } from 'react-native';
 
 import overrideWarningText from './override-warning';
 import { AirplaneBlockerContext } from '../../../context/AirplaneBlockerContext';
