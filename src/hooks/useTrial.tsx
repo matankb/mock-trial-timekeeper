@@ -1,5 +1,3 @@
-// TODO: use this hook throughout
-
 import { useContext, useMemo } from 'react';
 import merge from 'ts-deepmerge';
 

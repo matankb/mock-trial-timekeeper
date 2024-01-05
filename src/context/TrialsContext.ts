@@ -1,13 +1,19 @@
-import { createContext } from 'react';
+import { createContext, useEffect, useState } from 'react';
 
 import { Trial, getTrialsFromStorage } from '../controllers/trial';
 
-export const TrialsContext =
-  createContext<[Trial[], React.Dispatch<Trial[]>]>(null);
+type TrialsContextType = ReturnType<typeof useState<Trial[]>>;
 
-export async function initializeTrialsContext(
-  setTrials: React.Dispatch<Trial[]>,
-) {
-  const trials = await getTrialsFromStorage();
-  setTrials(trials);
-}
+export const TrialsContext = createContext<TrialsContextType>(null);
+
+export const useTrialsContextInitializer = (): TrialsContextType => {
+  const [trials, setTrials] = useState<Trial[]>();
+
+  useEffect(() => {
+    getTrialsFromStorage().then((trials) => {
+      setTrials(trials);
+    });
+  }, []);
+
+  return [trials, setTrials];
+};

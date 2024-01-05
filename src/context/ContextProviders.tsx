@@ -1,62 +1,25 @@
 import * as SplashScreen from 'expo-splash-screen';
-import React, { FC, useEffect, useState } from 'react';
-import { Appearance } from 'react-native';
+import React, { FC, useEffect } from 'react';
 
 import {
   AirplaneBlockerContext,
-  AirplaneBlockerState,
+  useAirplaneBlockerContextInitializer,
 } from './AirplaneBlockerContext';
-import { Theme, ThemeContext } from './ThemeContext';
-import { TrialsContext } from './TrialsContext';
-import {
-  getSettings,
-  settingsThemeToThemeContextTheme,
-} from '../controllers/settings';
-import { Trial, getTrialsFromStorage } from '../controllers/trial';
+import { ThemeContext, useThemeContextInitializer } from './ThemeContext';
+import { TrialsContext, useTrialsContextInitializer } from './TrialsContext';
 
 interface ContextProviderProps {
   children: React.ReactNode;
 }
 
-// TODO: try to figure out a way to move the initializers to their own hook files
-
 const ContextProviders: FC<ContextProviderProps> = ({ children }) => {
-  const [trials, setTrials] = useState<Trial[]>(null);
-  const [theme, setTheme] = useState<Theme>(null);
+  const [trials, setTrials] = useTrialsContextInitializer();
+  const [theme, setTheme] = useThemeContextInitializer();
   const [airplaneBlockerState, setAirplaneBlockerState] =
-    useState<AirplaneBlockerState>({
-      hide: false,
-    });
-
-  // Trials
+    useAirplaneBlockerContextInitializer();
 
   useEffect(() => {
-    if (!trials) {
-      getTrialsFromStorage().then((trials) => {
-        setTrials(trials);
-        SplashScreen.hideAsync();
-      });
-    }
-  }, [trials]);
-
-  // Theme
-
-  useEffect(() => {
-    getSettings().then((settings) => {
-      setTheme(settingsThemeToThemeContextTheme(settings.theme));
-    });
-
-    Appearance.addChangeListener(() => {
-      getSettings().then((settings) => {
-        setTheme(settingsThemeToThemeContextTheme(settings.theme));
-      });
-    });
-  }, []);
-
-  // Splash Screen
-
-  useEffect(() => {
-    if (theme !== null && trials !== null) {
+    if (theme !== null || trials !== null) {
       SplashScreen.hideAsync();
     }
   }, [theme, trials]);
