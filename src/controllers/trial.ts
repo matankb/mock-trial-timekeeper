@@ -196,7 +196,6 @@ type DeepPartial<T> = {
 
 // TODO: can the first arg be removed?
 const getTrialTimeChangeObject = (
-  trial: Trial,
   newValue: number,
   stage: string,
 ): DeepPartial<TrialTimes> => {
@@ -351,7 +350,7 @@ export function calculateNewTrialTime(
   newTime: number,
   stage: string,
 ): Trial {
-  const change = getTrialTimeChangeObject(trial, newTime, stage);
+  const change = getTrialTimeChangeObject(newTime, stage);
   const newTrial = merge(trial, { times: change }) as Trial;
   return newTrial;
 }
