@@ -17,8 +17,6 @@ import {
 } from 'react-native-popup-menu';
 
 import colors from '../../constants/colors';
-import { Theme } from '../../context/ThemeContext';
-import useTheme from '../../hooks/useTheme';
 
 interface OptionsMenuProps {
   trialName: string;
@@ -113,6 +111,13 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
           },
         }}
       >
+        <MenuOption
+          customStyles={{ optionWrapper: styles.optionWrapper }}
+          onSelect={() => handleSync()}
+        >
+          <Text style={styles.optionText}>Sync</Text>
+        </MenuOption>
+
         <MenuOption
           customStyles={{ optionWrapper: styles.optionWrapper }}
           onSelect={() => setAndroidRenameDialogShown(true)}

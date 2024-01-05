@@ -24,7 +24,7 @@ export const stages = [
 ];
 
 // get the stages that are in use for this trial
-function getTrialStages(trial: Trial) {
+export function getTrialStages(trial: Trial) {
   console.log(trial.setup.pretrialEnabled);
   if (trial.setup.pretrialEnabled) {
     return stages;

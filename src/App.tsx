@@ -1,6 +1,8 @@
+import { PortalProvider } from '@gorhom/portal';
 import { registerRootComponent } from 'expo';
 import * as SplashScreen from 'expo-splash-screen';
 import { FC } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { MenuProvider } from 'react-native-popup-menu';
 
 import Navigation from './Navigation';
@@ -13,9 +15,13 @@ const App: FC = () => {
   return (
     <ErrorBoundary>
       <MenuProvider>
-        <ContextProviders>
-          <Navigation />
-        </ContextProviders>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <ContextProviders>
+            <PortalProvider>
+              <Navigation />
+            </PortalProvider>
+          </ContextProviders>
+        </GestureHandlerRootView>
       </MenuProvider>
     </ErrorBoundary>
   );
