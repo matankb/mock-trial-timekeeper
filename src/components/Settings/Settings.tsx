@@ -7,6 +7,7 @@ import { ThemeContext } from '../../context/ThemeContext';
 import {
   Settings as SettingsData,
   SettingsTheme,
+  defaultSettings,
   getSettings,
   setSettings,
   settingsThemeToThemeContextTheme,
@@ -14,6 +15,7 @@ import {
 import { TrialSetup } from '../../controllers/trial';
 import Card from '../Card';
 import Text from '../Text';
+import LinkButton from '../LinkButton';
 
 export const settingsScreenOptions = {
   title: 'Settings',
@@ -41,6 +43,10 @@ const Settings = () => {
     setCurrentSettings({ ...currentSettings, setup });
   };
 
+  const handleSetupReset = () => {
+    handleSetupChange(defaultSettings.setup);
+  };
+
   if (!currentSettings) {
     return <View />;
   }
@@ -57,10 +63,15 @@ const Settings = () => {
       </Card>
 
       <Card>
-        <Text style={styles.sectionName}>Trial Setup</Text>
-        <Text style={styles.sectionDescription}>
-          Changes will only apply to new trials
-        </Text>
+        <View style={styles.sectionHeader}>
+          <View>
+            <Text style={styles.sectionName}>Trial Setup</Text>
+            <Text style={styles.sectionDescription}>
+              Changes will only apply to new trials
+            </Text>
+          </View>
+          <LinkButton title="Reset" onPress={handleSetupReset} />
+        </View>
 
         <SetupSettings
           setup={currentSettings.setup}
@@ -84,6 +95,11 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingVertical: 5,
     color: 'gray',
+  },
+  sectionHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 
