@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import SyncTrialTab from './SyncTrialTab';
-import { SyncTrialMode } from '../SyncTrial';
+import { SyncTrialMode } from '../SyncTrialTypes';
 
 interface SyncTrialTabsProps {
   mode: SyncTrialMode;
@@ -30,8 +30,6 @@ const styles = StyleSheet.create({
   tabs: {
     display: 'flex',
     flexDirection: 'row',
-    borderBottomColor: 'lightgray',
-    borderBottomWidth: 1,
     marginBottom: 10,
     backgroundColor: 'white',
     marginTop: 0,

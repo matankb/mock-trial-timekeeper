@@ -12,26 +12,21 @@ import SyncTrialTabs from './SyncTrialTabs/SyncTrialTabs';
 import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
 import { Trial } from '../../controllers/trial';
+import { SyncTrialMode } from './SyncTrialTypes';
 
 type SyncTrialProps = NativeStackScreenProps<RouteProps, ScreenName.SYNC_TRIAL>;
 
 export interface SyncTrialRouteProps {
   trialId: string;
+  counting: boolean; // whether the timer is currently counting
 }
 
 export const syncTrialScreenOptions: NativeStackNavigationOptions = {
   title: 'Sync Times',
 };
 
-export type SyncTrialTransferredData = Pick<Trial, 'times' | 'name'>;
-
-export enum SyncTrialMode {
-  Import,
-  Export,
-}
-
 const SyncTrial: FC<SyncTrialProps> = ({ navigation, route }) => {
-  const { trialId } = route.params;
+  const { trialId, counting } = route.params;
 
   const [mode, setMode] = useState(SyncTrialMode.Import);
 
@@ -44,7 +39,11 @@ const SyncTrial: FC<SyncTrialProps> = ({ navigation, route }) => {
       <ScrollView>
         <SyncTrialTabs mode={mode} setMode={setMode} />
         {mode === SyncTrialMode.Import && (
-          <ImportTimes trialId={trialId} handleClose={handleClose} />
+          <ImportTimes
+            trialId={trialId}
+            counting={counting}
+            handleClose={handleClose}
+          />
         )}
         {mode === SyncTrialMode.Export && <ExportTimes trialId={trialId} />}
       </ScrollView>

@@ -38,16 +38,14 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
   const handleOptionsPress = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        options: ['Cancel', 'Sync', 'Rename', 'Delete'],
-        destructiveButtonIndex: 3,
+        options: ['Cancel', 'Rename', 'Delete'],
+        destructiveButtonIndex: 2,
         cancelButtonIndex: 0,
       },
       (buttonIndex) => {
         if (buttonIndex === 1) {
-          handleSync();
-        } else if (buttonIndex === 2) {
           showIosRenamePrompt();
-        } else if (buttonIndex === 3) {
+        } else if (buttonIndex === 2) {
           showDeleteConfirmation();
         }
       },
@@ -111,13 +109,6 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
           },
         }}
       >
-        <MenuOption
-          customStyles={{ optionWrapper: styles.optionWrapper }}
-          onSelect={() => handleSync()}
-        >
-          <Text style={styles.optionText}>Sync</Text>
-        </MenuOption>
-
         <MenuOption
           customStyles={{ optionWrapper: styles.optionWrapper }}
           onSelect={() => setAndroidRenameDialogShown(true)}

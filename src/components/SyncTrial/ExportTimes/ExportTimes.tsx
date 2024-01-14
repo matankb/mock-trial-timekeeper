@@ -1,10 +1,14 @@
 import React, { FC, useMemo } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, useWindowDimensions } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 
 import useTrial from '../../../hooks/useTrial';
 import Text from '../../Text';
-import { SyncTrialTransferredData } from '../SyncTrial';
+import {
+  SYNC_TRIAL_KEY,
+  SYNC_TRIAL_SCHEMA_VERSION,
+  SyncTrialTransferredData,
+} from '../SyncTrialTypes';
 
 interface ExportTimesProps {
   trialId: string;
@@ -12,11 +16,16 @@ interface ExportTimesProps {
 
 const ExportTimes: FC<ExportTimesProps> = ({ trialId }) => {
   const [trial] = useTrial(trialId);
+  const { width } = useWindowDimensions();
 
   const qrData = useMemo(() => {
     const transferData: SyncTrialTransferredData = {
-      times: trial.times,
-      name: trial.name,
+      key: SYNC_TRIAL_KEY,
+      version: SYNC_TRIAL_SCHEMA_VERSION,
+      data: {
+        times: trial.times,
+        name: trial.name,
+      },
     };
 
     return JSON.stringify(transferData);
@@ -24,7 +33,7 @@ const ExportTimes: FC<ExportTimesProps> = ({ trialId }) => {
 
   return (
     <View style={styles.container}>
-      <QRCode value={qrData} size={300} />
+      <QRCode value={qrData} size={width * 0.8} />
       <Text style={styles.instructions}>
         Show this QR Code to the other timekeeper
       </Text>
@@ -36,6 +45,7 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     alignItems: 'center',
+    paddingTop: 5,
   },
   instructions: {
     color: 'gray',

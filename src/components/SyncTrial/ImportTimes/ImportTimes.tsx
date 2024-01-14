@@ -4,28 +4,59 @@ import merge from 'ts-deepmerge';
 
 import ImportBox, { ImportMode } from './ImportBox';
 import QRScanner from './QRScanner';
+import ScanErrorAlert from './ScanErrorAlert';
 import {
   Trial,
   calculateNewTrialTime,
   getStageTime,
 } from '../../../controllers/trial';
 import useTrial from '../../../hooks/useTrial';
+import { isValidJson } from '../../../utils';
 import Text from '../../Text';
-import { SyncTrialTransferredData } from '../SyncTrial';
+import {
+  SYNC_TRIAL_KEY,
+  SYNC_TRIAL_SCHEMA_VERSION,
+  ScanError,
+  SyncTrialTransferredData,
+} from '../SyncTrialTypes';
 
 interface ImportTimesProps {
   trialId: string;
+  counting: boolean;
   handleClose: () => void;
 }
 
-const ImportTimes: FC<ImportTimesProps> = ({ trialId, handleClose }) => {
+const ImportTimes: FC<ImportTimesProps> = ({
+  trialId,
+  counting,
+  handleClose,
+}) => {
   const [trial, setTrial] = useTrial(trialId);
+  const [scanError, setScanError] = useState<ScanError>(null);
 
-  const [importedData, setImportedData] =
-    useState<SyncTrialTransferredData>(null);
+  const [importedData, setImportedData] = useState<SyncTrialTransferredData>({
+    key: SYNC_TRIAL_KEY,
+    version: SYNC_TRIAL_SCHEMA_VERSION,
+    data: trial,
+  });
 
   const handleScan = (data: string) => {
-    setImportedData(JSON.parse(data));
+    // when there are multiple schemas, this will try to convert the schema
+    if (!isValidJson(data)) {
+      return setScanError(ScanError.NotJSON);
+    }
+
+    const scannedData = JSON.parse(data);
+
+    if (scannedData?.key !== SYNC_TRIAL_KEY) {
+      return setScanError(ScanError.WrongKey);
+    }
+
+    if (scannedData?.version !== SYNC_TRIAL_SCHEMA_VERSION) {
+      return setScanError(ScanError.WrongSchema);
+    }
+
+    setImportedData(scannedData);
   };
 
   const handleImportConfirm = async (mode: ImportMode, stage: string) => {
@@ -36,9 +67,9 @@ const ImportTimes: FC<ImportTimesProps> = ({ trialId, handleClose }) => {
     let newTrial: Trial = merge({}, trial);
 
     if (mode === ImportMode.All) {
-      newTrial.times = importedData.times;
+      newTrial.times = importedData.data.times;
     } else {
-      const stageTime = getStageTime(importedData as Trial, stage);
+      const stageTime = getStageTime(importedData.data as Trial, stage);
       newTrial = calculateNewTrialTime(trial, stageTime, stage);
     }
 
@@ -49,9 +80,13 @@ const ImportTimes: FC<ImportTimesProps> = ({ trialId, handleClose }) => {
 
   return (
     <View style={styles.container}>
-      <QRScanner scanned={!!importedData} handleScan={handleScan} />
+      <QRScanner
+        scanned={!!importedData}
+        error={!!scanError}
+        handleScan={handleScan}
+      />
 
-      {!importedData && (
+      {!(importedData || scanError) && (
         <Text style={styles.instructions}>
           Scan the QR Code in the other timekeeper's app
         </Text>
@@ -60,7 +95,14 @@ const ImportTimes: FC<ImportTimesProps> = ({ trialId, handleClose }) => {
         <ImportBox
           trial={trial}
           data={importedData}
+          counting={counting}
           handleImportConfirm={handleImportConfirm}
+        />
+      )}
+      {scanError && (
+        <ScanErrorAlert
+          error={scanError}
+          handleScanAgain={() => setScanError(null)}
         />
       )}
     </View>

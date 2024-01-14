@@ -52,7 +52,7 @@ export async function setSettings(newSettings: Partial<Settings>) {
 export function settingsThemeToThemeContextTheme(settingsTheme: SettingsTheme) {
   if (settingsTheme === SettingsTheme.AUTO) {
     const systemColorScheme = Appearance.getColorScheme();
-    console.log('systemColorScheme', systemColorScheme);
+
     if (systemColorScheme === 'dark') {
       return Theme.DARK;
     } else {

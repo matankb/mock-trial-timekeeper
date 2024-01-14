@@ -2,7 +2,7 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Portal } from '@gorhom/portal';
 import { Picker } from '@react-native-picker/picker';
 import React, { FC, useRef, useEffect, useState } from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet, Pressable, Platform } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { getStageName } from '../../../constants/trial-stages';
@@ -25,7 +25,11 @@ const StageSelector: FC<StageSelectorProps> = ({
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   useEffect(() => {
-    setSelectedStage(stage);
+    if (stage) {
+      setSelectedStage(stage);
+    } else {
+      setSelectedStage(stages[0]);
+    }
   }, [stage]);
 
   const handleOpen = () => {
@@ -43,10 +47,39 @@ const StageSelector: FC<StageSelectorProps> = ({
     handleClose();
   };
 
+  const picker = (
+    <Picker
+      selectedValue={selectedStage}
+      onValueChange={(value) => {
+        setSelectedStage(value);
+      }}
+      selectionColor={'black'}
+      // style={{ ...styles.picker }}
+      // itemStyle={{ height: '100%', marginTop: -16, color: 'black' }}
+      mode="dropdown"
+    >
+      {stages.map((stage) => (
+        <Picker.Item
+          label={getStageName(stage)}
+          value={stage}
+          key={stage}
+          color="black"
+          style={{ color: 'black' }}
+        />
+      ))}
+    </Picker>
+  );
+
+  if (Platform.OS === 'android') {
+    // return picker;
+  }
+
   return (
     <>
       <TouchableOpacity style={styles.dropdown} onPress={handleOpen}>
-        <Text style={{ fontStyle: stage ? 'normal' : 'italic' }}>
+        <Text
+          style={{ fontStyle: stage ? 'normal' : 'italic', color: 'black' }}
+        >
           {stage ? getStageName(stage) : 'Select Stage'}
         </Text>
       </TouchableOpacity>
@@ -74,27 +107,11 @@ const StageSelector: FC<StageSelectorProps> = ({
                 flexDirection: 'row',
                 paddingRight: 10,
                 marginTop: -10,
-                // paddingBottom: 10,
               }}
             >
               <LinkButton onPress={handleSelect} title="Select" />
             </View>
-            <Picker
-              selectedValue={selectedStage}
-              onValueChange={(value) => {
-                setSelectedStage(value);
-              }}
-              style={styles.picker}
-              itemStyle={{ height: '100%', marginTop: -16 }}
-            >
-              {stages.map((stage) => (
-                <Picker.Item
-                  label={getStageName(stage)}
-                  value={stage}
-                  key={stage}
-                />
-              ))}
-            </Picker>
+            {picker}
           </View>
         </BottomSheetModal>
       </View>
@@ -113,7 +130,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   picker: {
-    height: '100%',
+    // height: '100%',
   },
   background: {
     height: '100%',

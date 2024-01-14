@@ -114,7 +114,7 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
       return;
     }
 
-    // instead of incrementing by 1, increment by the number of seconds since last increment
+    // instead of incrementing by 1, increment by the number of seconds since timer began
     // to account for the screen turning off
     const seconds = Math.floor((Date.now() - startedCounting.current) / 1000);
     const timeToSet = timeBeforeCounting.current + seconds;
@@ -151,6 +151,7 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
   const handleSyncPress = () => {
     props.navigation.navigate(ScreenName.SYNC_TRIAL, {
       trialId: trial.id,
+      counting,
     });
   };
 

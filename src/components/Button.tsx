@@ -7,11 +7,13 @@ interface ButtonProps {
   title: string;
   style?: ViewStyle;
   onPress: () => void;
+  disabled?: boolean;
 }
 
-const Button: FC<ButtonProps> = ({ title, style, onPress }) => {
+const Button: FC<ButtonProps> = ({ title, style, disabled, onPress }) => {
   const containerStyle = {
     ...styles.container,
+    ...(disabled && styles.disabled),
     ...style,
   };
 
@@ -26,11 +28,14 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.BLUE,
     padding: 15,
-    // marginHorizontal: 20,
     width: '90%',
     alignSelf: 'center',
     marginTop: 20,
     borderRadius: 10,
+  },
+  disabled: {
+    backgroundColor: 'lightgray',
+    pointerEvents: 'none',
   },
   text: {
     color: 'white',
