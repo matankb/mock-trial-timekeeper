@@ -33,7 +33,9 @@
     "updates": {
       "url": "https://u.expo.dev/819418f5-ad5c-4c81-862c-ff9b72e47baa"
     },
-    "android": {},
+    "android": {
+      "package": "com.matankb.mocktrialtimekeeper"
+    },
     "plugins": [
       [
         "expo-barcode-scanner",
