@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { FC, useContext } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 
 import TrialsList from './TrialsList';
 import { RouteProps } from '../../Navigation';
@@ -26,14 +26,20 @@ const AllTrials: FC<AllTrialsProps> = ({ navigation }) => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={styles.container}>
       <TrialsList
-        trials={trials}
+        trials={[...trials, ...trials]}
         showAllTrialsLink={false}
         handleSelect={handleTrialSelect}
       />
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 30,
+  },
+});
 
 export default AllTrials;
