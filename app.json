@@ -3,7 +3,6 @@
     "name": "Mock Timer",
     "slug": "mock-trial-timekeeper",
     "version": "1.2.0",
-    "entryPoint": "./src/App.tsx",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
