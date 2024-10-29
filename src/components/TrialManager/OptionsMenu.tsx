@@ -20,33 +20,46 @@ import colors from '../../constants/colors';
 
 interface OptionsMenuProps {
   trialName: string;
+  flexEnabled: boolean;
   handleSync: () => void;
   handleDelete: () => void;
   handleRename: (name: string) => void;
+  handleFlexToggle: () => void;
 }
 
 const OptionsMenu: FC<OptionsMenuProps> = ({
   trialName,
+  flexEnabled,
   handleSync,
   handleDelete,
   handleRename,
+  handleFlexToggle,
 }) => {
   const [androidRenameDialogShown, setAndroidRenameDialogShown] =
     useState(false);
   const [androidNewName, setAndroidNewName] = useState(trialName);
 
   const handleOptionsPress = () => {
+    const flexEnabledCheckmark = flexEnabled ? '✓ ' : '';
+
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        options: ['Cancel', 'Rename', 'Delete'],
-        destructiveButtonIndex: 2,
+        options: [
+          'Cancel',
+          `${flexEnabledCheckmark} Swing Time Experiment`,
+          'Rename',
+          'Delete',
+        ],
+        destructiveButtonIndex: 3,
         cancelButtonIndex: 0,
       },
       (buttonIndex) => {
-        if (buttonIndex === 1) {
+        if (buttonIndex === 2) {
           showIosRenamePrompt();
-        } else if (buttonIndex === 2) {
+        } else if (buttonIndex === 3) {
           showDeleteConfirmation();
+        } else if (buttonIndex === 1) {
+          handleFlexToggle();
         }
       },
     );

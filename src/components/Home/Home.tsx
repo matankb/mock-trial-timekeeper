@@ -13,6 +13,7 @@ import { ScreenName } from '../../constants/screen-names';
 import { TrialsContext } from '../../context/TrialsContext';
 import { Trial } from '../../controllers/trial';
 import Button from '../Button';
+import SwingTimingNotification from './SwingTimingNotification';
 
 type HomeProps = NativeStackScreenProps<RouteProps, ScreenName.HOME>;
 
@@ -70,7 +71,12 @@ const Home: FC<HomeProps> = ({ navigation, route }) => {
           onPress={() => navigation.navigate(ScreenName.CREATE_TRIAL)}
         />
       </View>
-      <AirplaneModeWarning />
+      <View>
+        <SwingTimingNotification
+          onPress={() => navigation.navigate(ScreenName.SWING_TIMING_EXPLAINER)}
+        />
+        <AirplaneModeWarning />
+      </View>
     </ScrollView>
   );
 };

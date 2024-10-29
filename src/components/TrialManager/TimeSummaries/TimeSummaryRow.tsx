@@ -10,6 +10,7 @@ interface TimeSummaryRowProps {
   name: string;
   time: number;
   highlighted: boolean;
+  flexEnabled?: boolean; // if flex is enabled on this row
   highlightColor: string;
 }
 
@@ -33,10 +34,37 @@ const TimeSummaryRow: FC<TimeSummaryRowProps> = (props) => {
     color: props.highlighted ? 'white' : defaultTextColor,
   };
 
+  const showFlex = props.flexEnabled && props.highlighted && props.time <= 0;
+  const totalFlexTime = 5 * 60; // five minutes of total flex time
+
+  // flexTimeRemaining is only used if props.time is negative, so it is added (thereby subtracted) from the total flex time
+  const flexTimeRemaining = totalFlexTime + props.time;
+  const mainTimeRemaining = !props.flexEnabled
+    ? props.time
+    : Math.max(0, props.time); // if flex is on, don't bring the main time below 0
+
   return (
-    <View style={rowStyle}>
-      <Text style={textStyle}>{props.name}</Text>
-      <Text style={textStyle}>{formatTime(props.time)}</Text>
+    <View>
+      <View
+        style={{
+          ...rowStyle,
+          ...(showFlex ? styles.topRowWithFlex : {}),
+        }}
+      >
+        <Text style={textStyle}>{props.name}</Text>
+        <Text style={textStyle}>{formatTime(mainTimeRemaining)}</Text>
+      </View>
+      {showFlex && (
+        <View
+          style={{
+            ...rowStyle,
+            ...(showFlex ? styles.bottomRowWithFlex : {}),
+          }}
+        >
+          <Text style={textStyle}>Swing Time</Text>
+          <Text style={textStyle}>{formatTime(flexTimeRemaining)}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -50,6 +78,14 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderColor: 'lightgray',
     borderRadius: 5,
+  },
+  topRowWithFlex: {
+    borderBottomRightRadius: 0,
+    borderBottomLeftRadius: 0,
+  },
+  bottomRowWithFlex: {
+    borderTopRightRadius: 0,
+    borderTopLeftRadius: 0,
   },
   text: {
     fontSize: 16,

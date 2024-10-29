@@ -69,9 +69,11 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
     const optionsMenu = (
       <OptionsMenu
         trialName={trial.name}
+        flexEnabled={trial.setup.flexEnabled}
         handleSync={handleSyncPress}
         handleDelete={handleDelete}
         handleRename={handleRename}
+        handleFlexToggle={handleFlexToggle}
       />
     );
 
@@ -148,10 +150,26 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
     });
   };
 
+  const handleTimekeeperReportPress = () => {
+    props.navigation.navigate(ScreenName.TIMEKEEPER_REPORT, {
+      trialId: trial.id,
+      trialName: trial.name,
+    });
+  };
+
   const handleSyncPress = () => {
     props.navigation.navigate(ScreenName.SYNC_TRIAL, {
       trialId: trial.id,
       counting,
+    });
+  };
+
+  const handleFlexToggle = () => {
+    setTrial({
+      setup: {
+        ...trial.setup,
+        flexEnabled: !trial.setup.flexEnabled,
+      },
     });
   };
 
@@ -164,9 +182,20 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
         style={{ height: '100%' }}
       >
         <View style={{ width: '100%', marginBottom: 10 }}>
-          {trial.setup.allLossEnabled && <AllLoss allLossTime={trial.loss} />}
+          {trial.setup.allLossEnabled && (
+            <AllLoss
+              flexEnabled={trial.setup.flexEnabled}
+              allLossTime={trial.loss}
+            />
+          )}
           <TimeSummaries trial={trial} />
           <Link title="Individual Times" onPress={handleIndividualTimesPress} />
+          {trial.setup.flexEnabled && trial.stage === 'rebuttal' && (
+            <Link
+              title="Timekeeper Report Sheet"
+              onPress={handleTimekeeperReportPress}
+            />
+          )}
         </View>
         <Controls
           currentStageName={getStageName(stage)}

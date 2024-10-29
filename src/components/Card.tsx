@@ -1,32 +1,41 @@
 import React from 'react';
-import { StyleSheet, View, ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
 
 import colors from '../constants/colors';
 import { Theme } from '../context/ThemeContext';
 import useTheme from '../hooks/useTheme';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 interface CardProps {
   style?: ViewStyle;
   children: React.ReactNode;
+  onPress?: () => void;
 }
 
 const Card = (props: CardProps) => {
   const theme = useTheme();
 
-  return (
-    <View
-      style={[
-        styles.container,
-        props.style,
-        {
-          backgroundColor:
-            theme === Theme.LIGHT ? 'white' : colors.BACKGROUND_GRAY,
-        },
-      ]}
-    >
-      {props.children}
-    </View>
-  );
+  const style = [
+    styles.container,
+    props.style,
+    {
+      backgroundColor: theme === Theme.LIGHT ? 'white' : colors.BACKGROUND_GRAY,
+    },
+  ];
+
+  if (props.onPress) {
+    return (
+      <TouchableOpacity
+        style={style}
+        onPress={props.onPress}
+        activeOpacity={0.7}
+      >
+        {props.children}
+      </TouchableOpacity>
+    );
+  }
+
+  return <View style={style}>{props.children}</View>;
 };
 
 const styles = StyleSheet.create({

@@ -14,6 +14,9 @@ import About, { aboutScreenOptions } from './components/About/About';
 import Disclaimer, {
   disclaimerScreenOptions,
 } from './components/About/Disclaimer';
+import SwingTimingExplainer, {
+  swingTimingExplainerScreenOptions,
+} from './components/About/SwingTimingExplainer';
 import CreateTrial, {
   createTrialScreenOptions,
 } from './components/CreateTrial/CreateTrial';
@@ -26,6 +29,9 @@ import SyncTrial, {
   SyncTrialRouteProps,
   syncTrialScreenOptions,
 } from './components/SyncTrial/SyncTrial';
+import TimeReport, {
+  timeReportScreenOptions,
+} from './components/TimeReport/TimeReport';
 import TimesBreakdown, {
   TimeBreakdownRouteProps,
   timesBreakdownScreenOptions,
@@ -48,9 +54,11 @@ export type RouteProps = {
   [ScreenName.SETTINGS]: undefined;
   [ScreenName.DISCLAIMER]: undefined;
   [ScreenName.AMTA_POLICY]: undefined;
+  [ScreenName.SWING_TIMING_EXPLAINER]: undefined;
   [ScreenName.TRIAL_MANAGER]: TrialManagerRouteProps;
   [ScreenName.SYNC_TRIAL]: SyncTrialRouteProps;
   [ScreenName.TIMES_BREAKDOWN]: TimeBreakdownRouteProps;
+  [ScreenName.TIMEKEEPER_REPORT]: TimeBreakdownRouteProps;
 };
 
 const Navigation = () => {
@@ -83,6 +91,11 @@ const Navigation = () => {
           component={TimesBreakdown}
         />
         <Stack.Screen
+          name={ScreenName.TIMEKEEPER_REPORT}
+          options={timeReportScreenOptions}
+          component={TimeReport}
+        />
+        <Stack.Screen
           name={ScreenName.SETTINGS}
           options={settingsScreenOptions}
           component={Settings}
@@ -96,6 +109,11 @@ const Navigation = () => {
           name={ScreenName.DISCLAIMER}
           options={disclaimerScreenOptions}
           component={Disclaimer}
+        />
+        <Stack.Screen
+          name={ScreenName.SWING_TIMING_EXPLAINER}
+          options={swingTimingExplainerScreenOptions}
+          component={SwingTimingExplainer}
         />
         <Stack.Screen
           name={ScreenName.AMTA_POLICY}

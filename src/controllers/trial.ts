@@ -18,6 +18,7 @@ export interface TrialSetup {
   pretrialEnabled: boolean;
   statementsSeparate: boolean;
   allLossEnabled: boolean;
+  flexEnabled: boolean;
   pretrialTime?: number;
   statementTime?: number;
   openTime?: number;
@@ -166,6 +167,7 @@ function generateEmptyTrialTimes(): TrialTimes {
 export async function createNewTrial(
   name: string,
   allLoss: number,
+  flexEnabled: boolean,
 ): Promise<Trial> {
   const id = uuid.v4() as string;
   const date = new Date().valueOf();
@@ -178,7 +180,7 @@ export async function createNewTrial(
     id,
     name,
     date,
-    setup,
+    setup: { ...setup, flexEnabled },
     loss: allLoss,
     stage,
     times: generateEmptyTrialTimes(),

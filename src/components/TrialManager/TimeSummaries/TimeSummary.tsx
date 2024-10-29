@@ -4,10 +4,11 @@ import { StyleSheet, Text } from 'react-native';
 import TimeSummaryRow from './TimeSummaryRow';
 import { TrialSetup } from '../../../controllers/trial';
 import Card from '../../Card';
+import colors from '../../../constants/colors';
+import { piSideName } from '../../../utils';
 
 interface TimeSummaryProps {
-  title: string;
-  color: string;
+  side: 'p' | 'd';
   setup: TrialSetup;
   timeRemaining: TimeRemaining;
   highlightRow: TimeSummaryRowType;
@@ -32,12 +33,17 @@ export enum TimeSummaryRowType {
 }
 
 const TimeSummary: FC<TimeSummaryProps> = ({
-  title,
-  color,
+  side,
   timeRemaining,
   highlightRow,
   setup,
 }) => {
+  const color = side === 'p' ? colors.RED : colors.BLUE;
+  const title = side === 'p' ? piSideName : 'Defense';
+
+  const directFlexEnabled = setup.flexEnabled && side === 'p';
+  const crossFlexEnabled = setup.flexEnabled && side === 'd';
+
   return (
     <Card>
       <Text
@@ -79,12 +85,14 @@ const TimeSummary: FC<TimeSummaryProps> = ({
         time={timeRemaining.direct}
         highlighted={highlightRow === TimeSummaryRowType.Direct}
         highlightColor={color}
+        flexEnabled={directFlexEnabled}
       />
       <TimeSummaryRow
         name="Cross Examinations"
         time={timeRemaining.cross}
         highlighted={highlightRow === TimeSummaryRowType.Cross}
         highlightColor={color}
+        flexEnabled={crossFlexEnabled}
       />
       {setup.statementsSeparate && (
         <TimeSummaryRow
