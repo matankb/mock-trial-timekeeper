@@ -7,13 +7,13 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 
 import AirplaneModeWarning from './AirplaneModeWarning';
 import { HomeHeaderIconLeft, HomeHeaderIconRight } from './HomeHeaderIcons';
+import SwingTimingNotification from './SwingTimingNotification';
 import TrialsList from './TrialsList';
 import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
 import { TrialsContext } from '../../context/TrialsContext';
 import { Trial } from '../../controllers/trial';
 import Button from '../Button';
-import SwingTimingNotification from './SwingTimingNotification';
 
 type HomeProps = NativeStackScreenProps<RouteProps, ScreenName.HOME>;
 

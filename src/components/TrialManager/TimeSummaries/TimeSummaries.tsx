@@ -2,9 +2,7 @@ import React, { FC } from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import TimeSummary, { TimeSummaryRowType } from './TimeSummary';
-import colors from '../../../constants/colors';
 import { Trial } from '../../../controllers/trial';
-import { piSideName } from '../../../utils';
 
 interface TimeSummariesProps {
   trial: Trial;

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
+import { StyleSheet, View, ViewStyle } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import colors from '../constants/colors';
 import { Theme } from '../context/ThemeContext';
 import useTheme from '../hooks/useTheme';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 interface CardProps {
   style?: ViewStyle;

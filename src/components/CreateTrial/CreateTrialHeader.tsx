@@ -2,6 +2,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationProp } from '@react-navigation/native';
 import { FC } from 'react';
 import { ActionSheetIOS, Button } from 'react-native';
+
 import colors from '../../constants/colors';
 
 interface CreateTrialHeaderLeftProps {
