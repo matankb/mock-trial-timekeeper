@@ -6,16 +6,16 @@ import SetupSettings from './SetupSettings';
 import { ThemeContext } from '../../context/ThemeContext';
 import {
   Settings as SettingsData,
+  SettingsSetup,
   SettingsTheme,
   defaultSettings,
   getSettings,
   setSettings,
   settingsThemeToThemeContextTheme,
 } from '../../controllers/settings';
-import { TrialSetup } from '../../controllers/trial';
 import Card from '../Card';
-import Text from '../Text';
 import LinkButton from '../LinkButton';
+import Text from '../Text';
 
 export const settingsScreenOptions = {
   title: 'Settings',
@@ -38,7 +38,7 @@ const Settings = () => {
     setCurrentSettings({ ...currentSettings, theme });
   };
 
-  const handleSetupChange = (setup: TrialSetup) => {
+  const handleSetupChange = (setup: SettingsSetup) => {
     setSettings({ setup });
     setCurrentSettings({ ...currentSettings, setup });
   };

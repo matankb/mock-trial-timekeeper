@@ -14,9 +14,11 @@ export enum SettingsTheme {
   AUTO = 'auto',
 }
 
+export type SettingsSetup = Omit<TrialSetup, 'flexEnabled'>; // since flex is enabled on a per-tournament basis, it's not a setting
+
 export interface Settings {
   theme: SettingsTheme;
-  setup: TrialSetup;
+  setup: SettingsSetup;
 }
 
 export const defaultSettings: Settings = {

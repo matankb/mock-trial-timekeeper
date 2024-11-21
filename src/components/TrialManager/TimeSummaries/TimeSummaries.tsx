@@ -32,13 +32,6 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial }) => {
         times.defCic.witnessThree.cross),
   };
 
-  if (setup.flexEnabled) {
-    if (prosecutionTimeRemaining.direct < 0) {
-      // direct is negative, so add it (thereby subtracting) from cross
-      prosecutionTimeRemaining.cross += prosecutionTimeRemaining.direct;
-    }
-  }
-
   const defenseTimeRemaining = {
     pretrial: setup.pretrialTime - times.pretrial.def,
     statements: setup.statementTime - (times.open.def + times.close.def),
@@ -55,14 +48,6 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial }) => {
         times.prosCic.witnessTwo.cross +
         times.prosCic.witnessThree.cross),
   };
-
-  if (setup.flexEnabled) {
-    // switched around on defense
-    if (defenseTimeRemaining.cross < 0) {
-      // cross is negative, so add it (thereby subtracting) from direct
-      defenseTimeRemaining.direct += defenseTimeRemaining.cross;
-    }
-  }
 
   const getHighlightedRow = (side: string) => {
     const isPretrial =

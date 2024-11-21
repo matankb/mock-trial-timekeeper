@@ -43,9 +43,9 @@ const SwingTimingExplainer: FC = () => {
         3. When the trial is over, fill in the Time Report sheet.
       </Text>
       <Text style={styles.text}>
-        When you are on the last stage of the trial, a link will appear to a
-        screen called "Timekeeper Report Sheet". Copy the numbers on that screen
-        onto the physical sheet you were given.
+        At the end of the trial, a link will appear to a screen called
+        "Timekeeper Report Sheet". Copy the numbers on that screen onto the
+        physical sheet you were given.
       </Text>
     </View>
   );

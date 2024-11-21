@@ -8,10 +8,12 @@ import { formatTime } from '../../../utils';
 
 interface TimeSummaryRowProps {
   name: string;
-  time: number;
+  timeRemaining: number;
   highlighted: boolean;
-  flexEnabled?: boolean; // if flex is enabled on this row
   highlightColor: string;
+
+  flexEnabled?: boolean; // if flex is enabled on this row
+  flexTimeRemaining?: number;
 }
 
 const TimeSummaryRow: FC<TimeSummaryRowProps> = (props) => {
@@ -34,14 +36,11 @@ const TimeSummaryRow: FC<TimeSummaryRowProps> = (props) => {
     color: props.highlighted ? 'white' : defaultTextColor,
   };
 
-  const showFlex = props.flexEnabled && props.highlighted && props.time <= 0;
-  const totalFlexTime = 5 * 60; // five minutes of total flex time
-
-  // flexTimeRemaining is only used if props.time is negative, so it is added (thereby subtracted) from the total flex time
-  const flexTimeRemaining = totalFlexTime + props.time;
-  const mainTimeRemaining = !props.flexEnabled
-    ? props.time
-    : Math.max(0, props.time); // if flex is on, don't bring the main time below 0
+  const showFlex =
+    props.flexEnabled && props.highlighted && props.timeRemaining <= 0; // todo: calculate this better
+  const timeRemaining = !props.flexEnabled
+    ? props.timeRemaining
+    : Math.max(0, props.timeRemaining); // if flex is on, show bring the main time below 0 - the negative will be shown in the flex time
 
   return (
     <View>
@@ -52,7 +51,7 @@ const TimeSummaryRow: FC<TimeSummaryRowProps> = (props) => {
         }}
       >
         <Text style={textStyle}>{props.name}</Text>
-        <Text style={textStyle}>{formatTime(mainTimeRemaining)}</Text>
+        <Text style={textStyle}>{formatTime(timeRemaining)}</Text>
       </View>
       {showFlex && (
         <View
@@ -62,7 +61,7 @@ const TimeSummaryRow: FC<TimeSummaryRowProps> = (props) => {
           }}
         >
           <Text style={textStyle}>Swing Time</Text>
-          <Text style={textStyle}>{formatTime(flexTimeRemaining)}</Text>
+          <Text style={textStyle}>{formatTime(props.flexTimeRemaining)}</Text>
         </View>
       )}
     </View>

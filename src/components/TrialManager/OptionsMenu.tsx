@@ -21,7 +21,6 @@ import colors from '../../constants/colors';
 interface OptionsMenuProps {
   trialName: string;
   flexEnabled: boolean;
-  handleSync: () => void;
   handleDelete: () => void;
   handleRename: (name: string) => void;
   handleFlexToggle: () => void;
@@ -30,7 +29,6 @@ interface OptionsMenuProps {
 const OptionsMenu: FC<OptionsMenuProps> = ({
   trialName,
   flexEnabled,
-  handleSync,
   handleDelete,
   handleRename,
   handleFlexToggle,

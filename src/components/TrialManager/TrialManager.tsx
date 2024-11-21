@@ -70,7 +70,6 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
       <OptionsMenu
         trialName={trial.name}
         flexEnabled={trial.setup.flexEnabled}
-        handleSync={handleSyncPress}
         handleDelete={handleDelete}
         handleRename={handleRename}
         handleFlexToggle={handleFlexToggle}
@@ -157,13 +156,6 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
     });
   };
 
-  const handleSyncPress = () => {
-    props.navigation.navigate(ScreenName.SYNC_TRIAL, {
-      trialId: trial.id,
-      counting,
-    });
-  };
-
   const handleFlexToggle = () => {
     setTrial({
       setup: {
@@ -174,6 +166,15 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
   };
 
   const { stage } = trial;
+  const showTimekeeperReport =
+    trial.setup.flexEnabled &&
+    // show the timekeeper report once the user moves into closings
+    // and then keep showing once closings have started
+    (stage === 'close.pros' ||
+      stage === 'close.def' ||
+      stage === 'rebuttal' ||
+      trial.times.close.pros > 0 ||
+      trial.times.close.def > 0);
 
   return (
     <AirplaneModeBlocker>
@@ -190,7 +191,7 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
           )}
           <TimeSummaries trial={trial} />
           <Link title="Individual Times" onPress={handleIndividualTimesPress} />
-          {trial.setup.flexEnabled && trial.stage === 'rebuttal' && (
+          {showTimekeeperReport && (
             <Link
               title="Timekeeper Report Sheet"
               onPress={handleTimekeeperReportPress}

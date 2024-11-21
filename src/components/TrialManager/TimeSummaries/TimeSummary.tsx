@@ -2,10 +2,10 @@ import React, { FC } from 'react';
 import { StyleSheet, Text } from 'react-native';
 
 import TimeSummaryRow from './TimeSummaryRow';
-import { TrialSetup } from '../../../controllers/trial';
-import Card from '../../Card';
 import colors from '../../../constants/colors';
+import { TrialSetup } from '../../../controllers/trial';
 import { piSideName } from '../../../utils';
+import Card from '../../Card';
 
 interface TimeSummaryProps {
   side: 'p' | 'd';
@@ -32,6 +32,34 @@ export enum TimeSummaryRowType {
   Cross,
 }
 
+const TOTAL_FLEX_TIME = 5 * 60; // five minutes of total flex time
+
+const calculateTimeRemainingWithFlex = (
+  firstStageRemainingRaw: number,
+  secondStageRemainingRaw: number,
+) => {
+  const firstStageFlexRemaining =
+    TOTAL_FLEX_TIME + Math.min(firstStageRemainingRaw, 0);
+
+  const secondStageFlexRemaining =
+    // first, calculate the flex time left over from the first stage:
+    // however much positive time was left over from the first stage, but at most the total flex time
+    Math.min(Math.max(firstStageRemainingRaw, 0), TOTAL_FLEX_TIME) +
+    // then subtract however much the second stage is going over (added since Math.min(0, secondStageRemainingRaw) is <= 0)
+    Math.min(secondStageRemainingRaw, 0);
+
+  const firstStageRemainingActual = firstStageRemainingRaw; // nothing changes
+  const secondStageRemainingActual =
+    secondStageRemainingRaw + Math.min(firstStageRemainingRaw, 0);
+
+  return {
+    firstStageFlexRemaining,
+    secondStageFlexRemaining,
+    firstStageRemainingActual,
+    secondStageRemainingActual,
+  };
+};
+
 const TimeSummary: FC<TimeSummaryProps> = ({
   side,
   timeRemaining,
@@ -41,8 +69,45 @@ const TimeSummary: FC<TimeSummaryProps> = ({
   const color = side === 'p' ? colors.RED : colors.BLUE;
   const title = side === 'p' ? piSideName : 'Defense';
 
-  const directFlexEnabled = setup.flexEnabled && side === 'p';
-  const crossFlexEnabled = setup.flexEnabled && side === 'd';
+  let directTimeRemaining: number;
+  let crossTimeRemaining: number;
+  let directFlexTimeRemaining: number;
+  let crossFlexTimeRemaining: number;
+
+  if (!setup.allLossEnabled) {
+    directTimeRemaining = timeRemaining.direct;
+    crossTimeRemaining = timeRemaining.cross;
+  } else {
+    if (side === 'p') {
+      const {
+        firstStageFlexRemaining,
+        secondStageFlexRemaining,
+        firstStageRemainingActual,
+        secondStageRemainingActual,
+      } = calculateTimeRemainingWithFlex(
+        timeRemaining.direct,
+        timeRemaining.cross,
+      );
+      directTimeRemaining = firstStageRemainingActual;
+      crossTimeRemaining = secondStageRemainingActual;
+      directFlexTimeRemaining = firstStageFlexRemaining;
+      crossFlexTimeRemaining = secondStageFlexRemaining;
+    } else {
+      const {
+        firstStageFlexRemaining,
+        secondStageFlexRemaining,
+        firstStageRemainingActual,
+        secondStageRemainingActual,
+      } = calculateTimeRemainingWithFlex(
+        timeRemaining.cross,
+        timeRemaining.direct,
+      );
+      directTimeRemaining = secondStageRemainingActual;
+      crossTimeRemaining = firstStageRemainingActual;
+      directFlexTimeRemaining = secondStageFlexRemaining;
+      crossFlexTimeRemaining = firstStageFlexRemaining;
+    }
+  }
 
   return (
     <Card>
@@ -58,7 +123,7 @@ const TimeSummary: FC<TimeSummaryProps> = ({
       {setup.pretrialEnabled && (
         <TimeSummaryRow
           name="Pretrial"
-          time={timeRemaining.pretrial}
+          timeRemaining={timeRemaining.pretrial}
           highlighted={highlightRow === TimeSummaryRowType.Pretrial}
           highlightColor={color}
         />
@@ -67,7 +132,7 @@ const TimeSummary: FC<TimeSummaryProps> = ({
       {setup.statementsSeparate && (
         <TimeSummaryRow
           name="Opening Statement"
-          time={timeRemaining.open}
+          timeRemaining={timeRemaining.open}
           highlighted={highlightRow === TimeSummaryRowType.Open}
           highlightColor={color}
         />
@@ -75,29 +140,31 @@ const TimeSummary: FC<TimeSummaryProps> = ({
       {!setup.statementsSeparate && (
         <TimeSummaryRow
           name="Statements"
-          time={timeRemaining.statements}
+          timeRemaining={timeRemaining.statements}
           highlighted={highlightRow === TimeSummaryRowType.Statements}
           highlightColor={color}
         />
       )}
       <TimeSummaryRow
         name="Direct Examinations"
-        time={timeRemaining.direct}
+        timeRemaining={directTimeRemaining}
         highlighted={highlightRow === TimeSummaryRowType.Direct}
         highlightColor={color}
-        flexEnabled={directFlexEnabled}
+        flexEnabled={setup.flexEnabled}
+        flexTimeRemaining={directFlexTimeRemaining}
       />
       <TimeSummaryRow
         name="Cross Examinations"
-        time={timeRemaining.cross}
+        timeRemaining={crossTimeRemaining}
         highlighted={highlightRow === TimeSummaryRowType.Cross}
         highlightColor={color}
-        flexEnabled={crossFlexEnabled}
+        flexEnabled={setup.flexEnabled}
+        flexTimeRemaining={crossFlexTimeRemaining}
       />
       {setup.statementsSeparate && (
         <TimeSummaryRow
           name="Closing Statement"
-          time={timeRemaining.close}
+          timeRemaining={timeRemaining.close}
           highlighted={highlightRow === TimeSummaryRowType.Close}
           highlightColor={color}
         />

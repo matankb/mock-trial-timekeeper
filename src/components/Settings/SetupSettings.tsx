@@ -3,12 +3,13 @@ import { StyleSheet, Switch, View } from 'react-native';
 
 import Option from './Option';
 import colors from '../../constants/colors';
+import { SettingsSetup } from '../../controllers/settings';
 import { TrialSetup } from '../../controllers/trial';
 import TimeEditor from '../TimeEditor/TimeEditor';
 
 interface SetupSettingsProps {
-  setup: TrialSetup;
-  handleSetupChange: (setup: TrialSetup) => void;
+  setup: SettingsSetup;
+  handleSetupChange: (setup: SettingsSetup) => void;
 }
 
 const SetupSettings: FC<SetupSettingsProps> = ({
