@@ -19,7 +19,6 @@
     "@types/jsonpack": "^1.1.6",
     "@types/react": "~18.3.12",
     "expo": "^52.0.8",
-    "expo-barcode-scanner": "~13.0.1",
     "expo-keep-awake": "~14.0.1",
     "expo-linking": "~7.0.3",
     "expo-network": "~7.0.0",
