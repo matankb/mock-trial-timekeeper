@@ -40,7 +40,7 @@ const TimeSummaryRow: FC<TimeSummaryRowProps> = (props) => {
     props.flexEnabled && props.highlighted && props.timeRemaining <= 0; // todo: calculate this better
   const timeRemaining = !props.flexEnabled
     ? props.timeRemaining
-    : Math.max(0, props.timeRemaining); // if flex is on, show bring the main time below 0 - the negative will be shown in the flex time
+    : Math.max(0, props.timeRemaining); // if flex is on, don't bring the main time below 0 - the negative will be shown in the flex time
 
   return (
     <View>
