@@ -74,7 +74,7 @@ const TimeSummary: FC<TimeSummaryProps> = ({
   let directFlexTimeRemaining: number;
   let crossFlexTimeRemaining: number;
 
-  if (!setup.allLossEnabled) {
+  if (!setup.flexEnabled) {
     directTimeRemaining = timeRemaining.direct;
     crossTimeRemaining = timeRemaining.cross;
   } else {
