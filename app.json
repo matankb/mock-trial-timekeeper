@@ -35,14 +35,6 @@
     },
     "android": {
       "package": "com.matankb.mocktrialtimekeeper"
-    },
-    "plugins": [
-      [
-        "expo-barcode-scanner",
-        {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
-        }
-      ]
-    ]
+    }
   }
 }
