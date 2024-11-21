@@ -25,10 +25,6 @@ import Home, { homeScreenOptions } from './components/Home/Home';
 import Settings, {
   settingsScreenOptions,
 } from './components/Settings/Settings';
-import SyncTrial, {
-  SyncTrialRouteProps,
-  syncTrialScreenOptions,
-} from './components/SyncTrial/SyncTrial';
 import TimeReport, {
   timeReportScreenOptions,
 } from './components/TimeReport/TimeReport';
@@ -56,7 +52,6 @@ export type RouteProps = {
   [ScreenName.AMTA_POLICY]: undefined;
   [ScreenName.SWING_TIMING_EXPLAINER]: undefined;
   [ScreenName.TRIAL_MANAGER]: TrialManagerRouteProps;
-  [ScreenName.SYNC_TRIAL]: SyncTrialRouteProps;
   [ScreenName.TIMES_BREAKDOWN]: TimeBreakdownRouteProps;
   [ScreenName.TIMEKEEPER_REPORT]: TimeBreakdownRouteProps;
 };
@@ -124,11 +119,6 @@ const Navigation = () => {
           name={ScreenName.CREATE_TRIAL}
           options={createTrialScreenOptions}
           component={CreateTrial}
-        />
-        <Stack.Screen
-          name={ScreenName.SYNC_TRIAL}
-          options={syncTrialScreenOptions}
-          component={SyncTrial}
         />
       </Stack.Navigator>
     </NavigationContainer>
