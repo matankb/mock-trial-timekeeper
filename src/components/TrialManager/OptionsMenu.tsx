@@ -122,6 +122,15 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
       >
         <MenuOption
           customStyles={{ optionWrapper: styles.optionWrapper }}
+          onSelect={() => handleFlexToggle()}
+        >
+          <Text style={styles.optionText}>
+            {flexEnabled ? 'Disable' : 'Enable'} Swing Time Experiment
+          </Text>
+        </MenuOption>
+
+        <MenuOption
+          customStyles={{ optionWrapper: styles.optionWrapper }}
           onSelect={() => setAndroidRenameDialogShown(true)}
         >
           <Text style={styles.optionText}>Rename</Text>
