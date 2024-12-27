@@ -3,13 +3,15 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import React, { FC, useContext } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 
 import AirplaneModeWarning from './AirplaneModeWarning';
+import BetaTestNotification from './BetaTestNotification';
 import { HomeHeaderIconLeft, HomeHeaderIconRight } from './HomeHeaderIcons';
 import SwingTimingNotification from './SwingTimingNotification';
 import TrialsList from './TrialsList';
 import { RouteProps } from '../../Navigation';
+import { BETA_TEST_FORM_URL } from '../../constants/external-urls';
 import { ScreenName } from '../../constants/screen-names';
 import { TrialsContext } from '../../context/TrialsContext';
 import { Trial } from '../../controllers/trial';
@@ -72,6 +74,9 @@ const Home: FC<HomeProps> = ({ navigation, route }) => {
         />
       </View>
       <View>
+        <BetaTestNotification
+          onPress={() => Linking.openURL(BETA_TEST_FORM_URL)}
+        />
         <SwingTimingNotification
           onPress={() => navigation.navigate(ScreenName.SWING_TIMING_EXPLAINER)}
         />
