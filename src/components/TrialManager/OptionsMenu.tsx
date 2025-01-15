@@ -1,20 +1,8 @@
+import { useActionSheet } from '@expo/react-native-action-sheet';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { FC, useState } from 'react';
-import {
-  ActionSheetIOS,
-  TouchableOpacity,
-  Alert,
-  Text,
-  StyleSheet,
-  Platform,
-} from 'react-native';
+import { TouchableOpacity, Alert, StyleSheet, Platform } from 'react-native';
 import Dialog from 'react-native-dialog';
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-} from 'react-native-popup-menu';
 
 import colors from '../../constants/colors';
 
@@ -33,51 +21,51 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
   handleRename,
   handleFlexToggle,
 }) => {
+  const { showActionSheetWithOptions } = useActionSheet();
+
   const [androidRenameDialogShown, setAndroidRenameDialogShown] =
     useState(false);
   const [androidNewName, setAndroidNewName] = useState(trialName);
 
-  const handleOptionsPress = () => {
-    const flexEnabledCheckmark = flexEnabled ? '✓ ' : '';
+  // ===============================
+  // Generic Action Sheet & Handlers
+  // ===============================
 
-    ActionSheetIOS.showActionSheetWithOptions(
+  const handleOptionsPress = () => {
+    const flexActionText = flexEnabled ? 'Disable' : 'Enable';
+
+    showActionSheetWithOptions(
       {
         options: [
-          'Cancel',
-          `${flexEnabledCheckmark} Swing Time Experiment`,
+          `${flexActionText} Swing Time Experiment`,
           'Rename',
           'Delete',
+          'Cancel',
         ],
-        destructiveButtonIndex: 3,
-        cancelButtonIndex: 0,
+        destructiveButtonIndex: 2,
+        cancelButtonIndex: 3,
       },
       (buttonIndex) => {
-        if (buttonIndex === 2) {
-          showIosRenamePrompt();
-        } else if (buttonIndex === 3) {
-          showDeleteConfirmation();
-        } else if (buttonIndex === 1) {
+        if (buttonIndex === 0) {
           handleFlexToggle();
+        } else if (buttonIndex === 1) {
+          handleRenamePress();
+        } else if (buttonIndex === 2) {
+          handleDeletePress();
         }
       },
     );
   };
 
-  const showIosRenamePrompt = () => {
-    Alert.prompt(
-      'Rename Trial',
-      `Enter a new name for ${trialName}`,
-      (name) => {
-        if (name) {
-          handleRename(name);
-        }
-      },
-      'plain-text',
-      trialName,
-    );
+  const handleRenamePress = () => {
+    if (Platform.OS === 'ios') {
+      showIosRenamePrompt();
+    } else {
+      setAndroidRenameDialogShown(true);
+    }
   };
 
-  const showDeleteConfirmation = () => {
+  const handleDeletePress = () => {
     Alert.alert(
       'Delete Trial',
       `Are you sure you want to delete ${trialName}?`,
@@ -95,56 +83,23 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
     );
   };
 
-  const iosMenu = (
-    <MaterialCommunityIcons
-      name="dots-horizontal-circle-outline"
-      size={24}
-      color={colors.HEADER_BLUE}
-      onPress={handleOptionsPress}
-    />
-  );
+  // =====================
+  // OS-specific handlers
+  // ====================
 
-  const androidMenu = (
-    <Menu>
-      <MenuTrigger>
-        <MaterialCommunityIcons
-          name="dots-horizontal-circle-outline"
-          size={24}
-          color={colors.HEADER_BLUE}
-        />
-      </MenuTrigger>
-      <MenuOptions
-        customStyles={{
-          optionTouchable: {
-            padding: 10,
-          },
-        }}
-      >
-        <MenuOption
-          customStyles={{ optionWrapper: styles.optionWrapper }}
-          onSelect={() => handleFlexToggle()}
-        >
-          <Text style={styles.optionText}>
-            {flexEnabled ? 'Disable' : 'Enable'} Swing Time Experiment
-          </Text>
-        </MenuOption>
-
-        <MenuOption
-          customStyles={{ optionWrapper: styles.optionWrapper }}
-          onSelect={() => setAndroidRenameDialogShown(true)}
-        >
-          <Text style={styles.optionText}>Rename</Text>
-        </MenuOption>
-
-        <MenuOption
-          customStyles={{ optionWrapper: styles.optionWrapper }}
-          onSelect={() => showDeleteConfirmation()}
-        >
-          <Text style={{ ...styles.optionText, color: 'red' }}>Delete</Text>
-        </MenuOption>
-      </MenuOptions>
-    </Menu>
-  );
+  const showIosRenamePrompt = () => {
+    Alert.prompt(
+      'Rename Trial',
+      `Enter a new name for ${trialName}`,
+      (name) => {
+        if (name) {
+          handleRename(name);
+        }
+      },
+      'plain-text',
+      trialName,
+    );
+  };
 
   const androidRenameDialog = (
     <Dialog.Container visible={androidRenameDialogShown}>
@@ -173,14 +128,13 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
   );
 
   return (
-    <TouchableOpacity onPress={handleOptionsPress}>
-      {Platform.OS === 'ios' && iosMenu}
-      {Platform.OS === 'android' && (
-        <>
-          {androidMenu}
-          {androidRenameDialog}
-        </>
-      )}
+    <TouchableOpacity onPressOut={handleOptionsPress}>
+      <MaterialCommunityIcons
+        name="dots-horizontal-circle-outline"
+        size={24}
+        color={colors.HEADER_BLUE}
+      />
+      {androidRenameDialogShown && androidRenameDialog}
     </TouchableOpacity>
   );
 };

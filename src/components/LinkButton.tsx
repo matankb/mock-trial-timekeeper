@@ -16,7 +16,8 @@ const LinkButton: FC<ButtonProps> = (props) => {
   }
 
   return (
-    <TouchableOpacity onPress={props.onPress}>
+    // onPressOut needed for Android header buttons
+    <TouchableOpacity onPressOut={props.onPress}>
       <Text style={styles.link}>{props.title}</Text>
     </TouchableOpacity>
   );

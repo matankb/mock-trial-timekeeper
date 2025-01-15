@@ -1,9 +1,9 @@
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { PortalProvider } from '@gorhom/portal';
 import { registerRootComponent } from 'expo';
 import * as SplashScreen from 'expo-splash-screen';
 import { FC } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { MenuProvider } from 'react-native-popup-menu';
 
 import Navigation from './Navigation';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -14,7 +14,7 @@ SplashScreen.preventAutoHideAsync();
 const App: FC = () => {
   return (
     <ErrorBoundary>
-      <MenuProvider>
+      <ActionSheetProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <ContextProviders>
             <PortalProvider>
@@ -22,7 +22,7 @@ const App: FC = () => {
             </PortalProvider>
           </ContextProviders>
         </GestureHandlerRootView>
-      </MenuProvider>
+      </ActionSheetProvider>
     </ErrorBoundary>
   );
 };

@@ -1,9 +1,10 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationProp } from '@react-navigation/native';
 import { FC } from 'react';
-import { ActionSheetIOS, Button } from 'react-native';
+import { ActionSheetIOS, Button, TouchableOpacity } from 'react-native';
 
 import colors from '../../constants/colors';
+import { useActionSheet } from '@expo/react-native-action-sheet';
 
 interface CreateTrialHeaderLeftProps {
   navigation: NavigationProp<never>;
@@ -22,17 +23,17 @@ export const CreateTrialHeaderRight: FC<CreateTrialHeaderRightProps> = ({
   flexEnabled,
   onFlexToggle,
 }) => {
-  const flexCheckMark = flexEnabled ? '✓' : '';
+  const { showActionSheetWithOptions } = useActionSheet();
+  const flexActionText = flexEnabled ? 'Disable' : 'Enable';
 
   const handleOptionsPress = () => {
-    ActionSheetIOS.showActionSheetWithOptions(
+    showActionSheetWithOptions(
       {
-        options: ['Cancel', `${flexCheckMark} Swing Time Experiment`],
-        cancelButtonIndex: 0,
-        destructiveButtonIndex: 2,
+        options: [`${flexActionText} Swing Time Experiment`, 'Cancel'],
+        cancelButtonIndex: 1,
       },
       (buttonIndex) => {
-        if (buttonIndex === 1) {
+        if (buttonIndex === 0) {
           onFlexToggle();
         }
       },
@@ -40,11 +41,12 @@ export const CreateTrialHeaderRight: FC<CreateTrialHeaderRightProps> = ({
   };
 
   return (
-    <MaterialCommunityIcons
-      name="dots-horizontal-circle-outline"
-      size={24}
-      color={colors.HEADER_BLUE}
-      onPress={handleOptionsPress}
-    />
+    <TouchableOpacity onPressOut={handleOptionsPress}>
+      <MaterialCommunityIcons
+        name="dots-horizontal-circle-outline"
+        size={24}
+        color={colors.HEADER_BLUE}
+      />
+    </TouchableOpacity>
   );
 };

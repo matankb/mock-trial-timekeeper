@@ -10,7 +10,7 @@ import { ScreenName } from '../../constants/screen-names';
 type HomeHeaderIconProps = NativeStackScreenProps<RouteProps, ScreenName.HOME>;
 
 export const HomeHeaderIconLeft: FC<HomeHeaderIconProps> = ({ navigation }) => (
-  <TouchableOpacity onPress={() => navigation.navigate(ScreenName.ABOUT)}>
+  <TouchableOpacity onPressOut={() => navigation.navigate(ScreenName.ABOUT)}>
     <Ionicons
       name="information-circle-outline"
       size={26}
@@ -22,7 +22,7 @@ export const HomeHeaderIconLeft: FC<HomeHeaderIconProps> = ({ navigation }) => (
 export const HomeHeaderIconRight: FC<HomeHeaderIconProps> = ({
   navigation,
 }) => (
-  <TouchableOpacity onPress={() => navigation.navigate(ScreenName.SETTINGS)}>
+  <TouchableOpacity onPressOut={() => navigation.navigate(ScreenName.SETTINGS)}>
     <Ionicons name="settings-outline" size={25} color={colors.HEADER_BLUE} />
   </TouchableOpacity>
 );
