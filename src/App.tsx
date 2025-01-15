@@ -1,5 +1,4 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
-import { PortalProvider } from '@gorhom/portal';
 import { registerRootComponent } from 'expo';
 import * as SplashScreen from 'expo-splash-screen';
 import { FC } from 'react';
@@ -17,9 +16,7 @@ const App: FC = () => {
       <ActionSheetProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <ContextProviders>
-            <PortalProvider>
-              <Navigation />
-            </PortalProvider>
+            <Navigation />
           </ContextProviders>
         </GestureHandlerRootView>
       </ActionSheetProvider>
