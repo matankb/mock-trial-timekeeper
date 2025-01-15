@@ -2,7 +2,7 @@
   "expo": {
     "name": "Mock Timer",
     "slug": "mock-trial-timekeeper",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -35,7 +35,7 @@
     },
     "android": {
       "package": "com.matankb.mocktrialtimekeeper",
-      "versionCode": 2
+      "versionCode": 3
     }
   }
 }
