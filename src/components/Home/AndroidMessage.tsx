@@ -24,8 +24,10 @@ const BetaTestNotification: FC<BetaTestNotificationProps> = ({ onPress }) => {
         style={styles.icon}
       />
       <View>
-        <Text style={styles.header}>Thanks for testing the Android beta!</Text>
-        <Text style={styles.subheader}>Tap here to leave feedback</Text>
+        <Text style={styles.header}>Thanks for using Mock Timer!</Text>
+        <Text style={styles.subheader}>
+          You're one of our first users on Android. Tap here to leave feedback.
+        </Text>
       </View>
     </Card>
   );
@@ -43,7 +45,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   header: { fontSize: 16 },
-  subheader: { color: 'gray', marginTop: 5 },
+  subheader: { color: 'gray', marginTop: 5, paddingRight: 20 },
 });
 
 export default BetaTestNotification;
