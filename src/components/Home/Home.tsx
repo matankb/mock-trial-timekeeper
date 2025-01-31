@@ -6,9 +6,9 @@ import React, { FC, useContext } from 'react';
 import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 
 import AirplaneModeWarning from './AirplaneModeWarning';
-import BetaTestNotification from './BetaTestNotification';
+import AndroidMessage from './AndroidMessage';
 import { HomeHeaderIconLeft, HomeHeaderIconRight } from './HomeHeaderIcons';
-import SwingTimingNotification from './SwingTimingNotification';
+import SwingTimingMessage from './SwingTimingMessage';
 import TrialsList from './TrialsList';
 import { RouteProps } from '../../Navigation';
 import { BETA_TEST_FORM_URL } from '../../constants/external-urls';
@@ -74,10 +74,8 @@ const Home: FC<HomeProps> = ({ navigation, route }) => {
         />
       </View>
       <View>
-        <BetaTestNotification
-          onPress={() => Linking.openURL(BETA_TEST_FORM_URL)}
-        />
-        <SwingTimingNotification
+        <AndroidMessage onPress={() => Linking.openURL(BETA_TEST_FORM_URL)} />
+        <SwingTimingMessage
           onPress={() => navigation.navigate(ScreenName.SWING_TIMING_EXPLAINER)}
         />
         <AirplaneModeWarning />
