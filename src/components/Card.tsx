@@ -17,10 +17,10 @@ const Card = (props: CardProps) => {
 
   const style = [
     styles.container,
-    props.style,
     {
       backgroundColor: theme === Theme.LIGHT ? 'white' : colors.BACKGROUND_GRAY,
     },
+    props.style,
   ];
 
   if (props.onPress) {

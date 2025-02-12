@@ -11,7 +11,6 @@ import {
 import TimeEditorAndroidDialog from './TimeEditorAndroidDialog';
 import { pad } from '../../utils';
 
-// TODO: refactor this somewhere else, I think
 export type TimeEditHandler = (newValue: number) => any;
 
 interface TimeEditorProps {
@@ -168,7 +167,6 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     justifyContent: 'space-between',
   },
-  // TODO: it looks like this is slightly off...
   input: {
     backgroundColor: '#f0f0f0',
     padding: 10,

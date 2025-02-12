@@ -3,12 +3,9 @@ import { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import colors from '../../constants/colors';
+import { FLEX_TIMING_ENABLED } from '../../constants/flex-timing';
 import Card from '../Card';
 import Text from '../Text';
-
-// Disabled January 2025, since no swing timing during AMTA season
-// Should (potentially) be re-enabled in the future
-const SHOW_SWING_TIMING_MESSAGE = false;
 
 interface SwingTimingNotificationProps {
   onPress: any;
@@ -17,7 +14,7 @@ interface SwingTimingNotificationProps {
 const SwingTimingNotification: FC<SwingTimingNotificationProps> = ({
   onPress,
 }) => {
-  if (!SHOW_SWING_TIMING_MESSAGE) {
+  if (!FLEX_TIMING_ENABLED) {
     return null;
   }
 

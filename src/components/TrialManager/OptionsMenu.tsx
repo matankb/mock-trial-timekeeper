@@ -1,74 +1,104 @@
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { FC, useState } from 'react';
-import { TouchableOpacity, Alert, StyleSheet, Platform } from 'react-native';
-import Dialog from 'react-native-dialog';
+import {
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+  View,
+  StyleSheet,
+} from 'react-native';
 
+import { RouteProps } from '../../Navigation';
 import colors from '../../constants/colors';
+import { ScreenName } from '../../constants/screen-names';
+import {
+  Trial,
+  uploadTrialToSchoolAccount,
+  validateTrialDetails,
+} from '../../controllers/trial';
+import { useSettings } from '../../hooks/useSettings';
+import { showBugReportAlert } from '../../utils/bug-report';
+import { supabaseDbErrorToReportableError } from '../../utils/supabase';
 
 interface OptionsMenuProps {
-  trialName: string;
-  flexEnabled: boolean;
+  navigation: NativeStackNavigationProp<RouteProps>;
+  trial: Trial;
   handleDelete: () => void;
-  handleRename: (name: string) => void;
-  handleFlexToggle: () => void;
+}
+
+interface OptionsConfig {
+  options: { name: string; onPress: () => void }[];
+  destructiveButtonIndex: number;
+  cancelButtonIndex: number;
 }
 
 const OptionsMenu: FC<OptionsMenuProps> = ({
-  trialName,
-  flexEnabled,
+  navigation,
+  trial,
   handleDelete,
-  handleRename,
-  handleFlexToggle,
 }) => {
   const { showActionSheetWithOptions } = useActionSheet();
+  const settings = useSettings();
 
-  const [androidRenameDialogShown, setAndroidRenameDialogShown] =
-    useState(false);
-  const [androidNewName, setAndroidNewName] = useState(trialName);
+  const [uploading, setUploading] = useState(false);
 
   // ===============================
   // Generic Action Sheet & Handlers
   // ===============================
 
-  const handleOptionsPress = () => {
-    const flexActionText = flexEnabled ? 'Disable' : 'Enable';
+  const optionsWithUpload: OptionsConfig = {
+    options: [
+      { name: 'Edit Trial', onPress: () => handleEditTrialPress() },
+      { name: 'Upload to Team Account', onPress: () => handleUploadPress() },
+      { name: 'Delete Trial', onPress: () => handleDeletePress() },
+      { name: 'Cancel', onPress: () => {} },
+    ],
+    destructiveButtonIndex: 2,
+    cancelButtonIndex: 3,
+  };
 
+  const optionsWithoutUpload: OptionsConfig = {
+    options: [
+      { name: 'Edit Trial', onPress: () => handleEditTrialPress() },
+      { name: 'Delete Trial', onPress: () => handleDeletePress() },
+      { name: 'Cancel', onPress: () => {} },
+    ],
+    destructiveButtonIndex: 1,
+    cancelButtonIndex: 2,
+  };
+
+  const optionsConfig = settings?.schoolAccount?.connected
+    ? optionsWithUpload
+    : optionsWithoutUpload;
+
+  const handleOptionsPress = () => {
     showActionSheetWithOptions(
       {
-        options: [
-          `${flexActionText} Swing Time Experiment`,
-          'Rename',
-          'Delete',
-          'Cancel',
-        ],
-        destructiveButtonIndex: 2,
-        cancelButtonIndex: 3,
+        options: optionsConfig.options.map((option) => option.name),
+        destructiveButtonIndex: optionsConfig.destructiveButtonIndex,
+        cancelButtonIndex: optionsConfig.cancelButtonIndex,
       },
       (buttonIndex) => {
-        if (buttonIndex === 0) {
-          handleFlexToggle();
-        } else if (buttonIndex === 1) {
-          handleRenamePress();
-        } else if (buttonIndex === 2) {
-          handleDeletePress();
+        const handler = optionsConfig.options[buttonIndex].onPress;
+        if (typeof handler === 'function') {
+          handler();
         }
       },
     );
   };
 
-  const handleRenamePress = () => {
-    if (Platform.OS === 'ios') {
-      showIosRenamePrompt();
-    } else {
-      setAndroidRenameDialogShown(true);
-    }
+  const handleEditTrialPress = () => {
+    navigation.navigate(ScreenName.UPDATE_TRIAL, {
+      trialId: trial.id,
+    });
   };
 
   const handleDeletePress = () => {
     Alert.alert(
       'Delete Trial',
-      `Are you sure you want to delete ${trialName}?`,
+      `Are you sure you want to delete ${trial.name}?`,
       [
         {
           text: 'Cancel',
@@ -83,75 +113,52 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
     );
   };
 
-  // =====================
-  // OS-specific handlers
-  // ====================
+  const handleUploadPress = async () => {
+    if (!validateTrialDetails(trial)) {
+      navigation.navigate(ScreenName.UPDATE_TRIAL, {
+        trialId: trial.id,
+        isBeforeUpload: true,
+      });
+      return;
+    }
 
-  const showIosRenamePrompt = () => {
-    Alert.prompt(
-      'Rename Trial',
-      `Enter a new name for ${trialName}`,
-      (name) => {
-        if (name) {
-          handleRename(name);
-        }
-      },
-      'plain-text',
-      trialName,
-    );
+    setUploading(true);
+
+    const { error } = await uploadTrialToSchoolAccount(trial);
+    setUploading(false);
+
+    if (error) {
+      const reportableError = supabaseDbErrorToReportableError(error);
+      showBugReportAlert(
+        'There was a problem uploading your trial',
+        'Make sure you are connected to the internet and try again, or contact support.',
+        reportableError,
+      );
+    } else {
+      Alert.alert('Trial uploaded!');
+    }
   };
 
-  const androidRenameDialog = (
-    <Dialog.Container visible={androidRenameDialogShown}>
-      <Dialog.Title style={{ color: 'black' }}>Rename</Dialog.Title>
-      <Dialog.Description>Enter a new name for {trialName}</Dialog.Description>
-      <Dialog.Input
-        value={androidNewName}
-        onChangeText={setAndroidNewName}
-        style={styles.androidInput}
-      />
-      <Dialog.Button
-        label="Cancel"
-        onPress={() => {
-          setAndroidRenameDialogShown(false);
-          setAndroidNewName(trialName);
-        }}
-      />
-      <Dialog.Button
-        label="Rename"
-        onPress={() => {
-          setAndroidRenameDialogShown(false);
-          handleRename(androidNewName);
-        }}
-      />
-    </Dialog.Container>
-  );
-
   return (
-    <TouchableOpacity onPressOut={handleOptionsPress}>
-      <MaterialCommunityIcons
-        name="dots-horizontal-circle-outline"
-        size={24}
-        color={colors.HEADER_BLUE}
-      />
-      {androidRenameDialogShown && androidRenameDialog}
-    </TouchableOpacity>
+    <View style={styles.container}>
+      {uploading && <ActivityIndicator size="small" color="gray" />}
+      <TouchableOpacity onPressOut={handleOptionsPress}>
+        <MaterialCommunityIcons
+          name="dots-horizontal-circle-outline"
+          size={24}
+          color={colors.HEADER_BLUE}
+        />
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  optionWrapper: {
-    padding: 10,
-  },
-  optionText: {
-    fontSize: 16,
-  },
-  androidTitle: {
-    // in dark mode, the title and background are both white by default
-    color: 'black',
-  },
-  androidInput: {
-    color: 'black',
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
   },
 });
 

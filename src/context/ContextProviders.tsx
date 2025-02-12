@@ -5,6 +5,10 @@ import {
   AirplaneBlockerContext,
   useAirplaneBlockerContextInitializer,
 } from './AirplaneBlockerContext';
+import {
+  CreateTrialContext,
+  useCreateTrialContextInitializer,
+} from './CreateTrialContext';
 import { ThemeContext, useThemeContextInitializer } from './ThemeContext';
 import { TrialsContext, useTrialsContextInitializer } from './TrialsContext';
 
@@ -17,6 +21,8 @@ const ContextProviders: FC<ContextProviderProps> = ({ children }) => {
   const [theme, setTheme] = useThemeContextInitializer();
   const [airplaneBlockerState, setAirplaneBlockerState] =
     useAirplaneBlockerContextInitializer();
+  const [createTrialState, setCreateTrialState] =
+    useCreateTrialContextInitializer();
 
   useEffect(() => {
     if (theme !== null || trials !== null) {
@@ -27,11 +33,15 @@ const ContextProviders: FC<ContextProviderProps> = ({ children }) => {
   return (
     <TrialsContext.Provider value={[trials, setTrials]}>
       <ThemeContext.Provider value={[theme, setTheme]}>
-        <AirplaneBlockerContext.Provider
-          value={[airplaneBlockerState, setAirplaneBlockerState]}
+        <CreateTrialContext.Provider
+          value={[createTrialState, setCreateTrialState]}
         >
-          {children}
-        </AirplaneBlockerContext.Provider>
+          <AirplaneBlockerContext.Provider
+            value={[airplaneBlockerState, setAirplaneBlockerState]}
+          >
+            {children}
+          </AirplaneBlockerContext.Provider>
+        </CreateTrialContext.Provider>
       </ThemeContext.Provider>
     </TrialsContext.Provider>
   );

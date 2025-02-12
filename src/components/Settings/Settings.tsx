@@ -1,28 +1,31 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useContext, useEffect, useState, FC } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 
 import AppearenceSettings from './AppearenceSettings';
+import SchoolAccountSettings from './SchoolAccount/SchoolAccountSettings';
 import SetupSettings from './SetupSettings';
+import { RouteProps } from '../../Navigation';
+import { ScreenName } from '../../constants/screen-names';
 import { ThemeContext } from '../../context/ThemeContext';
 import {
   Settings as SettingsData,
+  SettingsSchoolAccount,
   SettingsSetup,
   SettingsTheme,
-  defaultSettings,
   getSettings,
   setSettings,
   settingsThemeToThemeContextTheme,
 } from '../../controllers/settings';
-import Card from '../Card';
-import LinkButton from '../LinkButton';
-import Text from '../Text';
+
+type SettingsProps = NativeStackScreenProps<RouteProps, ScreenName.SETTINGS>;
 
 export const settingsScreenOptions = {
   title: 'Settings',
   headerBackTitle: 'Home',
 };
 
-const Settings = () => {
+const Settings: FC<SettingsProps> = ({ navigation }) => {
   const [, setTheme] = useContext(ThemeContext);
   const [currentSettings, setCurrentSettings] = useState<SettingsData>(null);
 
@@ -43,8 +46,9 @@ const Settings = () => {
     setCurrentSettings({ ...currentSettings, setup });
   };
 
-  const handleSetupReset = () => {
-    handleSetupChange(defaultSettings.setup);
+  const handleSchoolAccountChange = (schoolAccount: SettingsSchoolAccount) => {
+    setSettings({ schoolAccount });
+    setCurrentSettings({ ...currentSettings, schoolAccount });
   };
 
   if (!currentSettings) {
@@ -53,31 +57,19 @@ const Settings = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Card>
-        <Text style={styles.sectionName}>Appearence</Text>
-
-        <AppearenceSettings
-          theme={currentSettings.theme}
-          handleThemeChange={handleThemeChange}
-        />
-      </Card>
-
-      <Card>
-        <View style={styles.sectionHeader}>
-          <View>
-            <Text style={styles.sectionName}>Trial Setup</Text>
-            <Text style={styles.sectionDescription}>
-              Changes will only apply to new trials
-            </Text>
-          </View>
-          <LinkButton title="Reset" onPress={handleSetupReset} />
-        </View>
-
-        <SetupSettings
-          setup={currentSettings.setup}
-          handleSetupChange={handleSetupChange}
-        />
-      </Card>
+      <AppearenceSettings
+        theme={currentSettings.theme}
+        handleThemeChange={handleThemeChange}
+      />
+      <SchoolAccountSettings
+        navigation={navigation}
+        schoolAccountSettings={currentSettings.schoolAccount}
+        handleSchoolAccountSettingsChange={handleSchoolAccountChange}
+      />
+      <SetupSettings
+        setup={currentSettings.setup}
+        handleSetupChange={handleSetupChange}
+      />
     </ScrollView>
   );
 };

@@ -20,6 +20,7 @@ import {
   deleteTrial,
   getStageTime,
   calculateNewTrialTime,
+  uploadTrialToSchoolAccount,
 } from '../../controllers/trial';
 import useTrial from '../../hooks/useTrial';
 import Link from '../Link';
@@ -68,11 +69,9 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
 
     const optionsMenu = (
       <OptionsMenu
-        trialName={trial.name}
-        flexEnabled={trial.setup.flexEnabled}
+        navigation={props.navigation}
+        trial={trial}
         handleDelete={handleDelete}
-        handleRename={handleRename}
-        handleFlexToggle={handleFlexToggle}
       />
     );
 
@@ -133,11 +132,6 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
     props.navigation.goBack();
   };
 
-  const handleRename = (name: string) => {
-    props.navigation.setOptions({ title: name });
-    setTrial({ name });
-  };
-
   if (!trial) {
     return null;
   }
@@ -153,15 +147,6 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
     props.navigation.navigate(ScreenName.TIMEKEEPER_REPORT, {
       trialId: trial.id,
       trialName: trial.name,
-    });
-  };
-
-  const handleFlexToggle = () => {
-    setTrial({
-      setup: {
-        ...trial.setup,
-        flexEnabled: !trial.setup.flexEnabled,
-      },
     });
   };
 
@@ -199,7 +184,7 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
           )}
         </View>
         <Controls
-          currentStageName={getStageName(stage)}
+          currentStageName={getStageName(trial)}
           isPaused={!counting}
           handlePause={pauseTimer}
           handlePrevious={prevStage}

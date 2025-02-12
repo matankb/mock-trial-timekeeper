@@ -20,8 +20,17 @@ import SwingTimingExplainer, {
 import CreateTrial, {
   createTrialScreenOptions,
 } from './components/CreateTrial/CreateTrial';
+import TournamentSelector, {
+  tournamentSelectorScreenOptions,
+} from './components/CreateTrial/TrialDetails/TournamentSelector/TournamentSelector';
+import WitnessSelector, {
+  witnessSelectorScreenOptions,
+} from './components/CreateTrial/TrialDetails/WitnessSelector/WitnessSelector';
 import AllTrials, { allTrialsScreenOptions } from './components/Home/AllTrials';
 import Home, { homeScreenOptions } from './components/Home/Home';
+import SchoolAccountLogin, {
+  schoolAccountLoginScreenOptions,
+} from './components/Settings/SchoolAccount/SchoolAccountLogin';
 import Settings, {
   settingsScreenOptions,
 } from './components/Settings/Settings';
@@ -39,21 +48,38 @@ import TrialManager, {
 import { ScreenName } from './constants/screen-names';
 import { Theme } from './context/ThemeContext';
 import useTheme from './hooks/useTheme';
+import UpdateTrial, {
+  UpdateTrialRouteProps,
+  updateTrialScreenOptions,
+} from './components/CreateTrial/UpdateTrial';
 
 const Stack = createNativeStackNavigator();
 
 export type RouteProps = {
+  // Home
   [ScreenName.HOME]: undefined;
-  [ScreenName.ABOUT]: undefined;
-  [ScreenName.CREATE_TRIAL]: undefined;
   [ScreenName.ALL_TRIALS]: undefined;
-  [ScreenName.SETTINGS]: undefined;
-  [ScreenName.DISCLAIMER]: undefined;
-  [ScreenName.AMTA_POLICY]: undefined;
-  [ScreenName.SWING_TIMING_EXPLAINER]: undefined;
+
+  // Trial Manager
   [ScreenName.TRIAL_MANAGER]: TrialManagerRouteProps;
   [ScreenName.TIMES_BREAKDOWN]: TimeBreakdownRouteProps;
   [ScreenName.TIMEKEEPER_REPORT]: TimeBreakdownRouteProps;
+
+  // About
+  [ScreenName.ABOUT]: undefined;
+  [ScreenName.DISCLAIMER]: undefined;
+  [ScreenName.AMTA_POLICY]: undefined;
+  [ScreenName.SWING_TIMING_EXPLAINER]: undefined;
+
+  // Settings
+  [ScreenName.SETTINGS]: undefined;
+  [ScreenName.SCHOOL_ACCOUNT_LOGIN]: undefined;
+
+  // Create Trial
+  [ScreenName.CREATE_TRIAL]: undefined;
+  [ScreenName.UPDATE_TRIAL]: UpdateTrialRouteProps;
+  [ScreenName.WITNESS_SELECTOR]: undefined;
+  [ScreenName.SCHOOL_ACCOUNT_LOGIN]: undefined;
 };
 
 const Navigation = () => {
@@ -61,65 +87,47 @@ const Navigation = () => {
   const navigationTheme = theme === Theme.DARK ? DarkTheme : DefaultTheme;
   const statusBarTheme = theme === Theme.DARK ? 'light' : 'dark';
 
+  /* prettier-ignore */
+
+  const screens = [
+    // Home
+    { name: ScreenName.HOME, component: Home, options: homeScreenOptions },
+    { name: ScreenName.ALL_TRIALS, component: AllTrials, options: allTrialsScreenOptions },
+
+    // Trial Manager
+    { name: ScreenName.TRIAL_MANAGER, component: TrialManager, options: trialManagerScreenOptions },
+    { name: ScreenName.TIMES_BREAKDOWN, component: TimesBreakdown, options: timesBreakdownScreenOptions },
+    { name: ScreenName.TIMEKEEPER_REPORT, component: TimeReport, options: timeReportScreenOptions },
+
+    // Settings
+    { name: ScreenName.SETTINGS, component: Settings, options: settingsScreenOptions },
+    { name: ScreenName.SCHOOL_ACCOUNT_LOGIN, component: SchoolAccountLogin, options: schoolAccountLoginScreenOptions },
+
+    // About
+    { name: ScreenName.ABOUT, component: About, options: aboutScreenOptions },
+    { name: ScreenName.DISCLAIMER, component: Disclaimer, options: disclaimerScreenOptions },
+    { name: ScreenName.SWING_TIMING_EXPLAINER, component: SwingTimingExplainer, options: swingTimingExplainerScreenOptions },
+    { name: ScreenName.AMTA_POLICY, component: AMTAPolicy, options: amtaPolicyScreenOptions },
+
+    // Create Trial
+    { name: ScreenName.CREATE_TRIAL, component: CreateTrial, options: createTrialScreenOptions },
+    { name: ScreenName.UPDATE_TRIAL, component: UpdateTrial, options: updateTrialScreenOptions },
+    { name: ScreenName.WITNESS_SELECTOR, component: WitnessSelector, options: witnessSelectorScreenOptions },
+    { name: ScreenName.TOURNAMENT_SELECTOR, component: TournamentSelector, options: tournamentSelectorScreenOptions },
+  ];
+
   return (
     <NavigationContainer theme={navigationTheme}>
       <StatusBar style={statusBarTheme} />
       <Stack.Navigator initialRouteName={ScreenName.HOME}>
-        <Stack.Screen
-          name={ScreenName.HOME}
-          options={homeScreenOptions}
-          component={Home}
-        />
-        <Stack.Screen
-          name={ScreenName.ALL_TRIALS}
-          options={allTrialsScreenOptions}
-          component={AllTrials}
-        />
-        <Stack.Screen
-          name={ScreenName.TRIAL_MANAGER}
-          component={TrialManager}
-          options={trialManagerScreenOptions}
-        />
-        <Stack.Screen
-          name={ScreenName.TIMES_BREAKDOWN}
-          options={timesBreakdownScreenOptions}
-          component={TimesBreakdown}
-        />
-        <Stack.Screen
-          name={ScreenName.TIMEKEEPER_REPORT}
-          options={timeReportScreenOptions}
-          component={TimeReport}
-        />
-        <Stack.Screen
-          name={ScreenName.SETTINGS}
-          options={settingsScreenOptions}
-          component={Settings}
-        />
-        <Stack.Screen
-          name={ScreenName.ABOUT}
-          options={aboutScreenOptions}
-          component={About}
-        />
-        <Stack.Screen
-          name={ScreenName.DISCLAIMER}
-          options={disclaimerScreenOptions}
-          component={Disclaimer}
-        />
-        <Stack.Screen
-          name={ScreenName.SWING_TIMING_EXPLAINER}
-          options={swingTimingExplainerScreenOptions}
-          component={SwingTimingExplainer}
-        />
-        <Stack.Screen
-          name={ScreenName.AMTA_POLICY}
-          options={amtaPolicyScreenOptions}
-          component={AMTAPolicy}
-        />
-        <Stack.Screen
-          name={ScreenName.CREATE_TRIAL}
-          options={createTrialScreenOptions}
-          component={CreateTrial}
-        />
+        {screens.map(({ name, component, options }) => (
+          <Stack.Screen
+            key={name}
+            name={name}
+            options={options}
+            component={component}
+          />
+        ))}
       </Stack.Navigator>
     </NavigationContainer>
   );

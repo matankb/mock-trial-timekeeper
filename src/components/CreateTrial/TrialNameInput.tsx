@@ -4,9 +4,14 @@ import { StyleSheet, TextInput } from 'react-native';
 interface TrialNameInputProps {
   name: string;
   setName: (name: string) => void;
+  autoFocus?: boolean;
 }
 
-const TrialNameInput: FC<TrialNameInputProps> = ({ name, setName }) => {
+const TrialNameInput: FC<TrialNameInputProps> = ({
+  name,
+  setName,
+  autoFocus = true,
+}) => {
   return (
     <TextInput
       style={styles.input}
@@ -15,7 +20,7 @@ const TrialNameInput: FC<TrialNameInputProps> = ({ name, setName }) => {
       onChangeText={setName}
       placeholderTextColor="#4a4a4a"
       returnKeyType="done"
-      autoFocus
+      autoFocus={autoFocus}
     />
   );
 };

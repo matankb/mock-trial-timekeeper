@@ -1,19 +1,31 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import Text from '../Text';
 
 interface OptionProps {
   name: string;
+  loading?: boolean;
   handlePress?: () => void;
   children: React.ReactNode;
 }
 
-const Option: React.FC<OptionProps> = ({ name, handlePress, children }) => {
+const Option: React.FC<OptionProps> = ({
+  name,
+  loading,
+  handlePress,
+  children,
+}) => {
+  const loadingIndicator = <ActivityIndicator size="small" color="gray" />;
   const components = (
     <>
       <Text style={styles.name}>{name}</Text>
-      {children}
+      {loading ? loadingIndicator : children}
     </>
   );
 

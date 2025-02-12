@@ -1,3 +1,5 @@
+import { Side } from '../types/side';
+
 export const pad = (s: number) => s.toString().padStart(2, '0');
 
 // Format time as mm:ss
@@ -39,6 +41,15 @@ function getPiSideName() {
 
 // presumably, this will stay the same for the entire session
 export const piSideName = getPiSideName();
+
+export function getSideName(side: Side) {
+  if (side === 'p') {
+    return piSideName;
+  } else if (side === 'd') {
+    return 'Defense';
+  }
+  return null;
+}
 
 export const duration = {
   minutes: (n: number) => n * 60,

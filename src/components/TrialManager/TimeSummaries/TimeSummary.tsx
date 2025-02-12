@@ -4,11 +4,12 @@ import { StyleSheet, Text } from 'react-native';
 import TimeSummaryRow from './TimeSummaryRow';
 import colors from '../../../constants/colors';
 import { TrialSetup } from '../../../controllers/trial';
-import { piSideName } from '../../../utils';
+import { Side } from '../../../types/side';
+import { getSideName, piSideName } from '../../../utils';
 import Card from '../../Card';
 
 interface TimeSummaryProps {
-  side: 'p' | 'd';
+  side: Side;
   setup: TrialSetup;
   timeRemaining: TimeRemaining;
   highlightRow: TimeSummaryRowType;
@@ -70,7 +71,7 @@ const TimeSummary: FC<TimeSummaryProps> = ({
   setup,
 }) => {
   const color = side === 'p' ? colors.RED : colors.BLUE;
-  const title = side === 'p' ? piSideName : 'Defense';
+  const title = getSideName(side);
 
   const {
     directTimeRemaining,

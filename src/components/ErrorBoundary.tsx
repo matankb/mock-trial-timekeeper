@@ -4,6 +4,7 @@ import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary';
 import { Linking, StyleSheet, Text, View } from 'react-native';
 
 import Button from './Button';
+import { openBugReportEmail } from '../utils/bug-report';
 
 const ErrorFallback = ({ error, resetErrorBoundary }) => {
   // reset: clear loaded trials, go back home
@@ -23,18 +24,7 @@ const ErrorFallback = ({ error, resetErrorBoundary }) => {
       </Text>
       <Button
         title="Submit Bug Report"
-        onPress={() => {
-          Linking.openURL(
-            `mailto:205matan@gmail.com?subject=${encodeURIComponent(
-              'Mock Trial Timekeeper - Bug Report',
-            )}&body=${encodeURIComponent(`Please describe the bug:
-
-
-            ------- Do not edit below this line -------
-            ${error.stack}
-          `)}`,
-          );
-        }}
+        onPress={() => openBugReportEmail(error)}
       />
     </View>
   );

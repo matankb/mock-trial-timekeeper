@@ -1,5 +1,6 @@
 import { Trial } from '../controllers/trial';
-import { piSideName } from '../utils';
+import { Side } from '../types/side';
+import { getSideName } from '../utils';
 
 export const stages = [
   'pretrial.pros',
@@ -50,28 +51,57 @@ export const getPrevStage = (trial: Trial) => {
   return trialStages[index - 1];
 };
 
-export const getStageName = (stage: string) => {
-  const map: Record<string, string> = {
-    'pretrial.pros': `${piSideName} Pretrial`,
-    'pretrial.def': 'Defense Pretrial',
-    'open.pros': `${piSideName} Opening`,
-    'open.def': 'Defense Opening',
-    'cic.pros.one.direct': `${piSideName} Witness #1 - Direct`,
-    'cic.pros.one.cross': `${piSideName} Witness #1 - Cross`,
-    'cic.pros.two.direct': `${piSideName} Witness #2 - Direct`,
-    'cic.pros.two.cross': `${piSideName} Witness #2 - Cross`,
-    'cic.pros.three.direct': `${piSideName} Witness #3 - Direct`,
-    'cic.pros.three.cross': `${piSideName} Witness #3 - Cross`,
-    'cic.def.one.direct': 'Defense Witness #1 - Direct',
-    'cic.def.one.cross': 'Defense Witness #1 - Cross',
-    'cic.def.two.direct': 'Defense Witness #2 - Direct',
-    'cic.def.two.cross': 'Defense Witness #2 - Cross',
-    'cic.def.three.direct': 'Defense Witness #3 - Direct',
-    'cic.def.three.cross': 'Defense Witness #3 - Cross',
-    'close.pros': `${piSideName} Closing`,
-    'close.def': 'Defense Closing',
-    rebuttal: 'Rebuttal',
+const getWitnessName = (trial: Trial, side: Side) => {
+  const { stage, details } = trial;
+
+  if (!details) {
+    if (stage.includes('one')) {
+      return `${side} Witness #1`;
+    } else if (stage.includes('two')) {
+      return `${side} Witness #2`;
+    } else if (stage.includes('three')) {
+      return `${side} Witness #3`;
+    } else {
+      return `${side} Witness`;
+    }
+  }
+
+  const witnessNameMap = {
+    'cic.pros.one.direct': details.witnesses.p[0],
+    'cic.pros.one.cross': details.witnesses.p[0],
+    'cic.pros.two.direct': details.witnesses.p[1],
+    'cic.pros.two.cross': details.witnesses.p[1],
+    'cic.pros.three.direct': details.witnesses.p[2],
+    'cic.pros.three.cross': details.witnesses.p[2],
+    'cic.def.one.direct': details.witnesses.d[0],
+    'cic.def.one.cross': details.witnesses.d[0],
+    'cic.def.two.direct': details.witnesses.d[1],
+    'cic.def.two.cross': details.witnesses.d[1],
+    'cic.def.three.direct': details.witnesses.d[2],
+    'cic.def.three.cross': details.witnesses.d[2],
   };
 
-  return map[stage] || stage;
+  return witnessNameMap[stage];
+};
+
+export const getStageName = (trial: Trial) => {
+  const { stage } = trial;
+  const side: Side = stage.includes('pros') ? 'p' : 'd';
+  const sideName = getSideName(side);
+
+  if (stage.startsWith('pretrial')) {
+    return `${sideName} Pretrial`;
+  } else if (stage.startsWith('cic')) {
+    const examination = stage.includes('direct') ? 'Direct' : 'Cross';
+    const name = getWitnessName(trial, side);
+    return `${name} - ${examination}`;
+  } else if (stage.startsWith('open')) {
+    return `${sideName} Opening`;
+  } else if (stage.startsWith('close')) {
+    return `${sideName} Closing`;
+  } else if (stage.startsWith('rebuttal')) {
+    return 'Rebuttal';
+  }
+
+  return stage;
 };

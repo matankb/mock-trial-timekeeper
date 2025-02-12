@@ -2,9 +2,11 @@ import React, { FC } from 'react';
 import { StyleSheet, Switch, View } from 'react-native';
 
 import Option from './Option';
+import SettingSection from './SettingSection';
 import colors from '../../constants/colors';
-import { SettingsSetup } from '../../controllers/settings';
+import { defaultSettings, SettingsSetup } from '../../controllers/settings';
 import { TrialSetup } from '../../controllers/trial';
+import LinkButton from '../LinkButton';
 import TimeEditor from '../TimeEditor/TimeEditor';
 
 interface SetupSettingsProps {
@@ -43,8 +45,16 @@ const SetupSettings: FC<SetupSettingsProps> = ({
     </Option>
   );
 
+  const handleSetupReset = () => {
+    handleSetupChange(defaultSettings.setup);
+  };
+
   return (
-    <View>
+    <SettingSection
+      title="Trial Setup"
+      description="Changes will only apply to new trials"
+      headerRight={<LinkButton title="Reset" onPress={handleSetupReset} />}
+    >
       {createSetupToggleOption('Enable Pretrial Timer', 'pretrialEnabled')}
       {createSetupToggleOption('Enable All-Loss Timer', 'allLossEnabled')}
       {createSetupToggleOption(
@@ -66,7 +76,7 @@ const SetupSettings: FC<SetupSettingsProps> = ({
 
       {createSetupTimeOption('Direct Examinations', 'directTime')}
       {createSetupTimeOption('Cross Examinations', 'crossTime')}
-    </View>
+    </SettingSection>
   );
 };
 

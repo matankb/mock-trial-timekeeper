@@ -15,7 +15,12 @@ export default function useTrial(id: string): UseTrial {
   );
 
   const setTrial = async (newTrial: Partial<Trial>) => {
-    const newTrialData = merge({}, trial, newTrial);
+    const newTrialData = merge.withOptions(
+      { mergeArrays: false },
+      {},
+      trial,
+      newTrial,
+    );
 
     const newTrials = allTrials.map((t) => {
       if (t.id === id) {

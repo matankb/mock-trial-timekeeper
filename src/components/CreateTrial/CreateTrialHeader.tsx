@@ -1,10 +1,11 @@
+import { useActionSheet } from '@expo/react-native-action-sheet';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationProp } from '@react-navigation/native';
 import { FC } from 'react';
-import { ActionSheetIOS, Button, TouchableOpacity } from 'react-native';
+import { Button, TouchableOpacity } from 'react-native';
 
 import colors from '../../constants/colors';
-import { useActionSheet } from '@expo/react-native-action-sheet';
+import { FLEX_TIMING_ENABLED } from '../../constants/flex-timing';
 
 interface CreateTrialHeaderLeftProps {
   navigation: NavigationProp<never>;
@@ -39,6 +40,10 @@ export const CreateTrialHeaderRight: FC<CreateTrialHeaderRightProps> = ({
       },
     );
   };
+
+  if (!FLEX_TIMING_ENABLED) {
+    return null;
+  }
 
   return (
     <TouchableOpacity onPressOut={handleOptionsPress}>

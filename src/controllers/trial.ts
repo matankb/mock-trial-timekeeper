@@ -1,8 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 import uuid from 'react-native-uuid';
 import merge from 'ts-deepmerge';
 
 import { defaultSettings, getSettings } from './settings';
+import { Side } from '../types/side';
+import { Json } from '../types/supabase';
+import { supabase } from '../utils/supabase';
 
 export interface Trial {
   id: string;
@@ -12,6 +16,7 @@ export interface Trial {
   stage: string;
   times: TrialTimes;
   loss: number;
+  details?: TrialDetails; // details are undefined if not connected to school account
 }
 
 export interface TrialSetup {
@@ -26,6 +31,19 @@ export interface TrialSetup {
   directTime: number;
   crossTime: number;
 }
+
+// Trial details used to upload to school account
+export interface TrialDetails {
+  tournamentId: string;
+  round: number;
+  side: Side;
+  witnesses: {
+    p: DetailsWitnessCall;
+    d: DetailsWitnessCall;
+  };
+}
+
+export type DetailsWitnessCall = [string | null, string | null, string | null];
 
 export interface StatementTimeSet {
   pros: number;
@@ -168,6 +186,7 @@ export async function createNewTrial(
   name: string,
   allLoss: number,
   flexEnabled: boolean,
+  details?: TrialDetails,
 ): Promise<Trial> {
   const id = uuid.v4() as string;
   const date = new Date().valueOf();
@@ -184,19 +203,17 @@ export async function createNewTrial(
     loss: allLoss,
     stage,
     times: generateEmptyTrialTimes(),
+    details,
   };
 
   await setTrialToStorage(trial);
   return trial;
 }
 
-// TODO: there *must* be something better than this, jeez
-
 type DeepPartial<T> = {
   [P in keyof T]?: DeepPartial<T[P]>;
 };
 
-// TODO: can the first arg be removed?
 const getTrialTimeChangeObject = (
   newValue: number,
   stage: string,
@@ -355,4 +372,33 @@ export function calculateNewTrialTime(
   const change = getTrialTimeChangeObject(newTime, stage);
   const newTrial = merge(trial, { times: change }) as Trial;
   return newTrial;
+}
+
+/**
+ * Validates that the trial details are complete
+ */
+export function validateTrialDetails(trial: Trial) {
+  const { details } = trial;
+
+  if (!details) {
+    return false;
+  }
+
+  const allWitnessesSet =
+    details.witnesses.p.every((w) => w !== null) &&
+    details.witnesses.d.every((w) => w !== null);
+
+  return (
+    details.round && details.side && details.tournamentId && allWitnessesSet
+  );
+}
+
+export async function uploadTrialToSchoolAccount(trial: Trial) {
+  const { error } = await supabase.from('trials').upsert({
+    id: trial.id, // mirror the id
+    tournament_id: trial.details.tournamentId,
+    data: trial as unknown as Json,
+  });
+
+  return { error };
 }

@@ -4,6 +4,7 @@ import React, { FC } from 'react';
 import { View, StyleSheet, Text, Platform, Pressable } from 'react-native';
 
 import colors from '../../constants/colors';
+import CreateTrialSection from './CreateTrialSection';
 
 interface AllLossSelectorProps {
   allLossTime: number;
@@ -62,37 +63,13 @@ const AllLossSelector: FC<AllLossSelectorProps> = ({
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>All-Loss Time</Text>
-      </View>
+    <CreateTrialSection title="All-Loss Time" color={colors.GREEN}>
       {Platform.OS === 'ios' ? iosTimePicker : androidTimePicker}
-    </View>
+    </CreateTrialSection>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: '90%',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    marginTop: 20,
-    alignSelf: 'center',
-  },
-  header: {
-    backgroundColor: colors.GREEN,
-    paddingVertical: 2,
-    paddingLeft: 10,
-    borderTopRightRadius: 10,
-    borderTopLeftRadius: 10,
-  },
-  headerText: {
-    fontSize: 16,
-    paddingTop: 10,
-    fontWeight: 'bold',
-    paddingBottom: 10,
-    color: 'white',
-  },
   androidTimePickerContainer: {
     padding: 18,
     display: 'flex',
