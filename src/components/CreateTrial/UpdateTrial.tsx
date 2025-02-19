@@ -87,7 +87,7 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
   const [tournamentLoading, setTournamentLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  // Load the trial details into the state
+  // Load the trial details into the local state
   useEffect(() => {
     setName(trial.name);
 
@@ -105,14 +105,20 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
   // Reset the context state on load
   useEffect(() => {
     if (trial.details) {
-      setCreateTrialState({
-        pWitnessCall: trial.details.witnesses.p,
-        dWitnessCall: trial.details.witnesses.d,
-        tournamentId: trial.details.tournamentId,
+      setCreateTrialState((oldState) => {
+        const isSameTournament =
+          oldState.tournamentId === trial.details.tournamentId;
+        return {
+          ...oldState,
+          pWitnessCall: trial.details.witnesses.p,
+          dWitnessCall: trial.details.witnesses.d,
+          tournamentId: trial.details.tournamentId,
 
-        // null until they are fetched from the db
-        tournamentName: null,
-        teamId: null,
+          // reset the tournament name and team id if the tournament has changed
+          // this will trigger a loadTournament call
+          tournamentName: isSameTournament ? oldState.tournamentName : null,
+          teamId: isSameTournament ? oldState.teamId : null,
+        };
       });
     } else {
       setCreateTrialState(emptyCreateTrialState);
@@ -161,7 +167,11 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
     }
 
     loadTournament();
-  }, [trial.details?.tournamentId, createTrialState.tournamentName]);
+  }, [
+    trial.details?.tournamentId,
+    createTrialState.teamId,
+    createTrialState.tournamentName,
+  ]);
 
   // Hydrate controls
   useEffect(() => {
