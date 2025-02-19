@@ -1,6 +1,6 @@
 {
   "name": "mock-trial-timekeeper",
-  "version": "1.5.1",
+  "version": "1.5.4",
   "main": "./src/App.tsx",
   "scripts": {
     "start": "expo start",
