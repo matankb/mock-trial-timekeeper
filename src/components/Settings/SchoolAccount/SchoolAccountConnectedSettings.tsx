@@ -64,7 +64,9 @@ const SchoolAccountConnectedSettings: FC<
   };
 
   const handleSignOut = () => {
-    supabase.auth.signOut();
+    supabase.auth.signOut({
+      scope: 'local', // sign out on this device only
+    });
     handleSchoolAccountSettingsChange({ connected: false, teamId: null });
   };
 
