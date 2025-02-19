@@ -21,12 +21,14 @@ const RoundSelector = ({ round, onSelect, warning }: RoundSelectorProps) => {
 
   return [
     <TrialDetailsItem
+      key="round-selector"
       title="Round"
       value={round ? `Round ${round}` : 'Not Set'}
       onPress={() => setOpen(true)}
       warning={warning}
     />,
     <Picker
+      key="round-picker"
       title="Select Round"
       items={roundOptions}
       selected={round}
