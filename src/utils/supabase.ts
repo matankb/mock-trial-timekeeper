@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient, PostgrestError } from '@supabase/supabase-js';
-import { AppState } from 'react-native';
 
 import 'react-native-url-polyfill/auto';
 import { Database } from '../types/supabase';
@@ -17,17 +16,8 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-// Refresh the session automatically if the app is in the foreground.
-// This should only be registered once.
-AppState.addEventListener('change', (state) => {
-  if (state === 'active') {
-    supabase.auth.startAutoRefresh();
-  } else {
-    supabase.auth.stopAutoRefresh();
-  }
-});
-
 /**
+ *
  * Convert a Supabase error to an error that can be send via @link{openBugReportEmail}
  */
 export function supabaseDbErrorToReportableError(error: PostgrestError) {
