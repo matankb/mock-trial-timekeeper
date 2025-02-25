@@ -41,6 +41,7 @@ import {
 } from '../../utils/supabase';
 import Button from '../Button';
 import Text from '../Text';
+import { ScrollView } from 'react-native-gesture-handler';
 
 type UpdateTrialProps = NativeStackScreenProps<
   RouteProps,
@@ -132,6 +133,7 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
     }
 
     setTournamentLoading(true);
+
     const { data, error } = await supabase
       .from('tournaments')
       .select('name, team_id')
@@ -266,57 +268,52 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
   }
 
   return (
-    <View
+    <ScrollView
       style={{
-        ...styles.container,
         ...(theme === Theme.DARK && {
           backgroundColor: colors.BACKGROUND_GRAY,
         }),
       }}
+      contentContainerStyle={styles.container}
     >
-      <View>
-        {flexEnabled && (
-          <Text style={styles.flexEnabled}>Swing time enabled</Text>
-        )}
-        {route.params.isBeforeUpload && (
-          <Text style={styles.unfinishedDetailsWarning}>
-            Please finish setting up your trial before uploading to your school
-            account
-          </Text>
-        )}
-        <TrialNameInput name={name} setName={setName} autoFocus={false} />
-        {settings.schoolAccount.connected && (
-          <TrialDetails
-            navigation={navigation}
-            tournamentLoading={tournamentLoading}
-            side={side}
-            round={round}
-            setSide={setSide}
-            setRound={setRound}
-            showWarnings={route.params.isBeforeUpload}
-          />
-        )}
-        {isBeforeUpload && !uploading && (
-          <Button
-            title={route.params?.isBeforeUpload ? 'Save and Upload' : 'Save'}
-            disabled={!trialDetailsValid}
-            onPress={handleSavePress}
-          />
-        )}
-        {isBeforeUpload && uploading && (
-          <Button title="Uploading..." disabled onPress={() => {}} />
-        )}
-        {!isBeforeUpload && <Button title="Save" onPress={handleSavePress} />}
-      </View>
-    </View>
+      {flexEnabled && (
+        <Text style={styles.flexEnabled}>Swing time enabled</Text>
+      )}
+      {route.params.isBeforeUpload && (
+        <Text style={styles.unfinishedDetailsWarning}>
+          Please finish setting up your trial before uploading to your school
+          account
+        </Text>
+      )}
+      <TrialNameInput name={name} setName={setName} autoFocus={false} />
+      {settings.schoolAccount.connected && (
+        <TrialDetails
+          navigation={navigation}
+          tournamentLoading={tournamentLoading}
+          side={side}
+          round={round}
+          setSide={setSide}
+          setRound={setRound}
+          showWarnings={route.params.isBeforeUpload}
+        />
+      )}
+      {isBeforeUpload && !uploading && (
+        <Button
+          title={route.params?.isBeforeUpload ? 'Save and Upload' : 'Save'}
+          disabled={!trialDetailsValid}
+          onPress={handleSavePress}
+        />
+      )}
+      {isBeforeUpload && uploading && (
+        <Button title="Uploading..." disabled onPress={() => {}} />
+      )}
+      {!isBeforeUpload && <Button title="Save" onPress={handleSavePress} />}
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    height: '100%',
     paddingBottom: 30,
   },
   flexEnabled: {
@@ -330,7 +327,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff7c2',
     borderColor: '#f2d930',
     borderWidth: 1,
-    // color: 'gray',
     padding: 10,
     borderRadius: 10,
     textAlign: 'center',

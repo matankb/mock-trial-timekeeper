@@ -3,7 +3,7 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack/lib/typescript/src/types';
 import React, { FC, useContext, useEffect, useState } from 'react';
-import { Platform, View, StyleSheet, Alert } from 'react-native';
+import { Platform, View, StyleSheet, Alert, ScrollView } from 'react-native';
 
 import AllLossSelector from './AllLossSelector';
 import {
@@ -129,47 +129,42 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
   }
 
   return (
-    <View
+    <ScrollView
       style={{
-        ...styles.container,
         ...(theme === Theme.DARK && {
           backgroundColor: colors.BACKGROUND_GRAY,
         }),
       }}
+      contentContainerStyle={styles.container}
     >
-      <View>
-        {flexEnabled && (
-          <Text style={styles.flexEnabled}>Swing time enabled</Text>
-        )}
-        <TrialNameInput name={name} setName={setName} />
-        {settings.schoolAccount.connected && (
-          <TrialDetails
-            showWarnings={false}
-            tournamentLoading={false}
-            navigation={navigation}
-            side={side}
-            round={round}
-            setSide={setSide}
-            setRound={setRound}
-          />
-        )}
-        {settings.setup.allLossEnabled && (
-          <AllLossSelector
-            allLossTime={allLossTime}
-            setAllLossTime={setAllLossTime}
-          />
-        )}
-        <Button title="Create Trial" onPress={handleCreatePress} />
-      </View>
-    </View>
+      {flexEnabled && (
+        <Text style={styles.flexEnabled}>Swing time enabled</Text>
+      )}
+      <TrialNameInput name={name} setName={setName} />
+      {settings.schoolAccount.connected && (
+        <TrialDetails
+          showWarnings={false}
+          tournamentLoading={false}
+          navigation={navigation}
+          side={side}
+          round={round}
+          setSide={setSide}
+          setRound={setRound}
+        />
+      )}
+      {settings.setup.allLossEnabled && (
+        <AllLossSelector
+          allLossTime={allLossTime}
+          setAllLossTime={setAllLossTime}
+        />
+      )}
+      <Button title="Create Trial" onPress={handleCreatePress} />
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    height: '100%',
     paddingBottom: 30,
   },
   flexEnabled: {
