@@ -53,35 +53,41 @@ export const getPrevStage = (trial: Trial) => {
 
 const getWitnessName = (trial: Trial, side: Side) => {
   const { stage, details } = trial;
+  const sideName = getSideName(side);
 
-  if (!details) {
-    if (stage.includes('one')) {
-      return `${side} Witness #1`;
-    } else if (stage.includes('two')) {
-      return `${side} Witness #2`;
-    } else if (stage.includes('three')) {
-      return `${side} Witness #3`;
-    } else {
-      return `${side} Witness`;
-    }
-  }
-
+  // if the user has details, use the witness name from the details
   const witnessNameMap = {
-    'cic.pros.one.direct': details.witnesses.p[0],
-    'cic.pros.one.cross': details.witnesses.p[0],
-    'cic.pros.two.direct': details.witnesses.p[1],
-    'cic.pros.two.cross': details.witnesses.p[1],
-    'cic.pros.three.direct': details.witnesses.p[2],
-    'cic.pros.three.cross': details.witnesses.p[2],
-    'cic.def.one.direct': details.witnesses.d[0],
-    'cic.def.one.cross': details.witnesses.d[0],
-    'cic.def.two.direct': details.witnesses.d[1],
-    'cic.def.two.cross': details.witnesses.d[1],
-    'cic.def.three.direct': details.witnesses.d[2],
-    'cic.def.three.cross': details.witnesses.d[2],
+    'cic.pros.one.direct': details?.witnesses?.p?.[0],
+    'cic.pros.one.cross': details?.witnesses?.p?.[0],
+    'cic.pros.two.direct': details?.witnesses?.p?.[1],
+    'cic.pros.two.cross': details?.witnesses?.p?.[1],
+    'cic.pros.three.direct': details?.witnesses?.p?.[2],
+    'cic.pros.three.cross': details?.witnesses?.p?.[2],
+    'cic.def.one.direct': details?.witnesses?.d?.[0],
+    'cic.def.one.cross': details?.witnesses?.d?.[0],
+    'cic.def.two.direct': details?.witnesses?.d?.[1],
+    'cic.def.two.cross': details?.witnesses?.d?.[1],
+    'cic.def.three.direct': details?.witnesses?.d?.[2],
+    'cic.def.three.cross': details?.witnesses?.d?.[2],
   };
 
-  return witnessNameMap[stage];
+  const detailedWitnessName = witnessNameMap[stage];
+
+  if (detailedWitnessName) {
+    return detailedWitnessName;
+  }
+
+  // if the user doesn't have details, or if the witness name has not been yet set,
+  // use the default witness name
+  if (stage.includes('one')) {
+    return `${sideName} Witness #1`;
+  } else if (stage.includes('two')) {
+    return `${sideName} Witness #2`;
+  } else if (stage.includes('three')) {
+    return `${sideName} Witness #3`;
+  } else {
+    return `${sideName} Witness`;
+  }
 };
 
 export const getStageName = (trial: Trial) => {

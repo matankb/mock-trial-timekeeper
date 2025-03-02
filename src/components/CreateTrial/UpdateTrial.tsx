@@ -10,7 +10,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { Platform, View, StyleSheet, Alert } from 'react-native';
+import { Platform, StyleSheet, Alert } from 'react-native';
 
 import {
   CreateTrialHeaderRight,
@@ -73,7 +73,7 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
   const isBeforeUpload = route.params?.isBeforeUpload;
 
   // Create Trial State
-  const [settings, setSettings] = useState<Settings>(null);
+  const [settings, setSettings] = useState<Settings | null>(null);
   const [name, setName] = useState(trial.name);
   const [flexEnabled, setFlexEnabled] = React.useState(false);
 
@@ -192,7 +192,10 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
     const newTrial = {
       ...trial,
       name,
-      details: {
+    };
+
+    if (settings?.schoolAccount?.connected) {
+      newTrial.details = {
         ...trial.details,
         tournamentId: createTrialState.tournamentId,
         round,
@@ -201,8 +204,8 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
           p: createTrialState.pWitnessCall,
           d: createTrialState.dWitnessCall,
         },
-      },
-    };
+      };
+    }
 
     return newTrial;
   }, [
@@ -212,6 +215,7 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
     side,
     createTrialState.dWitnessCall,
     createTrialState.pWitnessCall,
+    settings,
   ]);
 
   const handleSavePress = useCallback(async () => {

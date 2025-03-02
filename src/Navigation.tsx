@@ -26,6 +26,10 @@ import TournamentSelector, {
 import WitnessSelector, {
   witnessSelectorScreenOptions,
 } from './components/CreateTrial/TrialDetails/WitnessSelector/WitnessSelector';
+import UpdateTrial, {
+  UpdateTrialRouteProps,
+  updateTrialScreenOptions,
+} from './components/CreateTrial/UpdateTrial';
 import AllTrials, { allTrialsScreenOptions } from './components/Home/AllTrials';
 import Home, { homeScreenOptions } from './components/Home/Home';
 import SchoolAccountLogin, {
@@ -48,10 +52,6 @@ import TrialManager, {
 import { ScreenName } from './constants/screen-names';
 import { Theme } from './context/ThemeContext';
 import useTheme from './hooks/useTheme';
-import UpdateTrial, {
-  UpdateTrialRouteProps,
-  updateTrialScreenOptions,
-} from './components/CreateTrial/UpdateTrial';
 
 const Stack = createNativeStackNavigator();
 

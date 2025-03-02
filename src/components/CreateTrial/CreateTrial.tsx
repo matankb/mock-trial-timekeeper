@@ -104,15 +104,17 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
       return;
     }
 
-    const details = {
-      round,
-      side,
-      tournamentId: createTrialState.tournamentId,
-      witnesses: {
-        p: createTrialState.pWitnessCall,
-        d: createTrialState.dWitnessCall,
-      },
-    };
+    const details = settings.schoolAccount.connected
+      ? {
+          round,
+          side,
+          tournamentId: createTrialState.tournamentId,
+          witnesses: {
+            p: createTrialState.pWitnessCall,
+            d: createTrialState.dWitnessCall,
+          },
+        }
+      : undefined;
 
     const trial = await createNewTrial(name, allLossTime, flexEnabled, details);
     setTrials([...trials, trial]);
