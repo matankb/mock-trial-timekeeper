@@ -17,6 +17,7 @@ import {
   getNextStage,
   getPrevStage,
   getStageName,
+  getCurrentStageName,
 } from '../../constants/trial-stages';
 import { TrialsContext } from '../../context/TrialsContext';
 import {
@@ -186,7 +187,7 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
           )}
         </View>
         <Controls
-          currentStageName={getStageName(trial)}
+          currentStageName={getCurrentStageName(trial)}
           isPaused={!counting}
           handlePause={pauseTimer}
           handlePrevious={prevStage}

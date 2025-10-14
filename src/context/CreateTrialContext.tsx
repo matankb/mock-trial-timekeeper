@@ -1,6 +1,6 @@
 import { createContext, useState } from 'react';
 
-import { DetailsWitnessCall } from '../controllers/trial';
+import { TrialWitnessCall } from '../controllers/trial';
 
 // Since CreateTrial involves multiple screens that must communicate with each other,
 // we use this context to pass data between the screens
@@ -12,8 +12,8 @@ export interface CreateTrialState {
   teamId: string | null; // teamId is only used by the Tournament Selector screen, but we store it in context so it persists
 
   // Witness Call
-  pWitnessCall: DetailsWitnessCall;
-  dWitnessCall: DetailsWitnessCall;
+  pWitnessCall: TrialWitnessCall;
+  dWitnessCall: TrialWitnessCall;
 }
 
 export const emptyCreateTrialState: CreateTrialState = {
