@@ -37,7 +37,10 @@ export interface TrialManagerRouteProps {
   trialId: string;
 }
 
-export const trialManagerScreenOptions = ({ route }: TrialManagerProps) => ({
+export const trialManagerScreenOptions = ({
+  route,
+  // TODO: fix typing here, ideally
+}): NativeStackNavigationOptions => ({
   title: route.params.trialName,
   headerBackTitle: 'Home',
 });
@@ -45,8 +48,8 @@ export const trialManagerScreenOptions = ({ route }: TrialManagerProps) => ({
 const TrialManager: FC<TrialManagerProps> = (props) => {
   const [trial, setTrial] = useTrial(props.route.params.trialId);
 
-  const intervalId = React.useRef<NodeJS.Timeout>();
-  const [counting, setCounting] = useState(null);
+  const intervalId = React.useRef<NodeJS.Timeout>(null);
+  const [counting, setCounting] = useState(false);
   const startedCounting = React.useRef<number>(null);
   const timeBeforeCounting = React.useRef<number>(null);
   const [allTrials, setAllTrials] = useContext(TrialsContext);
@@ -60,7 +63,9 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
     }
 
     return () => {
-      clearInterval(intervalId.current);
+      if (intervalId.current) {
+        clearInterval(intervalId.current);
+      }
     };
   }, [counting, trial]);
 
