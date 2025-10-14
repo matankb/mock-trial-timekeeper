@@ -49,6 +49,11 @@ import TrialManager, {
   TrialManagerRouteProps,
   trialManagerScreenOptions,
 } from './components/TrialManager/TrialManager';
+import {
+  TeamAccountPopup,
+  teamAccountPopupScreenOptions,
+} from './components/Home/Promos/TeamAccountPopup';
+
 import { ScreenName } from './constants/screen-names';
 import { Theme } from './types/theme';
 import useTheme from './hooks/useTheme';
@@ -70,6 +75,7 @@ export type RouteProps = {
   [ScreenName.DISCLAIMER]: undefined;
   [ScreenName.AMTA_POLICY]: undefined;
   [ScreenName.SWING_TIMING_EXPLAINER]: undefined;
+  [ScreenName.TEAM_ACCOUNT_POPUP]: undefined;
 
   // Settings
   [ScreenName.SETTINGS]: undefined;
@@ -108,6 +114,7 @@ const Navigation = () => {
     { name: ScreenName.DISCLAIMER, component: Disclaimer, options: disclaimerScreenOptions },
     { name: ScreenName.SWING_TIMING_EXPLAINER, component: SwingTimingExplainer, options: swingTimingExplainerScreenOptions },
     { name: ScreenName.AMTA_POLICY, component: AMTAPolicy, options: amtaPolicyScreenOptions },
+    { name: ScreenName.TEAM_ACCOUNT_POPUP, component: TeamAccountPopup, options: teamAccountPopupScreenOptions },
 
     // Create Trial
     { name: ScreenName.CREATE_TRIAL, component: CreateTrial, options: createTrialScreenOptions },
@@ -119,7 +126,8 @@ const Navigation = () => {
   return (
     <NavigationContainer theme={navigationTheme}>
       <StatusBar style={statusBarTheme} />
-      <Stack.Navigator initialRouteName={ScreenName.HOME}>
+      {/* TODO: what is this ID for? */}
+      <Stack.Navigator id={undefined} initialRouteName={ScreenName.HOME}>
         {screens.map(({ name, component, options }) => (
           <Stack.Screen
             key={name}
