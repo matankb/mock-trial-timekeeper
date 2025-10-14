@@ -64,18 +64,25 @@ const WitnessSelectorItem: FC<WitnessSelectorItemProps> = ({
     const witnesses = getAvailableWitnesses(side, selected);
     const name = `${getSideName(side)} Witness #${position + 1}`;
 
-    const options = witnesses.map((w) => ({
-      text: w,
-      onPress: () => onSelect(w),
-    }));
-
-    Alert.alert(`Select ${getSideName(side)} Witness #${position + 1}`, '', [
-      ...options,
+    const options: AlertButton[] = [
+      ...witnesses.map((w) => ({
+        text: w,
+        onPress: () => onSelect(w),
+      })),
       {
-        text: 'Cancel',
-        style: 'cancel',
+        text: `Cancel`,
       },
-    ]);
+    ];
+
+    if (witness) {
+      options.push({
+        text: `Clear ${name}`,
+        // style: 'destructive',
+        onPress: () => onSelect(null),
+      });
+    }
+
+    Alert.alert(`Select ${name}`, '', options);
   };
 
   // On Android, show a picker with the list of available witnesses
