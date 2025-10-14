@@ -22,7 +22,13 @@ export const stages = [
   'close.pros',
   'close.def',
   'rebuttal',
-];
+] as const;
+
+export type TrialStage = (typeof stages)[number];
+
+export function isTrialStage(stage: string): stage is TrialStage {
+  return stages.includes(stage as TrialStage);
+}
 
 // get the stages that are in use for this trial
 export function getTrialStages(trial: Trial) {

@@ -16,7 +16,6 @@ import { ScreenName } from '../../constants/screen-names';
 import {
   getNextStage,
   getPrevStage,
-  getStageName,
   getCurrentStageName,
 } from '../../constants/trial-stages';
 import { TrialsContext } from '../../context/TrialsContext';

@@ -6,6 +6,7 @@ import useTheme from '../../hooks/useTheme';
 import { formatTime } from '../../utils';
 import Card from '../Card';
 import TimeEditor, { TimeEditHandler } from '../TimeEditor/TimeEditor';
+import { getStageName, TrialStage } from '../../constants/trial-stages';
 
 type TimeItem = [string, number, TimeEditHandler];
 type TimeSection = TimeItem[];
