@@ -2,7 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import React, { FC } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 
-import { Theme } from '../../context/ThemeContext';
+import { Theme } from '../../types/theme';
 import useTheme from '../../hooks/useTheme';
 
 interface TrialListItemProps {

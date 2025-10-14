@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
 import colors from '../../../constants/colors';
-import { Theme } from '../../../context/ThemeContext';
+import { Theme } from '../../../types/theme';
 import useTheme from '../../../hooks/useTheme';
 import { formatTime } from '../../../utils';
 

@@ -5,7 +5,7 @@ import { View, StyleSheet, Alert, Platform } from 'react-native';
 
 import overrideWarningText from './override-warning';
 import { AirplaneBlockerContext } from '../../../context/AirplaneBlockerContext';
-import { Theme } from '../../../context/ThemeContext';
+import { Theme } from '../../../types/theme';
 import useTheme from '../../../hooks/useTheme';
 import Button from '../../Button';
 import LinkButton from '../../LinkButton';

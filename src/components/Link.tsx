@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import Card from './Card';
-import { Theme } from '../context/ThemeContext';
+import { Theme } from '../types/theme';
 import useTheme from '../hooks/useTheme';
 
 interface LinkProps {

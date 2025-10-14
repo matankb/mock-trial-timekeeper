@@ -3,7 +3,7 @@ import React from 'react';
 import { Text, View, StyleSheet, Pressable } from 'react-native';
 
 import colors from '../../constants/colors';
-import { Theme } from '../../context/ThemeContext';
+import { Theme } from '../../types/theme';
 import useTheme from '../../hooks/useTheme';
 
 interface ControlsProps {

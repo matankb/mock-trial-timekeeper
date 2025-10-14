@@ -8,7 +8,7 @@ import { FC, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import colors from '../../../constants/colors';
-import { Theme } from '../../../context/ThemeContext';
+import { Theme } from '../../../types/theme';
 import { SettingsSchoolAccount } from '../../../controllers/settings';
 import useTheme from '../../../hooks/useTheme';
 import { Tables } from '../../../types/supabase';

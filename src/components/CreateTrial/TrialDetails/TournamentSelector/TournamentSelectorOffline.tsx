@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { Theme } from '../../../../context/ThemeContext';
+import { Theme } from '../../../../types/theme';
 import useTheme from '../../../../hooks/useTheme';
 import Text from '../../../Text';
 

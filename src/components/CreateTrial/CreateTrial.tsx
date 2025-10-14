@@ -1,9 +1,9 @@
 import {
   NativeStackNavigationOptions,
   NativeStackScreenProps,
-} from '@react-navigation/native-stack/lib/typescript/src/types';
+} from '@react-navigation/native-stack';
 import React, { FC, useContext, useEffect, useState } from 'react';
-import { Platform, View, StyleSheet, Alert, ScrollView } from 'react-native';
+import { Platform, StyleSheet, Alert, ScrollView } from 'react-native';
 
 import AllLossSelector from './AllLossSelector';
 import {
@@ -19,7 +19,7 @@ import {
   CreateTrialContext,
   emptyCreateTrialState,
 } from '../../context/CreateTrialContext';
-import { Theme } from '../../context/ThemeContext';
+import { Theme } from '../../types/theme';
 import { TrialsContext } from '../../context/TrialsContext';
 import { Settings, getSettings } from '../../controllers/settings';
 import { createNewTrial } from '../../controllers/trial';

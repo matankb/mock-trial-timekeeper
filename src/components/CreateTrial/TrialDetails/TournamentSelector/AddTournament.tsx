@@ -1,15 +1,12 @@
 import { MaterialIcons } from '@expo/vector-icons';
+import { useState } from 'react';
 import {
   Alert,
   TouchableOpacity,
   Text,
   StyleSheet,
   Platform,
-  Modal,
-  View,
-  TextInput,
 } from 'react-native';
-import { useState } from 'react';
 import Dialog from 'react-native-dialog';
 
 import colors from '../../../../constants/colors';

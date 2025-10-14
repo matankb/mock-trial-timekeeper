@@ -12,7 +12,7 @@ interface AllLossProps {
 const ALERT_CUTOFF_MINUTES = 20;
 
 const AllLoss: FC<AllLossProps> = ({ allLossTime, flexEnabled }) => {
-  const interval = React.useRef<NodeJS.Timeout>();
+  const interval = React.useRef<NodeJS.Timeout>(null);
   const [, setRefresh] = React.useState(0);
 
   const timeRemaining = Math.floor((allLossTime - Date.now()) / 1000);
@@ -28,7 +28,9 @@ const AllLoss: FC<AllLossProps> = ({ allLossTime, flexEnabled }) => {
     interval.current = setInterval(() => setRefresh(Math.random()), 1000);
 
     return () => {
-      clearInterval(interval.current);
+      if (interval.current) {
+        clearInterval(interval.current);
+      }
     };
   });
 

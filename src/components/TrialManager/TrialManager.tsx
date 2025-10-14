@@ -1,4 +1,7 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {
+  NativeStackScreenProps,
+  NativeStackNavigationOptions,
+} from '@react-navigation/native-stack';
 import { useKeepAwake } from 'expo-keep-awake';
 import React, { FC, useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
@@ -20,7 +23,6 @@ import {
   deleteTrial,
   getStageTime,
   calculateNewTrialTime,
-  uploadTrialToSchoolAccount,
 } from '../../controllers/trial';
 import useTrial from '../../hooks/useTrial';
 import Link from '../Link';

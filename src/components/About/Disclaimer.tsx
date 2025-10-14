@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
-import { Theme } from '../../context/ThemeContext';
+import { Theme } from '../../types/theme';
 import useTheme from '../../hooks/useTheme';
 
 export const disclaimerScreenOptions = {

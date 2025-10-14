@@ -6,7 +6,6 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
-  Linking,
 } from 'react-native';
 
 import { ScreenName } from '../../../constants/screen-names';

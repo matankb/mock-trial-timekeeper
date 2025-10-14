@@ -1,7 +1,7 @@
 import {
   NativeStackNavigationOptions,
   NativeStackScreenProps,
-} from '@react-navigation/native-stack/lib/typescript/src/types';
+} from '@react-navigation/native-stack/';
 import React, {
   FC,
   useCallback,

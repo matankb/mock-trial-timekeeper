@@ -1,6 +1,5 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { FC, useContext, useMemo } from 'react';
-import { StyleSheet } from 'react-native';
 
 import RoundSelector from './RoundSelector';
 import SideSelector from './SideSelector';
@@ -9,6 +8,7 @@ import { ScreenName } from '../../../constants/screen-names';
 import { CreateTrialContext } from '../../../context/CreateTrialContext';
 import { Side } from '../../../types/side';
 import CreateTrialSection from '../CreateTrialSection';
+import colors from '../../../constants/colors';
 
 interface TrialDetailsProps {
   // General

@@ -50,7 +50,7 @@ import TrialManager, {
   trialManagerScreenOptions,
 } from './components/TrialManager/TrialManager';
 import { ScreenName } from './constants/screen-names';
-import { Theme } from './context/ThemeContext';
+import { Theme } from './types/theme';
 import useTheme from './hooks/useTheme';
 
 const Stack = createNativeStackNavigator();

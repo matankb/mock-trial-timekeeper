@@ -3,8 +3,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { FC } from 'react';
 import { View, StyleSheet, Text, Platform, Pressable } from 'react-native';
 
-import colors from '../../constants/colors';
 import CreateTrialSection from './CreateTrialSection';
+import colors from '../../constants/colors';
 
 interface AllLossSelectorProps {
   allLossTime: number;

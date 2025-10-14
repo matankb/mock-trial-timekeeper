@@ -5,14 +5,14 @@ import {
 import React, { useEffect } from 'react';
 import { StyleSheet, ScrollView, SafeAreaView, Platform } from 'react-native';
 
-import TimesBreakdownSection from './TimesBreakdownSection';
+import TimesBreakdownSection, { TimeSection } from './TimesBreakdownSection';
 import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
 import { calculateNewTrialTime } from '../../controllers/trial';
 import useTrial from '../../hooks/useTrial';
 import { piSideName } from '../../utils';
 import LinkButton from '../LinkButton';
-import { TimeEditHandler } from '../TimeEditor/TimeEditor';
+import { TrialStage } from '../../constants/trial-stages';
 
 type TimeBreakdownProps = NativeStackScreenProps<
   RouteProps,

@@ -1,7 +1,14 @@
 import { Entypo } from '@expo/vector-icons';
 import { Picker as NativePicker } from '@react-native-picker/picker';
 import React, { FC, useContext } from 'react';
-import { Alert, Platform, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Alert,
+  AlertButton,
+  AlertOptions,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 
 import {
   DEFENSE_WITNESSES,

@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Appearance } from 'react-native';
 
+import { Theme } from '../types/theme';
 import { TrialSetup } from './trial';
-import { Theme } from '../context/ThemeContext';
 import { duration } from '../utils';
 
 // settings theme is distinct from the themecontext theme,

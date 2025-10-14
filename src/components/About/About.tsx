@@ -1,4 +1,4 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack/lib/typescript/src/types';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Constants from 'expo-constants';
 import * as Linking from 'expo-linking';
 import { FC } from 'react';
@@ -6,7 +6,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
-import { Theme } from '../../context/ThemeContext';
+import { Theme } from '../../types/theme';
 import useTheme from '../../hooks/useTheme';
 import Card from '../Card';
 import Link from '../Link';

@@ -3,7 +3,7 @@ import { StyleSheet, View, ViewStyle } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import colors from '../constants/colors';
-import { Theme } from '../context/ThemeContext';
+import { Theme } from '../types/theme';
 import useTheme from '../hooks/useTheme';
 
 interface CardProps {

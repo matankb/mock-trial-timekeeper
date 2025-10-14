@@ -5,11 +5,7 @@ import {
   getSettings,
   settingsThemeToThemeContextTheme,
 } from '../controllers/settings';
-
-export enum Theme {
-  LIGHT,
-  DARK,
-}
+import { Theme } from '../types/theme';
 
 type ThemeContextType = ReturnType<typeof useState<Theme>>;
 

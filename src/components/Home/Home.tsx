@@ -3,7 +3,7 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import React, { FC, useContext } from 'react';
-import { Linking, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import AirplaneModeWarning from './AirplaneModeWarning';
 import AndroidMessage from './AndroidMessage';

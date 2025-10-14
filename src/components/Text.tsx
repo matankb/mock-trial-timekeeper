@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Text as RNText, TextProps } from 'react-native';
 
-import { Theme } from '../context/ThemeContext';
+import { Theme } from '../types/theme';
 import useTheme from '../hooks/useTheme';
 
 const Text: FC<TextProps> = ({ style, ...props }) => {
