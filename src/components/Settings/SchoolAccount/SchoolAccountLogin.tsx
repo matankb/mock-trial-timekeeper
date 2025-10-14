@@ -115,6 +115,8 @@ const SchoolAccountLogin: FC<SchoolAccountLoginProps> = ({ navigation }) => {
         placeholder="Team Username"
         autoCapitalize="none"
         autoCorrect={false}
+        keyboardType="email-address"
+        placeholderTextColor={colors.PLACEHOLDER_GRAY}
       />
 
       <TextInput
@@ -124,6 +126,7 @@ const SchoolAccountLogin: FC<SchoolAccountLoginProps> = ({ navigation }) => {
         placeholder="Password"
         autoCapitalize="none"
         secureTextEntry
+        placeholderTextColor={colors.PLACEHOLDER_GRAY}
       />
 
       {loading ? (
