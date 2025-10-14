@@ -1,22 +1,23 @@
 /**
- * Witness names for the 2024-2025 regular season, pre-ORCS case changes.
+ * Witness names for the 2025-2026 Full Season (State v. Martin).
  */
 
 export const PLAINTIFF_WITNESSES = [
-  'Hillary Edmund',
-  'Jordan Nathanson',
-  'Kirby Doolittle',
+  'Riley Kaye',
+  'Atlas Hartley',
+  'Taren Rivera',
 ];
 
 export const DEFENSE_WITNESSES = [
-  'Taylor Hopson',
-  'Dana Haskins',
-  'Alex Silva',
+  'Charlie Martin',
+  'Grey Marlowe',
+  'Micah Lin',
 ];
 
 export const SWING_WITNESSES = [
-  'Ashley Connel',
-  'Kelly Doos',
-  'Harley Kim',
-  'Rory Shelton',
+  'Nel Doos',
+  'Indigo Quade',
+  'Taylor Jha',
+  'Lennox Reynolds',
+  'Rowan Patel',
 ];
