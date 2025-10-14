@@ -25,7 +25,7 @@ import {
   CreateTrialContext,
   emptyCreateTrialState,
 } from '../../context/CreateTrialContext';
-import { Theme } from '../../context/ThemeContext';
+import { Theme } from '../../types/theme';
 import { Settings, getSettings } from '../../controllers/settings';
 import {
   uploadTrialToSchoolAccount,
@@ -42,6 +42,7 @@ import {
 import Button from '../Button';
 import Text from '../Text';
 import { ScrollView } from 'react-native-gesture-handler';
+import { FLEX_TIMING_ENABLED } from '../../constants/feature-flags';
 
 type UpdateTrialProps = NativeStackScreenProps<
   RouteProps,

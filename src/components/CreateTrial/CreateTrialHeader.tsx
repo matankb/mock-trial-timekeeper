@@ -5,7 +5,7 @@ import { FC } from 'react';
 import { Button, TouchableOpacity } from 'react-native';
 
 import colors from '../../constants/colors';
-import { FLEX_TIMING_ENABLED } from '../../constants/flex-timing';
+import { FLEX_TIMING_ENABLED } from '../../constants/feature-flags';
 
 interface CreateTrialHeaderLeftProps {
   navigation: NavigationProp<never>;
@@ -16,7 +16,7 @@ export const CreateTrialHeaderLeft: FC<CreateTrialHeaderLeftProps> = ({
 }) => <Button title="Cancel" onPress={() => navigation.goBack()} />;
 
 interface CreateTrialHeaderRightProps {
-  flexEnabled: boolean;
+  flexEnabled: boolean; // whether flex is enabled for this trial, not whether it is enabled as a feature globally
   onFlexToggle: () => void;
 }
 

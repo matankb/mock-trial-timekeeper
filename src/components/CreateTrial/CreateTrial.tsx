@@ -27,6 +27,7 @@ import useTheme from '../../hooks/useTheme';
 import { Side } from '../../types/side';
 import Button from '../Button';
 import Text from '../Text';
+import { FLEX_TIMING_ENABLED } from '../../constants/feature-flags';
 
 const ALL_LOSS_MINUTES = 180;
 
