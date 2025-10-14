@@ -10,7 +10,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { Platform, StyleSheet, Alert } from 'react-native';
+import { Platform, StyleSheet, Alert, ScrollView } from 'react-native';
 
 import {
   CreateTrialHeaderRight,
@@ -41,7 +41,7 @@ import {
 } from '../../utils/supabase';
 import Button from '../Button';
 import Text from '../Text';
-import { ScrollView } from 'react-native-gesture-handler';
+import { WitnessSelectorInline } from './TrialDetails/WitnessSelector/WitnessSelectorInline';
 import { FLEX_TIMING_ENABLED } from '../../constants/feature-flags';
 
 type UpdateTrialProps = NativeStackScreenProps<
@@ -106,25 +106,22 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
 
   // Reset the context state on load
   useEffect(() => {
-    if (trial.details) {
-      setCreateTrialState((oldState) => {
-        const isSameTournament =
-          oldState.tournamentId === trial.details.tournamentId;
-        return {
-          ...oldState,
-          pWitnessCall: trial.details.witnesses.p,
-          dWitnessCall: trial.details.witnesses.d,
-          tournamentId: trial.details.tournamentId,
+    setCreateTrialState((oldState) => {
+      const isSameTournament =
+        oldState.tournamentId === trial.details?.tournamentId;
 
-          // reset the tournament name and team id if the tournament has changed
-          // this will trigger a loadTournament call
-          tournamentName: isSameTournament ? oldState.tournamentName : null,
-          teamId: isSameTournament ? oldState.teamId : null,
-        };
-      });
-    } else {
-      setCreateTrialState(emptyCreateTrialState);
-    }
+      return {
+        ...oldState,
+        pWitnessCall: trial.witnesses.p,
+        dWitnessCall: trial.witnesses.d,
+        tournamentId: trial.details?.tournamentId ?? null,
+
+        // reset the tournament name and team id if the tournament has changed
+        // this will trigger a loadTournament call
+        tournamentName: isSameTournament ? oldState.tournamentName : null,
+        teamId: isSameTournament ? oldState.teamId : null,
+      } satisfies CreateTrialState;
+    });
   }, [trial]);
 
   // Load the tournament details from the db into the context
@@ -174,6 +171,7 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
     trial.details?.tournamentId,
     createTrialState.teamId,
     createTrialState.tournamentName,
+    loadTournament,
   ]);
 
   // Hydrate controls
@@ -193,6 +191,11 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
     const newTrial = {
       ...trial,
       name,
+      loss: allLossTime,
+      witnesses: {
+        p: createTrialState.pWitnessCall,
+        d: createTrialState.dWitnessCall,
+      },
     };
 
     if (settings?.schoolAccount?.connected) {
@@ -201,10 +204,6 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
         tournamentId: createTrialState.tournamentId,
         round,
         side,
-        witnesses: {
-          p: createTrialState.pWitnessCall,
-          d: createTrialState.dWitnessCall,
-        },
       };
     }
 

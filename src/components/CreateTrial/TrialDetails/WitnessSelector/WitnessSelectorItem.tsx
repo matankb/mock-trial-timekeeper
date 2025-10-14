@@ -16,7 +16,7 @@ import {
   SWING_WITNESSES,
 } from '../../../../constants/witnesses';
 import { CreateTrialContext } from '../../../../context/CreateTrialContext';
-import { Theme } from '../../../../context/ThemeContext';
+import { Theme } from '../../../../types/theme';
 import useTheme from '../../../../hooks/useTheme';
 import { Side } from '../../../../types/side';
 import { getSideName } from '../../../../utils';
@@ -27,6 +27,7 @@ interface WitnessSelectorItemProps {
   position: number;
   witness: string | null;
   onSelect: (newWitness: string) => void;
+  inline?: boolean;
 }
 
 /**
@@ -46,6 +47,7 @@ const WitnessSelectorItem: FC<WitnessSelectorItemProps> = ({
   position,
   witness,
   onSelect,
+  inline,
 }) => {
   const theme = useTheme();
 
@@ -60,6 +62,7 @@ const WitnessSelectorItem: FC<WitnessSelectorItemProps> = ({
   const showWitnessOptions = () => {
     const selected = [...pWitnessCall, ...dWitnessCall];
     const witnesses = getAvailableWitnesses(side, selected);
+    const name = `${getSideName(side)} Witness #${position + 1}`;
 
     const options = witnesses.map((w) => ({
       text: w,
@@ -89,8 +92,13 @@ const WitnessSelectorItem: FC<WitnessSelectorItemProps> = ({
   }
 
   return (
-    <TouchableOpacity style={styles.container} onPress={showWitnessOptions}>
-      <Text style={styles.name}>{label}</Text>
+    <TouchableOpacity
+      style={[styles.container, inline && styles.inlineContainer]}
+      onPress={showWitnessOptions}
+    >
+      <Text style={[styles.name, !witness && styles.unselectedName]}>
+        {label}
+      </Text>
       <Entypo
         name="chevron-small-down"
         size={24}
@@ -109,6 +117,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderColor: 'lightgray',
     borderRadius: 5,
+  },
+  inlineContainer: {
+    padding: 0,
   },
   name: {
     fontSize: 16,

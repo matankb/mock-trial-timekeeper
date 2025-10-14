@@ -5,7 +5,7 @@ import { View, StyleSheet, Platform } from 'react-native';
 import WitnessSelectorCard from './WitnessSelectorCard';
 import colors from '../../../../constants/colors';
 import { CreateTrialContext } from '../../../../context/CreateTrialContext';
-import { DetailsWitnessCall } from '../../../../controllers/trial';
+import { TrialWitnessCall } from '../../../../controllers/trial';
 import { Side } from '../../../../types/side';
 import LinkButton from '../../../LinkButton';
 
@@ -21,7 +21,11 @@ export const witnessSelectorScreenOptions = ({
   }),
 });
 
-const WitnessSelector: FC = () => {
+interface WitnessSelectorProps {
+  inline?: boolean;
+}
+
+const WitnessSelector: FC<WitnessSelectorProps> = ({ inline }) => {
   const [createTrialState, setCreateTrialState] =
     useContext(CreateTrialContext);
 
@@ -29,11 +33,11 @@ const WitnessSelector: FC = () => {
 
   // Given an existing witness call, generate a new witness call with the new witness
   const generateWitnessCall = (
-    call: DetailsWitnessCall,
+    call: TrialWitnessCall,
     position: number,
     witness: string,
-  ): DetailsWitnessCall => {
-    const newCall: DetailsWitnessCall = [...call];
+  ): TrialWitnessCall => {
+    const newCall: TrialWitnessCall = [...call];
     newCall[position] = witness;
     return newCall;
   };
@@ -69,20 +73,20 @@ const WitnessSelector: FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, inline && styles.containerInline]}>
       <WitnessSelectorCard
         side="p"
-        title="Plaintiff Witnesses"
         color={colors.RED}
         witnesses={pWitnessCall}
         onWitnessSelect={handleWitnessSelect}
+        inline={inline}
       />
       <WitnessSelectorCard
         side="d"
-        title="Defense Witnesses"
         color={colors.BLUE}
         witnesses={dWitnessCall}
         onWitnessSelect={handleWitnessSelect}
+        inline={inline}
       />
     </View>
   );
@@ -92,6 +96,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     gap: 10,
+  },
+  containerInline: {
+    gap: 0,
   },
 });
 

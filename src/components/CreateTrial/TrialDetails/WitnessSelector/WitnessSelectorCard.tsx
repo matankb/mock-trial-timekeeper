@@ -8,10 +8,10 @@ import Card from '../../../Card';
 
 interface WitnessSelectorCardProps {
   side: Side;
-  title: string;
   color: string;
   witnesses: string[];
   onWitnessSelect: (side: Side, position: number, witness: string) => void;
+  inline?: boolean;
 }
 
 const WitnessSelectorCard: FC<WitnessSelectorCardProps> = ({
@@ -19,12 +19,15 @@ const WitnessSelectorCard: FC<WitnessSelectorCardProps> = ({
   color,
   witnesses,
   onWitnessSelect,
+  inline,
 }) => {
   const title = `${getSideName(side)} Witnesses`;
 
   return (
-    <Card>
-      <Text style={[styles.sideTitle, { color }]}>{title}</Text>
+    <Card style={inline && styles.inline}>
+      <Text style={[styles.sideTitle, inline && styles.inlineTitle, { color }]}>
+        {title}
+      </Text>
       {witnesses.map((witness, position) => (
         <WitnessSelectorItem
           key={`${side}-${position}`}
@@ -32,6 +35,7 @@ const WitnessSelectorCard: FC<WitnessSelectorCardProps> = ({
           position={position}
           witness={witness}
           onSelect={(newWitness) => onWitnessSelect(side, position, newWitness)}
+          inline={inline}
         />
       ))}
     </Card>
@@ -45,6 +49,12 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  inline: {
+    padding: 0,
+  },
+  inlineTitle: {
+    paddingHorizontal: 0,
   },
 });
 

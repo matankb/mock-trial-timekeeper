@@ -1,20 +1,23 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert } from 'react-native';
 import uuid from 'react-native-uuid';
 import merge from 'ts-deepmerge';
 
-import { defaultSettings, getSettings } from './settings';
+import { getSettings } from './settings';
 import { Side } from '../types/side';
 import { Json } from '../types/supabase';
 import { supabase } from '../utils/supabase';
+import { TrialStage } from '../constants/trial-stages';
+import { migrateTrialSchema } from '../migrations/trial-migrations';
+import { RoundNumber } from '../types/round-number';
 
 export interface Trial {
   id: string;
   name: string;
   date: number;
   setup: TrialSetup;
-  stage: string;
+  stage: TrialStage;
   times: TrialTimes;
+  witnesses: TrialWitnesses;
   loss: number;
   details?: TrialDetails; // details are undefined if not connected to school account
 }
@@ -32,18 +35,21 @@ export interface TrialSetup {
   crossTime: number;
 }
 
+// Witness call
+
+export interface TrialWitnesses {
+  p: TrialWitnessCall;
+  d: TrialWitnessCall;
+}
+
 // Trial details used to upload to school account
 export interface TrialDetails {
   tournamentId: string;
-  round: number;
+  round: RoundNumber;
   side: Side;
-  witnesses: {
-    p: DetailsWitnessCall;
-    d: DetailsWitnessCall;
-  };
 }
 
-export type DetailsWitnessCall = [string | null, string | null, string | null];
+export type TrialWitnessCall = [string | null, string | null, string | null];
 
 export interface StatementTimeSet {
   pros: number;
@@ -71,42 +77,23 @@ export interface TrialTimes {
 }
 
 const TRIALS_KEY = 'trials';
-const TRIALS_SCHEMA_VERSION = '2.1.0';
+const TRIALS_SCHEMA_VERSION = '2.2.0';
 const TRIAL_SCHEMA_VERSION_KEY = 'trials_schema_version';
-
-function migrateSchemaVersion(oldTrials: any, oldVersion: string): Trial[] {
-  if (oldVersion === '1.0.0') {
-    return oldTrials.map((trial: any) => {
-      const newTrial: Trial = {
-        ...trial,
-        times: {
-          ...trial.times,
-          pretrial: generateEmptyStatementTimeSet(),
-        },
-        loss: trial.setup.allLoss,
-        // Version 1.0.0 only had default setups
-        setup: defaultSettings.setup,
-      };
-
-      return newTrial;
-    });
-  }
-
-  return oldTrials;
-}
 
 export async function getTrialsFromStorage(): Promise<Trial[]> {
   const trials = await AsyncStorage.getItem(TRIALS_KEY);
-  const schemaVersion = await AsyncStorage.getItem(TRIAL_SCHEMA_VERSION_KEY);
+  const storedSchemaVersion = await AsyncStorage.getItem(
+    TRIAL_SCHEMA_VERSION_KEY,
+  );
 
   if (!trials) {
     return [];
   }
 
-  if (schemaVersion !== TRIALS_SCHEMA_VERSION) {
-    const migratedTrials = migrateSchemaVersion(
+  if (storedSchemaVersion !== TRIALS_SCHEMA_VERSION) {
+    const migratedTrials = migrateTrialSchema(
       JSON.parse(trials),
-      schemaVersion,
+      storedSchemaVersion,
     );
     await AsyncStorage.setItem(TRIALS_KEY, JSON.stringify(migratedTrials));
     await AsyncStorage.setItem(TRIAL_SCHEMA_VERSION_KEY, TRIALS_SCHEMA_VERSION);
@@ -186,6 +173,7 @@ export async function createNewTrial(
   name: string,
   allLoss: number,
   flexEnabled: boolean,
+  witnesses: TrialWitnesses,
   details?: TrialDetails,
 ): Promise<Trial> {
   const id = uuid.v4() as string;
@@ -202,6 +190,7 @@ export async function createNewTrial(
     setup: { ...setup, flexEnabled },
     loss: allLoss,
     stage,
+    witnesses,
     times: generateEmptyTrialTimes(),
     details,
   };
@@ -385,8 +374,8 @@ export function validateTrialDetails(trial: Trial) {
   }
 
   const allWitnessesSet =
-    details.witnesses.p.every((w) => w !== null) &&
-    details.witnesses.d.every((w) => w !== null);
+    trial.witnesses.p.every((w) => w !== null) &&
+    trial.witnesses.d.every((w) => w !== null);
 
   return (
     details.round && details.side && details.tournamentId && allWitnessesSet

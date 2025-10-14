@@ -11,6 +11,7 @@ import {
   CreateTrialHeaderLeft,
 } from './CreateTrialHeader';
 import TrialDetails from './TrialDetails/TrialDetails';
+import { WitnessSelectorInline } from './TrialDetails/WitnessSelector/WitnessSelectorInline';
 import TrialNameInput from './TrialNameInput';
 import { RouteProps } from '../../Navigation';
 import colors from '../../constants/colors';
@@ -105,6 +106,11 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
       return;
     }
 
+    const witnesses = {
+      p: createTrialState.pWitnessCall,
+      d: createTrialState.dWitnessCall,
+    };
+
     const details = settings.schoolAccount.connected
       ? {
           round,
@@ -117,7 +123,13 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
         }
       : undefined;
 
-    const trial = await createNewTrial(name, allLossTime, flexEnabled, details);
+    const trial = await createNewTrial(
+      name,
+      allLossTime,
+      flexEnabled,
+      witnesses,
+      details,
+    );
     setTrials([...trials, trial]);
 
     navigation.goBack(); // close modal
@@ -144,6 +156,7 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
         <Text style={styles.flexEnabled}>Swing time enabled</Text>
       )}
       <TrialNameInput name={name} setName={setName} />
+
       {settings.schoolAccount.connected && (
         <TrialDetails
           showWarnings={false}
@@ -161,6 +174,8 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
           setAllLossTime={setAllLossTime}
         />
       )}
+      {!settings.schoolAccount.connected && <WitnessSelectorInline />}
+
       <Button title="Create Trial" onPress={handleCreatePress} />
     </ScrollView>
   );
@@ -168,7 +183,7 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingBottom: 30,
+    paddingBottom: 40,
   },
   flexEnabled: {
     color: 'gray',
