@@ -131,6 +131,9 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
   },
+  unselectedName: {
+    color: '#878787',
+  },
 });
 
 export default WitnessSelectorItem;
