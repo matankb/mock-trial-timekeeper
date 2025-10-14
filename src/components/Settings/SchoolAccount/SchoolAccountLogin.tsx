@@ -16,6 +16,7 @@ import Button from '../../Button';
 import Card from '../../Card';
 import Link from '../../Link';
 import Text from '../../Text';
+import TeamAccountPromo from '../../Home/Promos/TeamAccountPromo';
 
 export const schoolAccountLoginScreenOptions = {
   title: 'Connect School Account',
@@ -135,23 +136,7 @@ const SchoolAccountLogin: FC<SchoolAccountLoginProps> = ({ navigation }) => {
         />
       )}
 
-      <Card style={styles.explanation}>
-        <Text style={styles.explanationTitle}>What's this?</Text>
-        <Text>
-          Mock Trial Timer is testing school accounts that lets teams sync trial
-          times to a centralized dashboard, eliminating the need to keep track
-          of times from previous rounds by sending screenshots from the app in
-          team group chats, manual spreadsheets, or other makeshift methods.
-        </Text>
-      </Card>
-      <Link
-        title="Interested? Contact support"
-        onPress={() => {
-          Linking.openURL(
-            'mailto:205matan@gmail.com?subject=Mock Timekeeper School Account',
-          );
-        }}
-      />
+      <TeamAccountPromo />
     </View>
   );
 };
