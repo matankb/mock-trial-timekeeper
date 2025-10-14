@@ -237,7 +237,7 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
 
     // Upload the trial to the dashboard
     setUploading(true);
-    const { error } = await uploadTrialToSchoolAccount(trial);
+    const { error } = await uploadTrialToSchoolAccount(mergedTrial);
     setUploading(false);
 
     if (error) {
