@@ -9,6 +9,7 @@ import { CreateTrialContext } from '../../../context/CreateTrialContext';
 import { Side } from '../../../types/side';
 import CreateTrialSection from '../CreateTrialSection';
 import colors from '../../../constants/colors';
+import { RoundNumber } from '../../../types/round-number';
 
 interface TrialDetailsProps {
   // General
@@ -16,7 +17,7 @@ interface TrialDetailsProps {
 
   // Trial Data
   side: Side | null;
-  round: number | null;
+  round: RoundNumber | null;
 
   // UI
   showWarnings: boolean;
@@ -24,7 +25,7 @@ interface TrialDetailsProps {
 
   // Callbacks
   setSide: (side: Side | null) => void;
-  setRound: (round: number | null) => void;
+  setRound: (round: RoundNumber | null) => void;
 }
 
 const TrialDetails: FC<TrialDetailsProps> = ({

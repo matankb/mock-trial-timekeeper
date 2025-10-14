@@ -29,6 +29,7 @@ import { Side } from '../../types/side';
 import Button from '../Button';
 import Text from '../Text';
 import { FLEX_TIMING_ENABLED } from '../../constants/feature-flags';
+import { RoundNumber } from '../../types/round-number';
 
 const ALL_LOSS_MINUTES = 180;
 
@@ -64,7 +65,7 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
 
   // Trial Details State
   // If school account is not connected, these are not used
-  const [round, setRound] = useState<number | null>(null);
+  const [round, setRound] = useState<RoundNumber | null>(null);
   const [side, setSide] = useState<Side | null>(null);
   const [createTrialState, setCreateTrialState] =
     useContext(CreateTrialContext);
