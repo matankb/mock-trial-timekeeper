@@ -23,7 +23,7 @@ import colors from '../../constants/colors';
 import { ScreenName } from '../../constants/screen-names';
 import {
   CreateTrialContext,
-  emptyCreateTrialState,
+  CreateTrialState,
 } from '../../context/CreateTrialContext';
 import { Theme } from '../../types/theme';
 import { Settings, getSettings } from '../../controllers/settings';
@@ -44,6 +44,7 @@ import Text from '../Text';
 import { WitnessSelectorInline } from './TrialDetails/WitnessSelector/WitnessSelectorInline';
 import { FLEX_TIMING_ENABLED } from '../../constants/feature-flags';
 import { RoundNumber } from '../../types/round-number';
+import AllLossSelector from './AllLossSelector';
 
 type UpdateTrialProps = NativeStackScreenProps<
   RouteProps,
@@ -80,6 +81,7 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [name, setName] = useState(trial.name);
   const [flexEnabled, setFlexEnabled] = React.useState(false);
+  const [allLossTime, setAllLossTime] = useState(trial.loss);
 
   // Trial Details State
   // If school account is not connected, these are not used
@@ -189,7 +191,7 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
           )
         : undefined,
     });
-  }, [setFlexEnabled, flexEnabled]);
+  }, [setFlexEnabled, flexEnabled, navigation]);
 
   // Merge the existing trial with the new data
   const mergedTrial = useMemo(() => {
@@ -221,6 +223,8 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
     createTrialState.dWitnessCall,
     createTrialState.pWitnessCall,
     settings,
+    createTrialState.tournamentId,
+    allLossTime,
   ]);
 
   const handleSavePress = useCallback(async () => {
@@ -265,7 +269,7 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
         },
       ]);
     }
-  }, [mergedTrial]);
+  }, [mergedTrial, isBeforeUpload, navigation, setTrial]);
 
   const trialDetailsValid = useMemo(() => {
     const valid = validateTrialDetails(mergedTrial);
@@ -306,6 +310,13 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
           showWarnings={route.params.isBeforeUpload}
         />
       )}
+      {!isBeforeUpload && trial.setup.allLossEnabled && (
+        <AllLossSelector
+          allLossTime={allLossTime}
+          setAllLossTime={setAllLossTime}
+        />
+      )}
+      {!settings.schoolAccount.connected && <WitnessSelectorInline />}
       {isBeforeUpload && !uploading && (
         <Button
           title={route.params?.isBeforeUpload ? 'Save and Upload' : 'Save'}
