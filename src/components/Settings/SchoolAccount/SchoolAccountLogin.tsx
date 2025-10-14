@@ -13,10 +13,8 @@ import { setSettings } from '../../../controllers/settings';
 import { showBugReportAlert } from '../../../utils/bug-report';
 import { supabase } from '../../../utils/supabase';
 import Button from '../../Button';
-import Card from '../../Card';
-import Link from '../../Link';
-import Text from '../../Text';
 import TeamAccountPromo from '../../Home/Promos/TeamAccountPromo';
+import colors from '../../../constants/colors';
 
 export const schoolAccountLoginScreenOptions = {
   title: 'Connect School Account',
@@ -40,9 +38,9 @@ const SchoolAccountLogin: FC<SchoolAccountLoginProps> = ({ navigation }) => {
       password,
     });
 
-    setLoading(false);
-
     if (error) {
+      setLoading(false);
+
       // Handle invalid credentials separately, since this a common, expected error
       const isInvalidCredentials =
         error.message === 'Invalid login credentials';
@@ -73,6 +71,8 @@ const SchoolAccountLogin: FC<SchoolAccountLoginProps> = ({ navigation }) => {
       handleAfterLoginError(teamsError || schoolError);
       return;
     }
+
+    setLoading(false);
 
     Alert.alert(
       `Connected to ${school?.name}`,
