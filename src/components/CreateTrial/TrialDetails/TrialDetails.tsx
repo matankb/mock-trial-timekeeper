@@ -61,7 +61,7 @@ const TrialDetails: FC<TrialDetailsProps> = ({
   }, [witnessSelectedCount]);
 
   return (
-    <CreateTrialSection title="Trial Details" color="#ff9500">
+    <CreateTrialSection title="Trial Details" color={colors.ORANGE}>
       <TrialDetailsItem
         title="Tournament"
         value={tournamentName || 'Not Set'}

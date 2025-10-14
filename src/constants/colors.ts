@@ -5,4 +5,5 @@ export default {
   BRIGHT_GREEN: '#1bd195',
   RED: '#ff4444',
   BACKGROUND_GRAY: '#1c1c1e',
+  ORANGE: '#ff9500',
 };
