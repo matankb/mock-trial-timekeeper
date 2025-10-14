@@ -2,13 +2,7 @@ import { useActionSheet } from '@expo/react-native-action-sheet';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { FC, useState } from 'react';
-import {
-  TouchableOpacity,
-  Alert,
-  ActivityIndicator,
-  View,
-  StyleSheet,
-} from 'react-native';
+import { Alert, ActivityIndicator, View, StyleSheet } from 'react-native';
 
 import { RouteProps } from '../../Navigation';
 import colors from '../../constants/colors';
@@ -21,6 +15,7 @@ import {
 import { useSettings } from '../../hooks/useSettings';
 import { showBugReportAlert } from '../../utils/bug-report';
 import { supabaseDbErrorToReportableError } from '../../utils/supabase';
+import { HeaderButton } from '@react-navigation/elements';
 
 interface OptionsMenuProps {
   navigation: NativeStackNavigationProp<RouteProps>;
@@ -140,26 +135,17 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
   };
 
   return (
-    <View style={styles.container}>
-      {uploading && <ActivityIndicator size="small" color="gray" />}
-      <TouchableOpacity onPressOut={handleOptionsPress}>
+    <View>
+      <HeaderButton onPress={handleOptionsPress}>
+        {uploading && <ActivityIndicator size="small" color="gray" />}
         <MaterialCommunityIcons
           name="dots-horizontal-circle-outline"
           size={24}
           color={colors.HEADER_BLUE}
         />
-      </TouchableOpacity>
+      </HeaderButton>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-  },
-});
 
 export default OptionsMenu;
