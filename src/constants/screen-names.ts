@@ -13,6 +13,7 @@ export enum ScreenName {
   DISCLAIMER = 'disclaimer',
   AMTA_POLICY = 'amta-policy',
   SWING_TIMING_EXPLAINER = 'swing-timing-explainer',
+  TEAM_ACCOUNT_POPUP = 'team-account-popup',
 
   // Settings
   SETTINGS = 'settings',
