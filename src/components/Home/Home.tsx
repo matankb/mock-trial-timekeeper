@@ -6,12 +6,10 @@ import React, { FC, useContext } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import AirplaneModeWarning from './AirplaneModeWarning';
-import AndroidMessage from './AndroidMessage';
 import { HomeHeaderIconLeft, HomeHeaderIconRight } from './HomeHeaderIcons';
-import SwingTimingMessage from './SwingTimingMessage';
+import TeamAccountPromo from './Promos/TeamAccountPromo';
 import TrialsList from './TrialsList';
 import { RouteProps } from '../../Navigation';
-import { BETA_TEST_FORM_URL } from '../../constants/external-urls';
 import { ScreenName } from '../../constants/screen-names';
 import { TrialsContext } from '../../context/TrialsContext';
 import { Trial } from '../../controllers/trial';
@@ -74,10 +72,7 @@ const Home: FC<HomeProps> = ({ navigation, route }) => {
         />
       </View>
       <View>
-        <AndroidMessage onPress={() => Linking.openURL(BETA_TEST_FORM_URL)} />
-        <SwingTimingMessage
-          onPress={() => navigation.navigate(ScreenName.SWING_TIMING_EXPLAINER)}
-        />
+        <TeamAccountPromo />
         <AirplaneModeWarning />
       </View>
     </ScrollView>
