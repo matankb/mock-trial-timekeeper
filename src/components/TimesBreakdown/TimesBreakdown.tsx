@@ -31,7 +31,7 @@ export const timesBreakdownScreenOptions = ({
     Platform.OS === 'ios'
       ? `${route.params.trialName} Individual Times`
       : 'Individual Times',
-  headerBackTitleVisible: false,
+  headerBackButtonDisplayMode: 'minimal',
   headerRight: () => <LinkButton title="Edit" onPress={() => {}} />,
 });
 

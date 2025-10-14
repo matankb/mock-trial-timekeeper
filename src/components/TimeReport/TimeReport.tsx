@@ -31,7 +31,7 @@ export const timeReportScreenOptions = ({
   route,
 }): NativeStackNavigationOptions => ({
   title: 'Timekeeper - Time Report',
-  headerBackTitleVisible: false,
+  headerBackButtonDisplayMode: 'minimal',
 });
 
 const TimeReport: FC<TimeBreakdownProps> = ({ route }) => {
