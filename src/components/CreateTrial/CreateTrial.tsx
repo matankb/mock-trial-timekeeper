@@ -45,9 +45,12 @@ export const createTrialScreenOptions = ({
   ...(Platform.OS === 'ios' && {
     presentation: 'modal',
     headerLeft: () => <CreateTrialHeaderLeft navigation={navigation} />,
-    headerRight: () => (
-      <CreateTrialHeaderRight flexEnabled={false} onFlexToggle={() => {}} />
-    ),
+    headerRight: FLEX_TIMING_ENABLED
+      ? () => (
+          // dummy values hydrated when the component mounts
+          <CreateTrialHeaderRight onFlexToggle={() => {}} flexEnabled={false} />
+        )
+      : null,
   }),
 });
 
@@ -83,12 +86,14 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
   // Hydrate controls
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <CreateTrialHeaderRight
-          onFlexToggle={() => setFlexEnabled(!flexEnabled)}
-          flexEnabled={flexEnabled}
-        />
-      ),
+      headerRight: FLEX_TIMING_ENABLED
+        ? () => (
+            <CreateTrialHeaderRight
+              onFlexToggle={() => setFlexEnabled(!flexEnabled)}
+              flexEnabled={flexEnabled}
+            />
+          )
+        : null,
     });
   }, [setFlexEnabled, flexEnabled]);
 

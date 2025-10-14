@@ -41,10 +41,6 @@ export const CreateTrialHeaderRight: FC<CreateTrialHeaderRightProps> = ({
     );
   };
 
-  if (!FLEX_TIMING_ENABLED) {
-    return null;
-  }
-
   return (
     <TouchableOpacity onPressOut={handleOptionsPress}>
       <MaterialCommunityIcons
