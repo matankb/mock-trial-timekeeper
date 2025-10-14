@@ -54,139 +54,46 @@ const TimeBreakdown: React.FC<TimeBreakdownProps> = ({ route, navigation }) => {
     return null;
   }
 
-  const { times } = trial;
+  const handleTimeEdit = (stage: TrialStage, newTime: number) => {
+    const newTrial = calculateNewTrialTime(trial, newTime, stage);
+    setTrial(newTrial);
+  };
 
-  const createEditHandler = (stage: string): TimeEditHandler => {
-    return (newTime: number) => {
-      const newTrial = calculateNewTrialTime(trial, newTime, stage);
-      setTrial(newTrial);
-    };
+  const createTimeBreakdownSection = (
+    title: string,
+    timeSections: TimeSection[],
+  ) => {
+    return (
+      <TimesBreakdownSection
+        title={title}
+        trial={trial}
+        timeSections={timeSections}
+        onEdit={handleTimeEdit}
+        editing={editing}
+      />
+    );
   };
 
   return (
     <SafeAreaView>
       <ScrollView contentContainerStyle={styles.container}>
-        <TimesBreakdownSection
-          title="Opening Statements"
-          times={[
-            [
-              [
-                `${piSideName} Opening`,
-                times.open.pros,
-                createEditHandler('open.pros'),
-              ],
-              [
-                'Defense Opening',
-                times.open.def,
-                createEditHandler('open.def'),
-              ],
-            ],
-          ]}
-          editing={editing}
-        />
-        <TimesBreakdownSection
-          title={`${piSideName} Case in Chief`}
-          times={[
-            [
-              [
-                'Witness 1 Direct',
-                times.prosCic.witnessOne.direct,
-                createEditHandler('cic.pros.one.direct'),
-              ],
-              [
-                'Witness 1 Cross',
-                times.prosCic.witnessOne.cross,
-                createEditHandler('cic.pros.one.cross'),
-              ],
-            ],
-            [
-              [
-                'Witness 2 Direct',
-                times.prosCic.witnessTwo.direct,
-                createEditHandler('cic.pros.two.direct'),
-              ],
-              [
-                'Witness 2 Cross',
-                times.prosCic.witnessTwo.cross,
-                createEditHandler('cic.pros.two.cross'),
-              ],
-            ],
-            [
-              [
-                'Witness 3 Direct',
-                times.prosCic.witnessThree.direct,
-                createEditHandler('cic.pros.three.direct'),
-              ],
-              [
-                'Witness 3 Cross',
-                times.prosCic.witnessThree.cross,
-                createEditHandler('cic.pros.three.cross'),
-              ],
-            ],
-          ]}
-          editing={editing}
-        />
-        <TimesBreakdownSection
-          title="Defense Case in Chief"
-          times={[
-            [
-              [
-                'Witness 1 Direct',
-                times.defCic.witnessOne.direct,
-                createEditHandler('cic.def.one.direct'),
-              ],
-              [
-                'Witness 1 Cross',
-                times.defCic.witnessOne.cross,
-                createEditHandler('cic.def.one.cross'),
-              ],
-            ],
-            [
-              [
-                'Witness 2 Direct',
-                times.defCic.witnessTwo.direct,
-                createEditHandler('cic.def.two.direct'),
-              ],
-              [
-                'Witness 2 Cross',
-                times.defCic.witnessTwo.cross,
-                createEditHandler('cic.def.two.cross'),
-              ],
-            ],
-            [
-              [
-                'Witness 3 Direct',
-                times.defCic.witnessThree.direct,
-                createEditHandler('cic.def.three.direct'),
-              ],
-              [
-                'Witness 3 Cross',
-                times.defCic.witnessThree.cross,
-                createEditHandler('cic.def.three.cross'),
-              ],
-            ],
-          ]}
-          editing={editing}
-        />
-        <TimesBreakdownSection
-          title="Closing Statements"
-          times={[
-            [
-              [
-                `${piSideName} Closing`,
-                times.close.pros,
-                createEditHandler('close.pros'),
-              ],
-              [
-                'Defense Closing',
-                times.close.def,
-                createEditHandler('close.def'),
-              ],
-              ['Rebuttal', times.rebuttal, createEditHandler('rebuttal')],
-            ],
-          ]}
-          editing={editing}
-        />
+        {createTimeBreakdownSection('Opening Statements', [
+          ['open.pros', 'open.def'],
+        ])}
+        {createTimeBreakdownSection(`${piSideName} Case in Chief`, [
+          ['cic.pros.one.direct', 'cic.pros.one.cross'],
+          ['cic.pros.two.direct', 'cic.pros.two.cross'],
+          ['cic.pros.three.direct', 'cic.pros.three.cross'],
+        ])}
+        {createTimeBreakdownSection('Defense Case in Chief', [
+          ['cic.def.one.direct', 'cic.def.one.cross'],
+          ['cic.def.two.direct', 'cic.def.two.cross'],
+          ['cic.def.three.direct', 'cic.def.three.cross'],
+        ])}
+        {createTimeBreakdownSection('Closing Statements', [
+          ['close.pros', 'close.def'],
+          ['rebuttal'],
+        ])}
       </ScrollView>
     </SafeAreaView>
   );

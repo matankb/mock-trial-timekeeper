@@ -5,53 +5,67 @@ import { Theme } from '../../types/theme';
 import useTheme from '../../hooks/useTheme';
 import { formatTime } from '../../utils';
 import Card from '../Card';
-import TimeEditor, { TimeEditHandler } from '../TimeEditor/TimeEditor';
+import TimeEditor from '../TimeEditor/TimeEditor';
 import { getStageName, TrialStage } from '../../constants/trial-stages';
+import { getStageTime, Trial } from '../../controllers/trial';
 
-type TimeItem = [string, number, TimeEditHandler];
-type TimeSection = TimeItem[];
+export type TimeSection = TrialStage[];
 
 /**
- * Each TimeSectionData is a list of [name, value] pairs, and is divided visually
+ * Each TimeSection is a list of stages which are grouped visually.
  */
 interface TimesBreakdownSectionProps {
   title: string;
-  times: TimeSection[];
+  trial: Trial;
+  timeSections: TimeSection[];
   editing: boolean;
+  onEdit: (stage: TrialStage, value: number) => void;
 }
 
 const TimesBreakdownSection: FC<TimesBreakdownSectionProps> = ({
   title,
-  times,
+  trial,
+  timeSections,
   editing,
+  onEdit,
 }) => {
   const theme = useTheme();
 
-  const createTimeSection = (timeSection: TimeSection) =>
-    timeSection.map(([name, value, onEdit]) => (
-      <View style={styles.row} key={name}>
-        <Text
-          style={{
-            ...styles.name,
-            ...(theme === Theme.DARK && { color: 'white' }),
-          }}
-        >
-          {name}
-        </Text>
-        {editing ? (
-          <TimeEditor value={value} name={name} onChange={onEdit} />
-        ) : (
+  const createTimeSection = (stages: TrialStage[]) => {
+    return stages.map((stage) => {
+      const name = getStageName(stage, trial);
+      const value = getStageTime(trial, stage);
+
+      return (
+        <View style={styles.row} key={stage}>
           <Text
             style={{
-              ...styles.time,
+              ...styles.name,
               ...(theme === Theme.DARK && { color: 'white' }),
             }}
           >
-            {formatTime(value)}
+            {name}
           </Text>
-        )}
-      </View>
-    ));
+          {editing ? (
+            <TimeEditor
+              value={value}
+              name={stage}
+              onChange={(newTime) => onEdit(stage, newTime)}
+            />
+          ) : (
+            <Text
+              style={{
+                ...styles.time,
+                ...(theme === Theme.DARK && { color: 'white' }),
+              }}
+            >
+              {formatTime(value)}
+            </Text>
+          )}
+        </View>
+      );
+    });
+  };
 
   return (
     <Card>
@@ -63,7 +77,7 @@ const TimesBreakdownSection: FC<TimesBreakdownSectionProps> = ({
       >
         {title}
       </Text>
-      {times.map((timeSection, i) => (
+      {timeSections.map((stages, i) => (
         <View key={i}>
           {i > 0 && (
             <View
@@ -73,7 +87,7 @@ const TimesBreakdownSection: FC<TimesBreakdownSectionProps> = ({
               }}
             />
           )}
-          {createTimeSection(timeSection)}
+          {createTimeSection(stages)}
         </View>
       ))}
     </Card>

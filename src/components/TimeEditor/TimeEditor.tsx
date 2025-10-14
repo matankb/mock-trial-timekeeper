@@ -11,12 +11,10 @@ import {
 import TimeEditorAndroidDialog from './TimeEditorAndroidDialog';
 import { pad } from '../../utils';
 
-export type TimeEditHandler = (newValue: number) => any;
-
 interface TimeEditorProps {
   value: number; // time in seconds
   name: string; // name of stage
-  onChange: TimeEditHandler;
+  onChange: (newValue: number) => void;
 }
 
 const TimeEditor: FC<TimeEditorProps> = ({ value, name, onChange }) => {
