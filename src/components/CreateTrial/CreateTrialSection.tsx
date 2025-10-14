@@ -3,12 +3,14 @@ import { View, StyleSheet, Text } from 'react-native';
 
 interface CreateTrialSectionProps {
   title: string;
+  subtitle?: string;
   color: string;
   children: React.ReactNode;
 }
 
 const CreateTrialSection: FC<CreateTrialSectionProps> = ({
   title,
+  subtitle,
   color,
   children,
 }) => {
@@ -21,6 +23,7 @@ const CreateTrialSection: FC<CreateTrialSectionProps> = ({
     <View style={styles.container}>
       <View style={headerStyles}>
         <Text style={styles.headerText}>{title}</Text>
+        {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
       </View>
       {children}
     </View>
@@ -39,6 +42,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 2,
     paddingLeft: 10,
     borderTopRightRadius: 10,
@@ -50,6 +54,11 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     fontWeight: 'bold',
     paddingBottom: 10,
+    color: 'white',
+  },
+  subtitle: {
+    fontSize: 16,
+    fontWeight: 'normal',
     color: 'white',
   },
 });
