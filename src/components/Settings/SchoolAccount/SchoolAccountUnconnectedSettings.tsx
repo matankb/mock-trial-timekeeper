@@ -3,10 +3,11 @@
  */
 import { MaterialIcons } from '@expo/vector-icons';
 import { FC } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import Text from '../../Text';
 import SettingSection from '../SettingSection';
+import TeamAccountPromo from '../../Home/Promos/TeamAccountPromo';
 
 interface SchoolAccountUnconnectedSettingsProps {
   onPress: () => void;
@@ -17,6 +18,9 @@ const SchoolAccountUnconnectedSettings: FC<
 > = ({ onPress }) => {
   return (
     <SettingSection title="School Account">
+      <View style={styles.promoContainer}>
+        <TeamAccountPromo inline />
+      </View>
       <TouchableOpacity style={styles.container} onPress={onPress}>
         <Text style={styles.text}>Connect Account</Text>
         <MaterialIcons name="navigate-next" size={28} color="gray" />
@@ -29,6 +33,10 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  promoContainer: {
+    paddingHorizontal: 10,
+    paddingBottom: 10,
   },
   text: {
     fontSize: 16,
