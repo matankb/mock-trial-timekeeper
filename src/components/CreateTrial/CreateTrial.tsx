@@ -122,10 +122,6 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
           round,
           side,
           tournamentId: createTrialState.tournamentId,
-          witnesses: {
-            p: createTrialState.pWitnessCall,
-            d: createTrialState.dWitnessCall,
-          },
         }
       : undefined;
 
