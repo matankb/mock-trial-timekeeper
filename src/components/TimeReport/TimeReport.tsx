@@ -4,24 +4,14 @@
  * ! Important: Currently ONLY FOR FLEX TRIALS, normal trials have a different form.
  */
 
-import {
-  NativeStackNavigationOptions,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack';
 import { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
 import useTrial from '../../hooks/useTrial';
 import { piSideName } from '../../utils';
 import Text from '../Text';
-import { ScreenNavigationOptions } from '../../types/navigation';
-
-type TimeBreakdownProps = NativeStackScreenProps<
-  RouteProps,
-  ScreenName.TIMES_BREAKDOWN
->;
+import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
 
 export interface TimeReportRouteProps {
   trialId: string;
@@ -34,7 +24,9 @@ export const timeReportScreenOptions: ScreenNavigationOptions<ScreenName.TIMEKEE
     headerBackButtonDisplayMode: 'minimal',
   };
 
-const TimeReport: FC<TimeBreakdownProps> = ({ route }) => {
+const TimeReport: FC<ScreenProps<ScreenName.TIMEKEEPER_REPORT>> = ({
+  route,
+}) => {
   const [trial] = useTrial(route.params.trialId);
 
   const createGridCell = (

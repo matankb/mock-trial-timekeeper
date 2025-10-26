@@ -7,13 +7,15 @@ import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
 import { Trial } from '../../controllers/trial';
 import { useProvidedContext } from '../../context/ContextProvider';
+import { ScreenNavigationOptions } from '../../types/navigation';
 
 type AllTrialsProps = NativeStackScreenProps<RouteProps, ScreenName.ALL_TRIALS>;
 
-export const allTrialsScreenOptions = {
-  title: 'All Trials',
-  headerBackTitle: 'Home',
-};
+export const allTrialsScreenOptions: ScreenNavigationOptions<ScreenName.ALL_TRIALS> =
+  {
+    title: 'All Trials',
+    headerBackTitle: 'Home',
+  };
 
 const AllTrials: FC<AllTrialsProps> = ({ navigation }) => {
   const {

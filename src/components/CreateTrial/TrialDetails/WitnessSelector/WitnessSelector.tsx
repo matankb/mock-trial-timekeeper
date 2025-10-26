@@ -1,26 +1,11 @@
 import React, { FC } from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import WitnessSelectorCard from './WitnessSelectorCard';
 import colors from '../../../../constants/colors';
 import { TrialWitnessCall } from '../../../../controllers/trial';
 import { Side } from '../../../../types/side';
-import LinkButton from '../../../LinkButton';
 import { useProvidedContext } from '../../../../context/ContextProvider';
-import { ScreenNavigationOptions } from '../../../../types/navigation';
-import { ScreenName } from '../../../../constants/screen-names';
-
-export const witnessSelectorScreenOptions: ScreenNavigationOptions<
-  ScreenName.WITNESS_SELECTOR
-> = ({ navigation }) => ({
-  title: 'Select Witness',
-  ...(Platform.OS === 'ios' && {
-    presentation: 'modal',
-    headerRight: () => (
-      <LinkButton title="Done" onPress={() => navigation.goBack()} />
-    ),
-  }),
-});
 
 interface WitnessSelectorProps {
   inline?: boolean;
