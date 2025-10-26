@@ -1,10 +1,10 @@
 import { Feather } from '@expo/vector-icons';
 import { getNetworkStateAsync, isAirplaneModeEnabledAsync } from 'expo-network';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { View, StyleSheet, Alert, Platform } from 'react-native';
 
 import overrideWarningText from './override-warning';
-import { AirplaneBlockerContext } from '../../../context/AirplaneBlockerContext';
+import { useProvidedContext } from '../../../context/ContextProvider';
 import { Theme } from '../../../types/theme';
 import useTheme from '../../../hooks/useTheme';
 import Button from '../../Button';
@@ -19,9 +19,9 @@ const AirplaneModeBlocker: FC<AirplaneModeBlockerProps> = ({ children }) => {
   const theme = useTheme();
 
   const [showWarning, setShowWarning] = useState(false);
-  const [airplaneBlockerState, setAirplaneBlockerState] = useContext(
-    AirplaneBlockerContext,
-  );
+  const {
+    airplaneBlocker: { airplaneBlockerState, setAirplaneBlockerState },
+  } = useProvidedContext();
 
   const checkNetworkConnected = async () => {
     if (Platform.OS === 'android') {
@@ -29,7 +29,7 @@ const AirplaneModeBlocker: FC<AirplaneModeBlockerProps> = ({ children }) => {
       setShowWarning(!airplaneMode);
     } else {
       const network = await getNetworkStateAsync();
-      setShowWarning(network.isConnected);
+      setShowWarning(!!network.isConnected);
     }
   };
 

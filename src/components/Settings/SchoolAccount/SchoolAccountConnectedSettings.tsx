@@ -3,7 +3,6 @@
  */
 
 import { Entypo } from '@expo/vector-icons';
-import { PostgrestError } from '@supabase/supabase-js';
 import { FC, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
@@ -44,7 +43,7 @@ const SchoolAccountConnectedSettings: FC<
   // UI State
   const [loading, setLoading] = useState(false);
   const [teamPickerVisible, setTeamPickerVisible] = useState(false);
-  const [error, setError] = useState<PostgrestError | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   const getSchoolData = async () => {
     setLoading(true);
@@ -55,7 +54,12 @@ const SchoolAccountConnectedSettings: FC<
     setLoading(false);
 
     if (error) {
-      setError(error);
+      setError(supabaseDbErrorToReportableError(error));
+      return;
+    }
+
+    if (!data) {
+      setError(new Error('School data returned as undefined'));
       return;
     }
 
@@ -105,12 +109,12 @@ const SchoolAccountConnectedSettings: FC<
         </View>
       </Option>
 
-      {teams && (
+      {teams && teamOptions && (
         <Picker
           title="Select Team"
           visible={teamPickerVisible}
           items={teamOptions}
-          selected={schoolAccountSettings.teamId}
+          selected={schoolAccountSettings.teamId ?? undefined}
           onSelect={(teamId) =>
             handleSchoolAccountSettingsChange({
               connected: true,
@@ -124,13 +128,13 @@ const SchoolAccountConnectedSettings: FC<
       {error && (
         <View>
           <Text style={styles.error}>
-            There was a problem loading your school's teams. Please try again,
-            or contact support.
+            There was a problem loading your school&apos;s teams. Please try
+            again, or contact support.
           </Text>
           <LinkButton
             title="Contact Support"
             onPress={() => {
-              openBugReportEmail(supabaseDbErrorToReportableError(error));
+              openBugReportEmail(error);
             }}
           />
         </View>

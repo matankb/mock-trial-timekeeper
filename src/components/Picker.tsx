@@ -16,7 +16,7 @@ type PickerItem<T> = { label: string; value: T };
 interface PickerProps<T> {
   title: string;
   items: PickerItem<T>[];
-  selected: T;
+  selected?: T;
   visible: boolean;
   onSelect: (value: T) => void;
   onClose: () => void;
@@ -53,7 +53,6 @@ const Picker = <T extends React.Key>({
         </TouchableOpacity>
       </View>
 
-      {/* <View style={styles.pickerContainer}> */}
       <NativePicker
         selectedValue={selected}
         onValueChange={onSelect}
@@ -67,7 +66,6 @@ const Picker = <T extends React.Key>({
           />
         ))}
       </NativePicker>
-      {/* </View> */}
     </Modal>
   );
 };

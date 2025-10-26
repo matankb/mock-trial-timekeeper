@@ -16,6 +16,7 @@ import { ScreenName } from '../../constants/screen-names';
 import useTrial from '../../hooks/useTrial';
 import { piSideName } from '../../utils';
 import Text from '../Text';
+import { ScreenNavigationOptions } from '../../types/navigation';
 
 type TimeBreakdownProps = NativeStackScreenProps<
   RouteProps,
@@ -27,12 +28,11 @@ export interface TimeReportRouteProps {
   trialName: string;
 }
 
-export const timeReportScreenOptions = ({
-  route,
-}): NativeStackNavigationOptions => ({
-  title: 'Timekeeper - Time Report',
-  headerBackButtonDisplayMode: 'minimal',
-});
+export const timeReportScreenOptions: ScreenNavigationOptions<ScreenName.TIMEKEEPER_REPORT> =
+  {
+    title: 'Timekeeper - Time Report',
+    headerBackButtonDisplayMode: 'minimal',
+  };
 
 const TimeReport: FC<TimeBreakdownProps> = ({ route }) => {
   const [trial] = useTrial(route.params.trialId);

@@ -1,10 +1,9 @@
 import { Entypo } from '@expo/vector-icons';
 import { Picker as NativePicker } from '@react-native-picker/picker';
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import {
   Alert,
   AlertButton,
-  AlertOptions,
   Platform,
   StyleSheet,
   TouchableOpacity,
@@ -15,18 +14,18 @@ import {
   PLAINTIFF_WITNESSES,
   SWING_WITNESSES,
 } from '../../../../constants/witnesses';
-import { CreateTrialContext } from '../../../../context/CreateTrialContext';
 import { Theme } from '../../../../types/theme';
 import useTheme from '../../../../hooks/useTheme';
 import { Side } from '../../../../types/side';
 import { getSideName } from '../../../../utils';
 import Text from '../../../Text';
+import { useProvidedContext } from '../../../../context/ContextProvider';
 
 interface WitnessSelectorItemProps {
   side: Side;
   position: number;
   witness: string | null;
-  onSelect: (newWitness: string) => void;
+  onSelect: (newWitness: string | null) => void;
   inline?: boolean;
 }
 
@@ -51,8 +50,12 @@ const WitnessSelectorItem: FC<WitnessSelectorItemProps> = ({
 }) => {
   const theme = useTheme();
 
-  const [{ pWitnessCall, dWitnessCall }] = useContext(CreateTrialContext);
-  const selected = [...pWitnessCall, ...dWitnessCall];
+  const {
+    createTrial: {
+      createTrialState: { pWitnessCall, dWitnessCall },
+    },
+  } = useProvidedContext();
+  const selected = [...pWitnessCall, ...dWitnessCall].filter((w) => w !== null);
 
   const label = witness
     ? `${position + 1}. ${witness}`
@@ -60,7 +63,6 @@ const WitnessSelectorItem: FC<WitnessSelectorItemProps> = ({
 
   // On iOS, show a modal with the list of available witnesses
   const showWitnessOptions = () => {
-    const selected = [...pWitnessCall, ...dWitnessCall];
     const witnesses = getAvailableWitnesses(side, selected);
     const name = `${getSideName(side)} Witness #${position + 1}`;
 

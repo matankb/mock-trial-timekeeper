@@ -17,15 +17,22 @@ export type TimeSection = TrialStage[];
 interface TimesBreakdownSectionProps {
   title: string;
   trial: Trial;
+
+  // Each time section is a list of stages which are grouped visually.
   timeSections: TimeSection[];
-  editing: boolean;
-  onEdit: (stage: TrialStage, value: number) => void;
+  // If true, the stage names are minimal (see getStageName for more details)
+  minimalStageNames?: boolean;
+
+  editing?: boolean;
+  onEdit?: (stage: TrialStage, value: number) => void;
 }
 
 const TimesBreakdownSection: FC<TimesBreakdownSectionProps> = ({
   title,
   trial,
   timeSections,
+  summaryItems,
+  minimalStageNames,
   editing,
   onEdit,
 }) => {
@@ -49,8 +56,8 @@ const TimesBreakdownSection: FC<TimesBreakdownSectionProps> = ({
           {editing ? (
             <TimeEditor
               value={value}
-              name={stage}
-              onChange={(newTime) => onEdit(stage, newTime)}
+              name={name}
+              onChange={(newTime) => onEdit?.(stage, newTime)}
             />
           ) : (
             <Text
@@ -67,6 +74,29 @@ const TimesBreakdownSection: FC<TimesBreakdownSectionProps> = ({
     });
   };
 
+  const createSummaryItem = (item: SumnmaryItem) => {
+    const [label, value] = item;
+    return (
+      <View style={styles.row} key={label}>
+        <Text style={[styles.name, styles.summaryValue]}>{label}</Text>
+        <Text style={[styles.time, styles.summaryValue]}>
+          {formatTime(value)}
+        </Text>
+      </View>
+    );
+  };
+
+  const createDivider = () => {
+    return (
+      <View
+        style={{
+          ...styles.divider,
+          ...(theme === Theme.DARK && { borderColor: 'gray' }),
+        }}
+      />
+    );
+  };
+
   return (
     <Card>
       <Text
@@ -79,14 +109,7 @@ const TimesBreakdownSection: FC<TimesBreakdownSectionProps> = ({
       </Text>
       {timeSections.map((stages, i) => (
         <View key={i}>
-          {i > 0 && (
-            <View
-              style={{
-                ...styles.divider,
-                ...(theme === Theme.DARK && { borderColor: 'gray' }),
-              }}
-            />
-          )}
+          {i > 0 && createDivider()}
           {createTimeSection(stages)}
         </View>
       ))}

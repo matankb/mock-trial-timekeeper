@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Appearance } from 'react-native';
 
 import {
@@ -7,12 +7,8 @@ import {
 } from '../controllers/settings';
 import { Theme } from '../types/theme';
 
-type ThemeContextType = ReturnType<typeof useState<Theme>>;
-
-export const ThemeContext = createContext<ThemeContextType>(null);
-
-export const useThemeContextInitializer = (): ThemeContextType => {
-  const [theme, setTheme] = useState<Theme>();
+export const useThemeContextInitializer = () => {
+  const [theme, setTheme] = useState<Theme | null>(null);
 
   useEffect(() => {
     getSettings().then((settings) => {
@@ -26,5 +22,8 @@ export const useThemeContextInitializer = (): ThemeContextType => {
     });
   }, []);
 
-  return [theme, setTheme];
+  return {
+    theme,
+    setTheme,
+  };
 };

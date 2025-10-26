@@ -15,9 +15,7 @@ import { TrialsContext } from '../../context/TrialsContext';
 import { Trial } from '../../controllers/trial';
 import Button from '../Button';
 
-type HomeProps = NativeStackScreenProps<RouteProps, ScreenName.HOME>;
-
-export const homeScreenOptions = (): NativeStackNavigationOptions => ({
+export const homeScreenOptions: ScreenNavigationOptions<ScreenName.HOME> = {
   title: 'Mock Trial Timekeeper',
   headerTitleAlign: 'center',
 });
@@ -34,6 +32,10 @@ const Home: FC<HomeProps> = ({ navigation, route }) => {
     });
   };
 
+const Home: FC<ScreenProps<ScreenName.HOME>> = ({ navigation, route }) => {
+  const {
+    trials: { trials },
+  } = useProvidedContext();
   // This is a workaround to prevent a known issue
   // Ideally, options would be set in homeScreenOptions
   // see: https://github.com/react-navigation/react-navigation/issues/8657

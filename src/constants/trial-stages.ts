@@ -61,7 +61,7 @@ const getWitnessName = (trial: Trial, stage: TrialStage, side: Side) => {
   const { witnesses } = trial;
   const sideName = getSideName(side);
 
-  const witnessNameMap = {
+  const witnessNameMap: Partial<Record<TrialStage, string | null>> = {
     'cic.pros.one.direct': witnesses.p[0],
     'cic.pros.one.cross': witnesses.p[0],
     'cic.pros.two.direct': witnesses.p[1],
@@ -100,20 +100,28 @@ export const getCurrentStageName = (trial: Trial) => {
   return getStageName(stage, trial);
 };
 
-export const getStageName = (stage: TrialStage, trial: Trial) => {
+/**
+ *
+ * @param minimal - If true, the side name and examination type is omitted. e.g., "Opening", "Witness #1" vs "Opening Statement", "Prosecution Witness #1"
+ */
+export const getStageName = (
+  stage: TrialStage,
+  trial: Trial,
+  minimal: boolean = false,
+) => {
   const side: Side = stage.includes('pros') ? 'p' : 'd';
   const sideName = getSideName(side);
 
   if (stage.startsWith('pretrial')) {
-    return `${sideName} Pretrial`;
+    return minimal ? 'Pretrial' : `${sideName} Pretrial`;
   } else if (stage.startsWith('cic')) {
     const examination = stage.includes('direct') ? 'Direct' : 'Cross';
     const name = getWitnessName(trial, stage, side);
-    return `${name} - ${examination}`;
+    return minimal ? name : `${name} - ${examination}`;
   } else if (stage.startsWith('open')) {
-    return `${sideName} Opening`;
+    return minimal ? 'Opening' : `${sideName} Opening`;
   } else if (stage.startsWith('close')) {
-    return `${sideName} Closing`;
+    return minimal ? 'Closing' : `${sideName} Closing`;
   } else if (stage.startsWith('rebuttal')) {
     return 'Rebuttal';
   }

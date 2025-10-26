@@ -4,6 +4,7 @@ import { Appearance } from 'react-native';
 import { Theme } from '../types/theme';
 import { TrialSetup } from './trial';
 import { duration } from '../utils';
+import { DeepNonNullable } from 'utility-types';
 
 // settings theme is distinct from the themecontext theme,
 // because settings theme can include auto, but the context
@@ -14,11 +15,12 @@ export enum SettingsTheme {
   AUTO = 'auto',
 }
 
-export type SettingsSetup = Omit<TrialSetup, 'flexEnabled'>; // since flex is enabled on a per-tournament basis, it's not a setting
+// since flex is enabled on a per-tournament basis, it's not a setting
+export type SettingsSetup = DeepNonNullable<Omit<TrialSetup, 'flexEnabled'>>;
 
 export interface SettingsSchoolAccount {
   connected: boolean;
-  teamId: string;
+  teamId: string | null;
 }
 
 export interface Settings {
@@ -71,7 +73,9 @@ export async function getSettings(): Promise<Settings> {
   const settings = await AsyncStorage.getItem('settings');
   const schemaVersion = await AsyncStorage.getItem(SETTINGS_SCHEMA_VERSION_KEY);
 
-  if (!settings) {
+  // if the schema version is missing, then we won't be able to migrate/recover
+  // the stored settings, so return the default settings
+  if (!settings || schemaVersion === null) {
     return defaultSettings;
   }
 

@@ -1,8 +1,4 @@
-import {
-  NativeStackNavigationOptions,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Platform, StyleSheet, Alert, ScrollView } from 'react-native';
 
 import AllLossSelector from './AllLossSelector';
@@ -13,16 +9,10 @@ import {
 import TrialDetails from './TrialDetails/TrialDetails';
 import { WitnessSelectorInline } from './TrialDetails/WitnessSelector/WitnessSelectorInline';
 import TrialNameInput from './TrialNameInput';
-import { RouteProps } from '../../Navigation';
 import colors from '../../constants/colors';
 import { ScreenName } from '../../constants/screen-names';
-import {
-  CreateTrialContext,
-  emptyCreateTrialState,
-} from '../../context/CreateTrialContext';
+import { emptyCreateTrialState } from '../../context/CreateTrialContext';
 import { Theme } from '../../types/theme';
-import { TrialsContext } from '../../context/TrialsContext';
-import { Settings, getSettings } from '../../controllers/settings';
 import { createNewTrial } from '../../controllers/trial';
 import useTheme from '../../hooks/useTheme';
 import { Side } from '../../types/side';
@@ -30,17 +20,15 @@ import Button from '../Button';
 import Text from '../Text';
 import { FLEX_TIMING_ENABLED } from '../../constants/feature-flags';
 import { RoundNumber } from '../../types/round-number';
+import { useProvidedContext } from '../../context/ContextProvider';
+import { useSettings } from '../../hooks/useSettings';
+import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
 
 const ALL_LOSS_MINUTES = 180;
 
-type CreateTrialProps = NativeStackScreenProps<
-  RouteProps,
+export const createTrialScreenOptions: ScreenNavigationOptions<
   ScreenName.CREATE_TRIAL
->;
-
-export const createTrialScreenOptions = ({
-  navigation,
-}): NativeStackNavigationOptions => ({
+> = ({ navigation }) => ({
   title: 'Create Trial',
   ...(Platform.OS === 'ios' && {
     presentation: 'modal',
@@ -50,16 +38,23 @@ export const createTrialScreenOptions = ({
           // dummy values hydrated when the component mounts
           <CreateTrialHeaderRight onFlexToggle={() => {}} flexEnabled={false} />
         )
-      : null,
+      : undefined,
   }),
 });
 
-const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
+const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
+  navigation,
+}) => {
   const theme = useTheme();
 
   // Create Trial State
-  const [settings, setSettings] = useState<Settings>(null);
-  const [trials, setTrials] = useContext(TrialsContext);
+  const settings = useSettings();
+
+  const {
+    trials: { trials, setTrials },
+    createTrial: { createTrialState, setCreateTrialState },
+  } = useProvidedContext();
+
   const [name, setName] = useState('');
   const [flexEnabled, setFlexEnabled] = React.useState(false);
   const [allLossTime, setAllLossTime] = React.useState(
@@ -70,13 +65,6 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
   // If school account is not connected, these are not used
   const [round, setRound] = useState<RoundNumber | null>(null);
   const [side, setSide] = useState<Side | null>(null);
-  const [createTrialState, setCreateTrialState] =
-    useContext(CreateTrialContext);
-
-  // Load settings
-  useEffect(() => {
-    getSettings().then(setSettings);
-  }, []);
 
   // Reset the context state on load
   useEffect(() => {
@@ -93,9 +81,9 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
               flexEnabled={flexEnabled}
             />
           )
-        : null,
+        : undefined,
     });
-  }, [setFlexEnabled, flexEnabled]);
+  }, [setFlexEnabled, flexEnabled, navigation]);
 
   const validateInputs = () => {
     if (name === '') {
@@ -106,6 +94,12 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
   };
 
   const handleCreatePress = async () => {
+    if (!trials) {
+      throw new Error(
+        'Attempting to create trial, but trials have not been loaded in context.',
+      );
+    }
+
     const error = validateInputs();
     if (error) {
       Alert.alert('Error', error);
@@ -117,7 +111,7 @@ const CreateTrial: FC<CreateTrialProps> = ({ navigation }) => {
       d: createTrialState.dWitnessCall,
     };
 
-    const details = settings.schoolAccount.connected
+    const details = settings?.schoolAccount?.connected
       ? {
           round,
           side,

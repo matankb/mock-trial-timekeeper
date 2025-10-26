@@ -1,17 +1,18 @@
-import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
 
 import WitnessSelectorCard from './WitnessSelectorCard';
 import colors from '../../../../constants/colors';
-import { CreateTrialContext } from '../../../../context/CreateTrialContext';
 import { TrialWitnessCall } from '../../../../controllers/trial';
 import { Side } from '../../../../types/side';
 import LinkButton from '../../../LinkButton';
+import { useProvidedContext } from '../../../../context/ContextProvider';
+import { ScreenNavigationOptions } from '../../../../types/navigation';
+import { ScreenName } from '../../../../constants/screen-names';
 
-export const witnessSelectorScreenOptions = ({
-  navigation,
-}): NativeStackNavigationOptions => ({
+export const witnessSelectorScreenOptions: ScreenNavigationOptions<
+  ScreenName.WITNESS_SELECTOR
+> = ({ navigation }) => ({
   title: 'Select Witness',
   ...(Platform.OS === 'ios' && {
     presentation: 'modal',
@@ -26,8 +27,9 @@ interface WitnessSelectorProps {
 }
 
 const WitnessSelector: FC<WitnessSelectorProps> = ({ inline }) => {
-  const [createTrialState, setCreateTrialState] =
-    useContext(CreateTrialContext);
+  const {
+    createTrial: { createTrialState, setCreateTrialState },
+  } = useProvidedContext();
 
   const { pWitnessCall, dWitnessCall } = createTrialState;
 
@@ -35,7 +37,7 @@ const WitnessSelector: FC<WitnessSelectorProps> = ({ inline }) => {
   const generateWitnessCall = (
     call: TrialWitnessCall,
     position: number,
-    witness: string,
+    witness: string | null,
   ): TrialWitnessCall => {
     const newCall: TrialWitnessCall = [...call];
     newCall[position] = witness;
@@ -45,7 +47,7 @@ const WitnessSelector: FC<WitnessSelectorProps> = ({ inline }) => {
   const handleWitnessSelect = (
     side: Side,
     position: number,
-    witness: string,
+    witness: string | null,
   ) => {
     if (side === 'p') {
       setCreateTrialState((oldState) => {
@@ -60,13 +62,11 @@ const WitnessSelector: FC<WitnessSelectorProps> = ({ inline }) => {
     } else if (side === 'd') {
       setCreateTrialState((oldState) => {
         const newState = { ...oldState };
-        const newDWitnessCall: [string, string, string] = [
-          newState.dWitnessCall[0],
-          newState.dWitnessCall[1],
-          newState.dWitnessCall[2],
-        ];
-        newDWitnessCall[position] = witness;
-        newState.dWitnessCall = newDWitnessCall;
+        newState.dWitnessCall = generateWitnessCall(
+          oldState.dWitnessCall,
+          position,
+          witness,
+        );
         return newState;
       });
     }

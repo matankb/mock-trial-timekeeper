@@ -42,7 +42,7 @@ const RoundSelector = ({ round, onSelect, warning }: RoundSelectorProps) => {
       key="round-picker"
       title="Select Round"
       items={roundOptionsArray}
-      selected={round}
+      selected={round ?? undefined}
       onSelect={onSelect}
       onClose={() => setOpen(false)}
       visible={open}

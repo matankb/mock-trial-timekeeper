@@ -2,50 +2,15 @@ import React, { FC } from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import TimeSummary, { TimeSummaryRowType } from './TimeSummary';
-import { Trial } from '../../../controllers/trial';
+import { getTotalTimes, Trial } from '../../../controllers/trial';
 
 interface TimeSummariesProps {
   trial: Trial;
 }
 
 const TimeSummaries: FC<TimeSummariesProps> = ({ trial }) => {
-  const { setup, times } = trial;
-
-  const prosecutionTimeRemaining = {
-    pretrial: setup.pretrialTime - times.pretrial.pros,
-    statements:
-      setup.statementTime -
-      (times.open.pros + times.close.pros + times.rebuttal),
-    open: setup.openTime - times.open.pros,
-    close: setup.closeTime - times.close.pros,
-    direct:
-      setup.directTime -
-      (times.prosCic.witnessOne.direct +
-        times.prosCic.witnessTwo.direct +
-        times.prosCic.witnessThree.direct),
-    cross:
-      setup.crossTime -
-      (times.defCic.witnessOne.cross +
-        times.defCic.witnessTwo.cross +
-        times.defCic.witnessThree.cross),
-  };
-
-  const defenseTimeRemaining = {
-    pretrial: setup.pretrialTime - times.pretrial.def,
-    statements: setup.statementTime - (times.open.def + times.close.def),
-    open: setup.openTime - times.open.def,
-    close: setup.closeTime - times.close.def,
-    direct:
-      setup.directTime -
-      (times.defCic.witnessOne.direct +
-        times.defCic.witnessTwo.direct +
-        times.defCic.witnessThree.direct),
-    cross:
-      setup.crossTime -
-      (times.prosCic.witnessOne.cross +
-        times.prosCic.witnessTwo.cross +
-        times.prosCic.witnessThree.cross),
-  };
+  const { setup } = trial;
+  const totalTimes = getTotalTimes(trial);
 
   const getHighlightedRow = (side: string) => {
     const isPretrial =
@@ -79,7 +44,7 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial }) => {
       return TimeSummaryRowType.Cross;
     }
 
-    return null;
+    return undefined;
   };
 
   return (
@@ -87,13 +52,13 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial }) => {
       <TimeSummary
         side="p"
         highlightRow={getHighlightedRow('pros')}
-        timeRemaining={prosecutionTimeRemaining}
+        timeRemaining={totalTimes.p.remaining}
         setup={setup}
       />
       <TimeSummary
         side="d"
         highlightRow={getHighlightedRow('def')}
-        timeRemaining={defenseTimeRemaining}
+        timeRemaining={totalTimes.d.remaining}
         setup={setup}
       />
     </View>

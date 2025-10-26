@@ -5,9 +5,9 @@ import Option from './Option';
 import SettingSection from './SettingSection';
 import colors from '../../constants/colors';
 import { defaultSettings, SettingsSetup } from '../../controllers/settings';
-import { TrialSetup } from '../../controllers/trial';
 import LinkButton from '../LinkButton';
 import TimeEditor from '../TimeEditor/TimeEditor';
+import { PickByValue } from 'utility-types';
 
 interface SetupSettingsProps {
   setup: SettingsSetup;
@@ -20,11 +20,11 @@ const SetupSettings: FC<SetupSettingsProps> = ({
 }) => {
   const createSetupToggleOption = (
     name: string,
-    property: keyof TrialSetup,
+    property: keyof PickByValue<SettingsSetup, boolean>,
   ) => (
     <Option name={name}>
       <Switch
-        value={setup[property] as boolean}
+        value={setup[property]}
         onValueChange={() => {
           handleSetupChange({ ...setup, [property]: !setup[property] });
         }}
@@ -33,10 +33,13 @@ const SetupSettings: FC<SetupSettingsProps> = ({
     </Option>
   );
 
-  const createSetupTimeOption = (name: string, property: keyof TrialSetup) => (
+  const createSetupTimeOption = (
+    name: string,
+    property: keyof PickByValue<SettingsSetup, number>,
+  ) => (
     <Option name={name}>
       <TimeEditor
-        value={setup[property] as number}
+        value={setup[property]}
         name={name}
         onChange={(value) => {
           handleSetupChange({ ...setup, [property]: value });

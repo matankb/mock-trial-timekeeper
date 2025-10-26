@@ -1,13 +1,15 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { FC } from 'react';
-import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary';
-import { Linking, StyleSheet, Text, View } from 'react-native';
+import {
+  ErrorBoundary as ErrorBoundaryComponent,
+  FallbackProps,
+} from 'react-error-boundary';
+import { StyleSheet, Text, View } from 'react-native';
 
 import Button from './Button';
 import { openBugReportEmail } from '../utils/bug-report';
 
-const ErrorFallback = ({ error, resetErrorBoundary }) => {
-  // reset: clear loaded trials, go back home
+const ErrorFallback = ({ error }: FallbackProps) => {
   return (
     <View style={styles.container}>
       <MaterialIcons

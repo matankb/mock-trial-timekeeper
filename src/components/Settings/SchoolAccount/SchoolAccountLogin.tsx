@@ -15,13 +15,14 @@ import { supabase } from '../../../utils/supabase';
 import Button from '../../Button';
 import TeamAccountPromo from '../../Home/Promos/TeamAccountPromo';
 import colors from '../../../constants/colors';
+import { NavigationProp } from '../../../types/navigation';
 
 export const schoolAccountLoginScreenOptions = {
   title: 'Connect School Account',
 };
 
 interface SchoolAccountLoginProps {
-  navigation: NativeStackNavigationProp<any>;
+  navigation: NavigationProp<ScreenName.SCHOOL_ACCOUNT_LOGIN>;
 }
 
 const SchoolAccountLogin: FC<SchoolAccountLoginProps> = ({ navigation }) => {
@@ -67,8 +68,9 @@ const SchoolAccountLogin: FC<SchoolAccountLoginProps> = ({ navigation }) => {
       .select('name')
       .single();
 
-    if (teamsError || schoolError) {
-      handleAfterLoginError(teamsError || schoolError);
+    const afterLoginError = teamsError || schoolError;
+    if (afterLoginError) {
+      handleAfterLoginError(afterLoginError);
       return;
     }
 

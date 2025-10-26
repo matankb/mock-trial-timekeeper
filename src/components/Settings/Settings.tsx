@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useContext, useEffect, useState, FC } from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 
 import AppearenceSettings from './AppearenceSettings';
@@ -7,7 +7,6 @@ import SchoolAccountSettings from './SchoolAccount/SchoolAccountSettings';
 import SetupSettings from './SetupSettings';
 import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
-import { ThemeContext } from '../../context/ThemeContext';
 import {
   Settings as SettingsData,
   SettingsSchoolAccount,
@@ -17,6 +16,7 @@ import {
   setSettings,
   settingsThemeToThemeContextTheme,
 } from '../../controllers/settings';
+import { useProvidedContext } from '../../context/ContextProvider';
 
 type SettingsProps = NativeStackScreenProps<RouteProps, ScreenName.SETTINGS>;
 
@@ -26,48 +26,64 @@ export const settingsScreenOptions = {
 };
 
 const Settings: FC<SettingsProps> = ({ navigation }) => {
-  const [, setTheme] = useContext(ThemeContext);
-  const [currentSettings, setCurrentSettings] = useState<SettingsData>(null);
+  const {
+    theme: { setTheme },
+  } = useProvidedContext();
+  const [settingsState, setSettingsState] = useState<SettingsData | null>(null);
 
   useEffect(() => {
     getSettings().then((settings) => {
-      setCurrentSettings(settings);
+      setSettingsState(settings);
     });
   }, []);
 
+  if (!settingsState) {
+    return <View />;
+  }
+
+  // Merge new settings into the state and storage
+  const updateSettings = (newSettings: Partial<SettingsData>) => {
+    setSettings(newSettings);
+    setSettingsState((oldSettings) => {
+      // this will never happen, since the handlers are not
+      // triggerable until the settings state loads
+      if (!oldSettings) {
+        return null;
+      }
+
+      return {
+        ...oldSettings,
+        ...newSettings,
+      };
+    });
+  };
+
   const handleThemeChange = (theme: SettingsTheme) => {
     setTheme(settingsThemeToThemeContextTheme(theme));
-    setSettings({ theme });
-    setCurrentSettings({ ...currentSettings, theme });
+    updateSettings({ theme });
   };
 
   const handleSetupChange = (setup: SettingsSetup) => {
-    setSettings({ setup });
-    setCurrentSettings({ ...currentSettings, setup });
+    updateSettings({ setup });
   };
 
   const handleSchoolAccountChange = (schoolAccount: SettingsSchoolAccount) => {
-    setSettings({ schoolAccount });
-    setCurrentSettings({ ...currentSettings, schoolAccount });
+    updateSettings({ schoolAccount });
   };
-
-  if (!currentSettings) {
-    return <View />;
-  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <AppearenceSettings
-        theme={currentSettings.theme}
+        theme={settingsState.theme}
         handleThemeChange={handleThemeChange}
       />
       <SchoolAccountSettings
         navigation={navigation}
-        schoolAccountSettings={currentSettings.schoolAccount}
+        schoolAccountSettings={settingsState.schoolAccount}
         handleSchoolAccountSettingsChange={handleSchoolAccountChange}
       />
       <SetupSettings
-        setup={currentSettings.setup}
+        setup={settingsState.setup}
         handleSetupChange={handleSetupChange}
       />
     </ScrollView>

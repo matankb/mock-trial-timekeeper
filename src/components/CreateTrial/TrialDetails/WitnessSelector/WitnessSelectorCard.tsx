@@ -5,12 +5,17 @@ import WitnessSelectorItem from './WitnessSelectorItem';
 import { Side } from '../../../../types/side';
 import { getSideName } from '../../../../utils';
 import Card from '../../../Card';
+import { TrialWitnessCall } from '../../../../controllers/trial';
 
 interface WitnessSelectorCardProps {
   side: Side;
   color: string;
-  witnesses: string[];
-  onWitnessSelect: (side: Side, position: number, witness: string) => void;
+  witnesses: TrialWitnessCall;
+  onWitnessSelect: (
+    side: Side,
+    position: number,
+    witness: string | null,
+  ) => void;
   inline?: boolean;
 }
 
@@ -24,7 +29,7 @@ const WitnessSelectorCard: FC<WitnessSelectorCardProps> = ({
   const title = `${getSideName(side)} Witnesses`;
 
   return (
-    <Card style={inline && styles.inline}>
+    <Card style={inline ? styles.inline : undefined}>
       <Text style={[styles.sideTitle, inline && styles.inlineTitle, { color }]}>
         {title}
       </Text>

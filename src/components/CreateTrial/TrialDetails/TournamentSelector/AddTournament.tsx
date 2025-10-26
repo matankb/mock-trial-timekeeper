@@ -28,7 +28,7 @@ const AddTournament = ({ onAddNewTournament }: AddTournamentProps) => {
         },
         {
           text: 'Add',
-          onPress: (name) => {
+          onPress: (name?: string) => {
             if (!name?.trim()) {
               return;
             }

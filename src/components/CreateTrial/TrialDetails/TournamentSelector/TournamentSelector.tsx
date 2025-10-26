@@ -1,7 +1,6 @@
 import { Entypo } from '@expo/vector-icons';
-import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import { useNetworkState } from 'expo-network';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -14,7 +13,6 @@ import {
 import TournamentList from './TournamentList';
 import TournamentSelectorOffline from './TournamentSelectorOffline';
 import colors from '../../../../constants/colors';
-import { CreateTrialContext } from '../../../../context/CreateTrialContext';
 import { getSettings } from '../../../../controllers/settings';
 import { Tables } from '../../../../types/supabase';
 import { showBugReportAlert } from '../../../../utils/bug-report';
@@ -23,13 +21,16 @@ import Card from '../../../Card';
 import LinkButton from '../../../LinkButton';
 import Picker from '../../../Picker';
 import Text from '../../../Text';
+import { ScreenName } from '../../../../constants/screen-names';
+import { ScreenNavigationOptions } from '../../../../types/navigation';
+import { useProvidedContext } from '../../../../context/ContextProvider';
 
 type Tournament = Pick<Tables<'tournaments'>, 'id' | 'name'>;
 type Team = Pick<Tables<'teams'>, 'id' | 'name'>;
 
-export const tournamentSelectorScreenOptions = ({
-  navigation,
-}): NativeStackNavigationOptions => ({
+export const tournamentSelectorScreenOptions: ScreenNavigationOptions<
+  ScreenName.TOURNAMENT_SELECTOR
+> = ({ navigation }) => ({
   title: 'Select Tournament',
   ...(Platform.OS === 'ios' && {
     presentation: 'modal',
@@ -49,9 +50,9 @@ const TournamentSelector: FC = () => {
    */
 
   // Since the tournament state must be shared with the CreateTrial screen, we store it in a context
-  const [createTrialState, setCreateTrialState] =
-    useContext(CreateTrialContext);
-
+  const {
+    createTrial: { createTrialState, setCreateTrialState },
+  } = useProvidedContext();
   const { tournamentId, teamId } = createTrialState;
 
   // Database State
@@ -155,9 +156,10 @@ const TournamentSelector: FC = () => {
   };
 
   const handleAddNewTournament = async (name: string) => {
-    if (!name.trim()) {
+    if (!name.trim() || !teamId) {
       return;
     }
+
     const { data, error } = await supabase
       .from('tournaments')
       .insert({ name, team_id: teamId })

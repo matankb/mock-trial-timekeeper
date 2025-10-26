@@ -53,7 +53,7 @@ const TimeSummaryRow: FC<TimeSummaryRowProps> = (props) => {
         <Text style={textStyle}>{props.name}</Text>
         <Text style={textStyle}>{formatTime(timeRemaining)}</Text>
       </View>
-      {showFlex && (
+      {showFlex && props.flexTimeRemaining !== undefined && (
         <View
           style={{
             ...rowStyle,

@@ -1,11 +1,13 @@
-import { useContext } from 'react';
-
-import { ThemeContext } from '../context/ThemeContext';
+import { useProvidedContext } from '../context/ContextProvider';
 
 const useTheme = () => {
-  const [theme] = useContext(ThemeContext);
+  const { theme } = useProvidedContext();
 
-  return theme;
+  if (theme.theme === null) {
+    throw new Error('Attempting to access theme before theme is loaded.');
+  }
+
+  return theme.theme;
 };
 
 export default useTheme;

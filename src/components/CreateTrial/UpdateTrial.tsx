@@ -1,15 +1,4 @@
-import {
-  NativeStackNavigationOptions,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack/';
-import React, {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Platform, StyleSheet, Alert, ScrollView } from 'react-native';
 
 import {
@@ -18,15 +7,10 @@ import {
 } from './CreateTrialHeader';
 import TrialDetails from './TrialDetails/TrialDetails';
 import TrialNameInput from './TrialNameInput';
-import { RouteProps } from '../../Navigation';
 import colors from '../../constants/colors';
 import { ScreenName } from '../../constants/screen-names';
-import {
-  CreateTrialContext,
-  CreateTrialState,
-} from '../../context/CreateTrialContext';
+import { CreateTrialState } from '../../context/CreateTrialContext';
 import { Theme } from '../../types/theme';
-import { Settings, getSettings } from '../../controllers/settings';
 import {
   uploadTrialToSchoolAccount,
   validateTrialDetails,
@@ -45,20 +29,18 @@ import { WitnessSelectorInline } from './TrialDetails/WitnessSelector/WitnessSel
 import { FLEX_TIMING_ENABLED } from '../../constants/feature-flags';
 import { RoundNumber } from '../../types/round-number';
 import AllLossSelector from './AllLossSelector';
-
-type UpdateTrialProps = NativeStackScreenProps<
-  RouteProps,
-  ScreenName.UPDATE_TRIAL
->;
+import { useProvidedContext } from '../../context/ContextProvider';
+import { useSettings } from '../../hooks/useSettings';
+import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
 
 export interface UpdateTrialRouteProps {
   trialId: string;
   isBeforeUpload?: boolean;
 }
 
-export const updateTrialScreenOptions = ({
-  navigation,
-}): NativeStackNavigationOptions => ({
+export const updateTrialScreenOptions: ScreenNavigationOptions<
+  ScreenName.UPDATE_TRIAL
+> = ({ navigation }) => ({
   title: 'Edit Trial',
   ...(Platform.OS === 'ios' && {
     presentation: 'modal',
@@ -71,14 +53,17 @@ export const updateTrialScreenOptions = ({
   }),
 });
 
-const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
+const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
+  navigation,
+  route,
+}) => {
   const [trial, setTrial] = useTrial(route.params?.trialId);
   const theme = useTheme();
 
   const isBeforeUpload = route.params?.isBeforeUpload;
 
   // Create Trial State
-  const [settings, setSettings] = useState<Settings | null>(null);
+  const settings = useSettings();
   const [name, setName] = useState(trial.name);
   const [flexEnabled, setFlexEnabled] = React.useState(false);
   const [allLossTime, setAllLossTime] = useState(trial.loss);
@@ -87,8 +72,9 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
   // If school account is not connected, these are not used
   const [round, setRound] = useState<RoundNumber | null>(null);
   const [side, setSide] = useState<Side | null>(null);
-  const [createTrialState, setCreateTrialState] =
-    useContext(CreateTrialContext);
+  const {
+    createTrial: { createTrialState, setCreateTrialState },
+  } = useProvidedContext();
 
   // UI state
   const [tournamentLoading, setTournamentLoading] = useState(false);
@@ -103,11 +89,6 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
       setSide(trial.details.side);
     }
   }, [trial]);
-
-  // Load settings
-  useEffect(() => {
-    getSettings().then(setSettings);
-  }, []);
 
   // Reset the context state on load
   useEffect(() => {
@@ -127,11 +108,11 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
         teamId: isSameTournament ? oldState.teamId : null,
       } satisfies CreateTrialState;
     });
-  }, [trial]);
+  }, [trial, setCreateTrialState]);
 
   // Load the tournament details from the db into the context
-  const loadTournament = async () => {
-    if (!settings.schoolAccount.connected || !trial.details?.tournamentId) {
+  const loadTournament = useCallback(async () => {
+    if (!settings?.schoolAccount?.connected || !trial.details?.tournamentId) {
       return;
     }
 
@@ -159,7 +140,12 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
     }));
 
     setTournamentLoading(false);
-  };
+  }, [
+    settings,
+    trial.details?.tournamentId,
+    setCreateTrialState,
+    setTournamentLoading,
+  ]);
 
   useEffect(() => {
     if (!trial.details?.tournamentId) {
@@ -209,7 +195,7 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
       newTrial.details = {
         ...trial.details,
         tournamentId: createTrialState.tournamentId,
-        round,
+        round: round,
         side,
       };
     }
@@ -228,6 +214,12 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
   ]);
 
   const handleSavePress = useCallback(async () => {
+    // This should not happen, since save button is disabled if trial details are not valid
+    if (!validateTrialDetails(mergedTrial)) {
+      Alert.alert('Please fill out all trial details before uploading');
+      return;
+    }
+
     setTrial(mergedTrial);
 
     if (!isBeforeUpload) {
@@ -307,7 +299,7 @@ const UpdateTrial: FC<UpdateTrialProps> = ({ navigation, route }) => {
           round={round}
           setSide={setSide}
           setRound={setRound}
-          showWarnings={route.params.isBeforeUpload}
+          showWarnings={!!route.params.isBeforeUpload}
         />
       )}
       {!isBeforeUpload && trial.setup.allLossEnabled && (

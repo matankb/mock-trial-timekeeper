@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { useState } from 'react';
 
 import { TrialWitnessCall } from '../controllers/trial';
 
@@ -24,10 +24,13 @@ export const emptyCreateTrialState: CreateTrialState = {
   dWitnessCall: [null, null, null],
 };
 
-type CreateTrialContextType = ReturnType<typeof useState<CreateTrialState>>;
+export const useCreateTrialContextInitializer = () => {
+  const [createTrialState, setCreateTrialState] = useState(
+    emptyCreateTrialState,
+  );
 
-export const CreateTrialContext = createContext<CreateTrialContextType>(null);
-
-export const useCreateTrialContextInitializer = (): CreateTrialContextType => {
-  return useState(emptyCreateTrialState);
+  return {
+    createTrialState,
+    setCreateTrialState,
+  };
 };

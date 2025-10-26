@@ -1,12 +1,12 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
-import TrialsList from './TrialsList';
+import TrialsList from './TrialsList/TrialsList';
 import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
-import { TrialsContext } from '../../context/TrialsContext';
 import { Trial } from '../../controllers/trial';
+import { useProvidedContext } from '../../context/ContextProvider';
 
 type AllTrialsProps = NativeStackScreenProps<RouteProps, ScreenName.ALL_TRIALS>;
 
@@ -16,7 +16,11 @@ export const allTrialsScreenOptions = {
 };
 
 const AllTrials: FC<AllTrialsProps> = ({ navigation }) => {
-  const [trials] = useContext(TrialsContext);
+  const {
+    trials: { trials },
+  } = useProvidedContext();
+
+  const orderedTrials = trials?.sort((a, b) => b.date - a.date) ?? [];
 
   const handleTrialSelect = (trial: Trial) => {
     navigation.navigate(ScreenName.TRIAL_MANAGER, {
@@ -28,8 +32,7 @@ const AllTrials: FC<AllTrialsProps> = ({ navigation }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <TrialsList
-        trials={[...trials, ...trials]}
-        showAllTrialsLink={false}
+        orderedTrials={orderedTrials}
         handleSelect={handleTrialSelect}
       />
     </ScrollView>

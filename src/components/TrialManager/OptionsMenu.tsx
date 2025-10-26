@@ -1,10 +1,9 @@
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { FC, useState } from 'react';
-import { Alert, ActivityIndicator, View, StyleSheet } from 'react-native';
+import { Alert, ActivityIndicator, View } from 'react-native';
+import { HeaderButton } from '@react-navigation/elements';
 
-import { RouteProps } from '../../Navigation';
 import colors from '../../constants/colors';
 import { ScreenName } from '../../constants/screen-names';
 import {
@@ -15,10 +14,13 @@ import {
 import { useSettings } from '../../hooks/useSettings';
 import { showBugReportAlert } from '../../utils/bug-report';
 import { supabaseDbErrorToReportableError } from '../../utils/supabase';
-import { HeaderButton } from '@react-navigation/elements';
+
+import { NavigationProp } from '../../types/navigation';
 
 interface OptionsMenuProps {
-  navigation: NativeStackNavigationProp<RouteProps>;
+  navigation: NavigationProp<
+    ScreenName.TRIAL_MANAGER | ScreenName.UPDATE_TRIAL
+  >;
   trial: Trial;
   handleDelete: () => void;
 }
@@ -35,6 +37,8 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
   handleDelete,
 }) => {
   const { showActionSheetWithOptions } = useActionSheet();
+  // TODO: check if this is reactive in the case where the view is not reloaded because
+  // the same trial is visited
   const settings = useSettings();
 
   const [uploading, setUploading] = useState(false);
@@ -76,7 +80,11 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
         cancelButtonIndex: optionsConfig.cancelButtonIndex,
       },
       (buttonIndex) => {
-        const handler = optionsConfig.options[buttonIndex].onPress;
+        if (buttonIndex === undefined) {
+          return;
+        }
+
+        const handler = optionsConfig.options[buttonIndex]?.onPress;
         if (typeof handler === 'function') {
           handler();
         }

@@ -1,14 +1,14 @@
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { NavigationProp } from '@react-navigation/native';
 import { FC } from 'react';
 import { Button, TouchableOpacity } from 'react-native';
 
 import colors from '../../constants/colors';
-import { FLEX_TIMING_ENABLED } from '../../constants/feature-flags';
+import { ScreenName } from '../../constants/screen-names';
+import { NavigationProp } from '../../types/navigation';
 
 interface CreateTrialHeaderLeftProps {
-  navigation: NavigationProp<never>;
+  navigation: NavigationProp<ScreenName.CREATE_TRIAL | ScreenName.UPDATE_TRIAL>;
 }
 
 export const CreateTrialHeaderLeft: FC<CreateTrialHeaderLeftProps> = ({

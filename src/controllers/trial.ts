@@ -9,6 +9,7 @@ import { supabase } from '../utils/supabase';
 import { TrialStage } from '../constants/trial-stages';
 import { migrateTrialSchema } from '../migrations/trial-migrations';
 import { RoundNumber } from '../types/round-number';
+import { DeepNonNullable } from 'utility-types';
 
 export interface Trial {
   id: string;
@@ -20,6 +21,10 @@ export interface Trial {
   witnesses: TrialWitnesses;
   loss: number;
   details?: TrialDetails; // details are undefined if not connected to school account
+}
+
+interface UploadableTrial extends Trial {
+  details: DeepNonNullable<TrialDetails>;
 }
 
 export interface TrialSetup {
@@ -43,10 +48,11 @@ export interface TrialWitnesses {
 }
 
 // Trial details used to upload to school account
+// All optional because user is not required to fill out details until upload is pressed.
 export interface TrialDetails {
-  tournamentId: string;
-  round: RoundNumber;
-  side: Side;
+  tournamentId: string | null;
+  round: RoundNumber | null;
+  side: Side | null;
 }
 
 export type TrialWitnessCall = [string | null, string | null, string | null];
@@ -86,7 +92,9 @@ export async function getTrialsFromStorage(): Promise<Trial[]> {
     TRIAL_SCHEMA_VERSION_KEY,
   );
 
-  if (!trials) {
+  // if the stored schema version is missing, then we won't be able to migrate/recover
+  // the stored trials, so return an empty array
+  if (!trials || storedSchemaVersion === null) {
     return [];
   }
 
@@ -353,6 +361,109 @@ export const getStageTime = (trial: Trial, stage: string): any => {
   }
 };
 
+export interface TotalTimeSet {
+  pretrial: number | null;
+  statements: number | null;
+  open: number | null;
+  close: number | null;
+  direct: number;
+  cross: number;
+}
+
+interface TotalTimeSide {
+  remaining: TotalTimeSet;
+  used: NonNullable<TotalTimeSet>;
+}
+
+// TODO: HEAVILY test this!
+export const getTotalTimes = (trial: Trial): Record<Side, TotalTimeSide> => {
+  const { setup, times } = trial;
+
+  const prosecutionTimeUsed = {
+    pretrial: times.pretrial.pros,
+    statements: times.open.pros + times.close.pros + times.rebuttal,
+    open: times.open.pros,
+    close: times.close.pros,
+    direct:
+      times.prosCic.witnessOne.direct +
+      times.prosCic.witnessTwo.direct +
+      times.prosCic.witnessThree.direct,
+    cross:
+      times.defCic.witnessOne.cross +
+      times.defCic.witnessTwo.cross +
+      times.defCic.witnessThree.cross,
+  };
+
+  const defenseTimeUsed = {
+    pretrial: times.pretrial.def,
+    statements: times.open.def + times.close.def,
+    open: times.open.def,
+    close: times.close.def,
+    direct:
+      times.defCic.witnessOne.direct +
+      times.defCic.witnessTwo.direct +
+      times.defCic.witnessThree.direct,
+    cross:
+      times.prosCic.witnessOne.cross +
+      times.prosCic.witnessTwo.cross +
+      times.prosCic.witnessThree.cross,
+  };
+
+  const setupPretrialTime = setup.pretrialEnabled
+    ? setup.pretrialTime
+    : undefined;
+  const setupStatementTime = setup.statementsSeparate
+    ? setup.statementTime
+    : undefined;
+  const setupOpenTime = setup.statementsSeparate ? setup.openTime : undefined;
+  const setupCloseTime = setup.statementsSeparate ? setup.closeTime : undefined;
+
+  const prosecutionTimeRemaining = {
+    pretrial:
+      setupPretrialTime !== undefined
+        ? setupPretrialTime - prosecutionTimeUsed.pretrial
+        : null,
+    statements:
+      setupStatementTime !== undefined
+        ? setupStatementTime - prosecutionTimeUsed.statements
+        : null,
+    open:
+      setupOpenTime !== undefined
+        ? setupOpenTime - prosecutionTimeUsed.open
+        : null,
+    close:
+      setupCloseTime !== undefined
+        ? setupCloseTime - prosecutionTimeUsed.close
+        : null,
+    direct: setup.directTime - prosecutionTimeUsed.direct,
+    cross: setup.crossTime - prosecutionTimeUsed.cross,
+  };
+
+  const defenseTimeRemaining = {
+    pretrial:
+      setup.pretrialEnabled && setup.pretrialTime !== undefined
+        ? setup.pretrialTime - defenseTimeUsed.pretrial
+        : null,
+    statements:
+      setupStatementTime !== undefined
+        ? setupStatementTime - defenseTimeUsed.statements
+        : null,
+    open:
+      setupOpenTime !== undefined ? setupOpenTime - defenseTimeUsed.open : null,
+    close:
+      setupCloseTime !== undefined
+        ? setupCloseTime - defenseTimeUsed.close
+        : null,
+    direct: setup.directTime - defenseTimeUsed.direct,
+    cross: setup.crossTime - defenseTimeUsed.cross,
+  };
+
+  return {
+    p: { remaining: prosecutionTimeRemaining, used: prosecutionTimeUsed },
+    d: { remaining: defenseTimeRemaining, used: defenseTimeUsed },
+  };
+};
+
 export function calculateNewTrialTime(
   trial: Trial,
   newTime: number,
@@ -364,9 +475,9 @@ export function calculateNewTrialTime(
 }
 
 /**
- * Validates that the trial details are complete
+ * Validates that the trial details are present and complete
  */
-export function validateTrialDetails(trial: Trial) {
+export function validateTrialDetails(trial: Trial): trial is UploadableTrial {
   const { details } = trial;
 
   if (!details) {
@@ -377,12 +488,12 @@ export function validateTrialDetails(trial: Trial) {
     trial.witnesses.p.every((w) => w !== null) &&
     trial.witnesses.d.every((w) => w !== null);
 
-  return (
-    details.round && details.side && details.tournamentId && allWitnessesSet
+  return Boolean(
+    details.round && details.side && details.tournamentId && allWitnessesSet,
   );
 }
 
-export async function uploadTrialToSchoolAccount(trial: Trial) {
+export async function uploadTrialToSchoolAccount(trial: UploadableTrial) {
   const { error } = await supabase.from('trials').upsert({
     id: trial.id, // mirror the id
     tournament_id: trial.details.tournamentId,

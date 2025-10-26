@@ -1,32 +1,23 @@
-import {
-  NativeStackNavigationOptions,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
 import { StyleSheet, ScrollView, SafeAreaView, Platform } from 'react-native';
 
 import TimesBreakdownSection, { TimeSection } from './TimesBreakdownSection';
-import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
 import { calculateNewTrialTime } from '../../controllers/trial';
 import useTrial from '../../hooks/useTrial';
 import { piSideName } from '../../utils';
 import LinkButton from '../LinkButton';
 import { TrialStage } from '../../constants/trial-stages';
-
-type TimeBreakdownProps = NativeStackScreenProps<
-  RouteProps,
-  ScreenName.TIMES_BREAKDOWN
->;
+import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
 
 export interface TimeBreakdownRouteProps {
   trialId: string;
   trialName: string;
 }
 
-export const timesBreakdownScreenOptions = ({
-  route,
-}): NativeStackNavigationOptions => ({
+export const timesBreakdownScreenOptions: ScreenNavigationOptions<
+  ScreenName.TIMES_BREAKDOWN
+> = ({ route }) => ({
   title:
     Platform.OS === 'ios'
       ? `${route.params.trialName} Individual Times`
@@ -35,7 +26,10 @@ export const timesBreakdownScreenOptions = ({
   headerRight: () => <LinkButton title="Edit" onPress={() => {}} />,
 });
 
-const TimeBreakdown: React.FC<TimeBreakdownProps> = ({ route, navigation }) => {
+const TimeBreakdown: React.FC<ScreenProps<ScreenName.TIMES_BREAKDOWN>> = ({
+  route,
+  navigation,
+}) => {
   const [trial, setTrial] = useTrial(route.params.trialId);
   const [editing, setEditing] = React.useState(false);
 

@@ -7,19 +7,25 @@ import Picker from '../../Picker';
 
 interface SideSelectorProps {
   side: Side | null;
-  onSelect: (side: Side | null) => void;
+  onSelect: (side: Side) => void;
   warning?: boolean;
+}
+
+interface SideOption {
+  label: string;
+  value: Side;
 }
 
 const SideSelector = ({ side, onSelect, warning }: SideSelectorProps) => {
   const [open, setOpen] = useState(false);
 
-  const sideOptions = [
+  const sideOptions: SideOption[] = [
     { label: piSideName, value: 'p' },
     { label: 'Defense', value: 'd' },
   ];
 
-  const label = side ? getSideName(side) : 'Not Set';
+  const sideLabel = side ? getSideName(side) : null;
+  const label = sideLabel ?? 'Not Set';
 
   return [
     <TrialDetailsItem
@@ -33,7 +39,7 @@ const SideSelector = ({ side, onSelect, warning }: SideSelectorProps) => {
       key="picker"
       title="Select Side"
       items={sideOptions}
-      selected={side}
+      selected={side ?? undefined}
       onSelect={onSelect}
       onClose={() => setOpen(false)}
       visible={open}

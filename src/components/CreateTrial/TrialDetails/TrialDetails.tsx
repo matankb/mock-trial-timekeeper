@@ -1,19 +1,19 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { FC, useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import RoundSelector from './RoundSelector';
 import SideSelector from './SideSelector';
 import TrialDetailsItem from './TrialDetailsItem';
 import { ScreenName } from '../../../constants/screen-names';
-import { CreateTrialContext } from '../../../context/CreateTrialContext';
 import { Side } from '../../../types/side';
 import CreateTrialSection from '../CreateTrialSection';
 import colors from '../../../constants/colors';
 import { RoundNumber } from '../../../types/round-number';
+import { useProvidedContext } from '../../../context/ContextProvider';
+import { NavigationProp } from '../../../types/navigation';
 
-interface TrialDetailsProps {
+interface TrialDetailsProps<Screen extends ScreenName> {
   // General
-  navigation: NativeStackNavigationProp<any, any>;
+  navigation: NavigationProp<Screen>;
 
   // Trial Data
   side: Side | null;
@@ -28,7 +28,7 @@ interface TrialDetailsProps {
   setRound: (round: RoundNumber | null) => void;
 }
 
-const TrialDetails: FC<TrialDetailsProps> = ({
+const TrialDetails = <Screen extends ScreenName>({
   navigation,
   side,
   round,
@@ -36,9 +36,11 @@ const TrialDetails: FC<TrialDetailsProps> = ({
   setRound,
   showWarnings,
   tournamentLoading,
-}) => {
+}: TrialDetailsProps<Screen>) => {
   // State shared between screens, see CreateTrialContext.tsx for more information
-  const [createTrialState] = useContext(CreateTrialContext);
+  const {
+    createTrial: { createTrialState },
+  } = useProvidedContext();
   const { tournamentName, pWitnessCall, dWitnessCall } = createTrialState;
 
   const witnessSelectedCount = useMemo(() => {

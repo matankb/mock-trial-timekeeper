@@ -3,25 +3,16 @@ import { StyleSheet, Text } from 'react-native';
 
 import TimeSummaryRow from './TimeSummaryRow';
 import colors from '../../../constants/colors';
-import { TrialSetup } from '../../../controllers/trial';
+import { TotalTimeSet, TrialSetup } from '../../../controllers/trial';
 import { Side } from '../../../types/side';
-import { getSideName, piSideName } from '../../../utils';
+import { getSideName } from '../../../utils';
 import Card from '../../Card';
 
 interface TimeSummaryProps {
   side: Side;
   setup: TrialSetup;
-  timeRemaining: TimeRemaining;
-  highlightRow: TimeSummaryRowType;
-}
-
-interface TimeRemaining {
-  pretrial: number;
-  statements: number;
-  open: number;
-  close: number;
-  direct: number;
-  cross: number;
+  timeRemaining: TotalTimeSet;
+  highlightRow?: TimeSummaryRowType;
 }
 
 export enum TimeSummaryRowType {
@@ -123,7 +114,7 @@ const TimeSummary: FC<TimeSummaryProps> = ({
         };
       }
     }
-  }, [setup.flexEnabled, timeRemaining.direct, timeRemaining.cross]);
+  }, [setup.flexEnabled, timeRemaining.direct, timeRemaining.cross, side]);
 
   return (
     <Card>
@@ -136,7 +127,7 @@ const TimeSummary: FC<TimeSummaryProps> = ({
         {title} Time Remaining
       </Text>
 
-      {setup.pretrialEnabled && (
+      {setup.pretrialEnabled && timeRemaining.pretrial !== null && (
         <TimeSummaryRow
           name="Pretrial"
           timeRemaining={timeRemaining.pretrial}
@@ -145,7 +136,7 @@ const TimeSummary: FC<TimeSummaryProps> = ({
         />
       )}
 
-      {setup.statementsSeparate && (
+      {setup.statementsSeparate && timeRemaining.open !== null && (
         <TimeSummaryRow
           name="Opening Statement"
           timeRemaining={timeRemaining.open}
@@ -153,7 +144,7 @@ const TimeSummary: FC<TimeSummaryProps> = ({
           highlightColor={color}
         />
       )}
-      {!setup.statementsSeparate && (
+      {!setup.statementsSeparate && timeRemaining.statements !== null && (
         <TimeSummaryRow
           name="Statements"
           timeRemaining={timeRemaining.statements}
@@ -177,7 +168,7 @@ const TimeSummary: FC<TimeSummaryProps> = ({
         flexEnabled={setup.flexEnabled}
         flexTimeRemaining={crossFlexTimeRemaining}
       />
-      {setup.statementsSeparate && (
+      {setup.statementsSeparate && timeRemaining.close !== null && (
         <TimeSummaryRow
           name="Closing Statement"
           timeRemaining={timeRemaining.close}

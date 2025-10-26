@@ -42,7 +42,8 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-uuid": "^2.0.1",
     "ts-deepmerge": "^6.2.0",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "utility-types": "^3.11.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",

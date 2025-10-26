@@ -1,13 +1,23 @@
-import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
+import {
+  NativeStackNavigationOptions,
+  NativeStackOptionsArgs,
+} from '@react-navigation/native-stack';
 import React, { FC } from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import LinkButton from '../LinkButton';
 import Text from '../Text';
+import { RouteProps } from '../../Navigation';
+import { ScreenName } from '../../constants/screen-names';
+
+type SwingTimingExplainerOptionsArgs = NativeStackOptionsArgs<
+  RouteProps,
+  ScreenName.SWING_TIMING_EXPLAINER
+>;
 
 export const swingTimingExplainerScreenOptions = ({
   navigation,
-}): NativeStackNavigationOptions => ({
+}: SwingTimingExplainerOptionsArgs): NativeStackNavigationOptions => ({
   title: 'Swing Timing Explainer',
   presentation: 'modal',
   headerRight: () => (
@@ -22,17 +32,17 @@ const SwingTimingExplainer: FC = () => {
         AMTA is testing out a new swing timing system at certain invitationals.
       </Text>
       <Text style={styles.text}>
-        If you are at one of these invitationals, here's how to use Mock Timer
-        to keep track of the new swing timing.
+        If you are at one of these invitationals, here&apos;s how to use Mock
+        Timer to keep track of the new swing timing.
       </Text>
       <Text style={styles.step}>
         1. Turn on Swing Time Experiment when you create a new trial.
       </Text>
       <Text style={styles.text}>
-        Tap on the menu in the top-right hand corner, then check off "Swing Time
-        Experiment". Make sure to do this for every new round. If you forget,
-        you can turn it on later by tapping on the same menu button on the trial
-        screen.
+        Tap on the menu in the top-right hand corner, then check off &quot;Swing
+        Time Experiment&quot;. Make sure to do this for every new round. If you
+        forget, you can turn it on later by tapping on the same menu button on
+        the trial screen.
       </Text>
       <Text style={styles.step}>2. Use the app as you normally would.</Text>
       <Text style={styles.text}>
@@ -44,8 +54,8 @@ const SwingTimingExplainer: FC = () => {
       </Text>
       <Text style={styles.text}>
         At the end of the trial, a link will appear to a screen called
-        "Timekeeper Report Sheet". Copy the numbers on that screen onto the
-        physical sheet you were given.
+        &quot;Timekeeper Report Sheet&quot;. Copy the numbers on that screen
+        onto the physical sheet you were given.
       </Text>
     </View>
   );

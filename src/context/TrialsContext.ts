@@ -1,13 +1,9 @@
-import { createContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Trial, getTrialsFromStorage } from '../controllers/trial';
 
-type TrialsContextType = ReturnType<typeof useState<Trial[]>>;
-
-export const TrialsContext = createContext<TrialsContextType>(null);
-
-export const useTrialsContextInitializer = (): TrialsContextType => {
-  const [trials, setTrials] = useState<Trial[]>();
+export const useTrialsContextInitializer = () => {
+  const [trials, setTrials] = useState<Trial[] | null>(null);
 
   useEffect(() => {
     getTrialsFromStorage()
@@ -20,5 +16,8 @@ export const useTrialsContextInitializer = (): TrialsContextType => {
       });
   }, []);
 
-  return [trials, setTrials];
+  return {
+    trials,
+    setTrials,
+  };
 };

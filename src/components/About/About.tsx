@@ -63,7 +63,7 @@ const About: FC<AboutProps> = ({ navigation }) => {
       </View>
       <View style={styles.footer}>
         <Text style={styles.footerText}>
-          Version {Constants.expoConfig.version}
+          Version {Constants.expoConfig?.version ?? 'unknown'}
         </Text>
         <Text style={styles.footerText}>Created by Matan Kotler-Berkowitz</Text>
       </View>

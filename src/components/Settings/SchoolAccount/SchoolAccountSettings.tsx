@@ -1,4 +1,3 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNetworkState } from 'expo-network';
 import React, { FC, useEffect } from 'react';
 
@@ -8,13 +7,14 @@ import SchoolAccountUnconnectedSettings from './SchoolAccountUnconnectedSettings
 import { ScreenName } from '../../../constants/screen-names';
 import { SettingsSchoolAccount } from '../../../controllers/settings';
 import { supabase } from '../../../utils/supabase';
+import { NavigationProp } from '../../../types/navigation';
 
 interface AppearenceSettingsProps {
   schoolAccountSettings: SettingsSchoolAccount;
   handleSchoolAccountSettingsChange: (
     schoolAccount: SettingsSchoolAccount,
   ) => void;
-  navigation: NativeStackNavigationProp<any>;
+  navigation: NavigationProp<ScreenName.SETTINGS>;
 }
 
 const SchoolAccountSettings: FC<AppearenceSettingsProps> = ({
@@ -26,7 +26,8 @@ const SchoolAccountSettings: FC<AppearenceSettingsProps> = ({
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
+      // TODO (error): if got signed_in but no session, log an error
+      if (event === 'SIGNED_IN' && session) {
         handleSchoolAccountSettingsChange({
           connected: true,
           teamId: session.user.id,

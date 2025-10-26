@@ -1,9 +1,6 @@
-import {
-  NativeStackScreenProps,
-  NativeStackNavigationOptions,
-} from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useKeepAwake } from 'expo-keep-awake';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 
 import AirplaneModeBlocker from './AirplaneModeBlocker/AirplaneModeBlocker';
@@ -18,7 +15,6 @@ import {
   getPrevStage,
   getCurrentStageName,
 } from '../../constants/trial-stages';
-import { TrialsContext } from '../../context/TrialsContext';
 import {
   deleteTrial,
   getStageTime,
@@ -26,6 +22,8 @@ import {
 } from '../../controllers/trial';
 import useTrial from '../../hooks/useTrial';
 import Link from '../Link';
+import { useProvidedContext } from '../../context/ContextProvider';
+import { ScreenNavigationOptions } from '../../types/navigation';
 
 type TrialManagerProps = NativeStackScreenProps<
   RouteProps,
@@ -37,10 +35,9 @@ export interface TrialManagerRouteProps {
   trialId: string;
 }
 
-export const trialManagerScreenOptions = ({
-  route,
-  // TODO: fix typing here, ideally
-}): NativeStackNavigationOptions => ({
+export const trialManagerScreenOptions: ScreenNavigationOptions<
+  ScreenName.TRIAL_MANAGER
+> = ({ route }) => ({
   title: route.params.trialName,
   headerBackTitle: 'Home',
 });
@@ -52,7 +49,9 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
   const [counting, setCounting] = useState(false);
   const startedCounting = React.useRef<number>(null);
   const timeBeforeCounting = React.useRef<number>(null);
-  const [allTrials, setAllTrials] = useContext(TrialsContext);
+  const {
+    trials: { trials: allTrials, setTrials: setAllTrials },
+  } = useProvidedContext();
 
   useKeepAwake();
 
@@ -131,6 +130,12 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
 
   // when this is called, the user has already confirmed
   const handleDelete = () => {
+    if (!allTrials) {
+      throw new Error(
+        'Attempted to delete trials, but all trials have not been initialized.',
+      );
+    }
+
     const filteredTrials = allTrials.filter(
       (trial) => trial.id !== props.route.params.trialId,
     );

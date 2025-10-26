@@ -6,7 +6,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import Navigation from './Navigation';
 import ErrorBoundary from './components/ErrorBoundary';
-import ContextProviders from './context/ContextProviders';
+import ContextProvider from './context/ContextProvider';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -15,9 +15,9 @@ const App: FC = () => {
     <ErrorBoundary>
       <ActionSheetProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <ContextProviders>
+          <ContextProvider>
             <Navigation />
-          </ContextProviders>
+          </ContextProvider>
         </GestureHandlerRootView>
       </ActionSheetProvider>
     </ErrorBoundary>
