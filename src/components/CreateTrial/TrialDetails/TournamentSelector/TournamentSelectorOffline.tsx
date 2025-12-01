@@ -12,7 +12,7 @@ const TournamentSelectorOffline: FC = () => {
   return (
     <View style={styles.container}>
       <Feather name="wifi-off" size={60} color="gray" />
-      <Text style={styles.text}>You're Offline</Text>
+      <Text style={styles.text}>You&apos;re Offline</Text>
       <Text
         style={{
           ...styles.instructions,

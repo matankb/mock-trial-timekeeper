@@ -1,10 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Platform, StyleSheet, Alert, ScrollView } from 'react-native';
 
-import {
-  CreateTrialHeaderRight,
-  CreateTrialHeaderLeft,
-} from './CreateTrialHeader';
+import { CreateTrialHeaderLeft } from './CreateTrialHeader';
 import TrialDetails from './TrialDetails/TrialDetails';
 import TrialNameInput from './TrialNameInput';
 import colors from '../../constants/colors';
@@ -26,7 +23,6 @@ import {
 import Button from '../Button';
 import Text from '../Text';
 import { WitnessSelectorInline } from './TrialDetails/WitnessSelector/WitnessSelectorInline';
-import { FLEX_TIMING_ENABLED } from '../../constants/feature-flags';
 import { RoundNumber } from '../../types/round-number';
 import AllLossSelector from './AllLossSelector';
 import { useProvidedContext } from '../../context/ContextProvider';
@@ -45,11 +41,6 @@ export const updateTrialScreenOptions: ScreenNavigationOptions<
   ...(Platform.OS === 'ios' && {
     presentation: 'modal',
     headerLeft: () => <CreateTrialHeaderLeft navigation={navigation} />,
-    headerRight: FLEX_TIMING_ENABLED
-      ? () => (
-          <CreateTrialHeaderRight flexEnabled={false} onFlexToggle={() => {}} />
-        )
-      : undefined,
   }),
 });
 
@@ -65,7 +56,6 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
   // Create Trial State
   const settings = useSettings();
   const [name, setName] = useState(trial.name);
-  const [flexEnabled, setFlexEnabled] = React.useState(false);
   const [allLossTime, setAllLossTime] = useState(trial.loss);
 
   // Trial Details State
@@ -164,20 +154,6 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
     createTrialState.tournamentName,
     loadTournament,
   ]);
-
-  // Hydrate controls
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: FLEX_TIMING_ENABLED
-        ? () => (
-            <CreateTrialHeaderRight
-              onFlexToggle={() => setFlexEnabled(!flexEnabled)}
-              flexEnabled={flexEnabled}
-            />
-          )
-        : undefined,
-    });
-  }, [setFlexEnabled, flexEnabled, navigation]);
 
   // Merge the existing trial with the new data
   const mergedTrial = useMemo(() => {
@@ -281,9 +257,6 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
       }}
       contentContainerStyle={styles.container}
     >
-      {flexEnabled && (
-        <Text style={styles.flexEnabled}>Swing time enabled</Text>
-      )}
       {route.params.isBeforeUpload && (
         <Text style={styles.unfinishedDetailsWarning}>
           Please finish setting up your trial before uploading to your school
@@ -327,13 +300,6 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 30,
-  },
-  flexEnabled: {
-    color: 'gray',
-    marginTop: 13,
-    marginBottom: -10,
-    fontSize: 16,
-    textAlign: 'center',
   },
   unfinishedDetailsWarning: {
     backgroundColor: '#fff7c2',

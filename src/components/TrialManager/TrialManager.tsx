@@ -155,24 +155,6 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
     });
   };
 
-  const handleTimekeeperReportPress = () => {
-    props.navigation.navigate(ScreenName.TIMEKEEPER_REPORT, {
-      trialId: trial.id,
-      trialName: trial.name,
-    });
-  };
-
-  const { stage } = trial;
-  const showTimekeeperReport =
-    trial.setup.flexEnabled &&
-    // show the timekeeper report once the user moves into closings
-    // and then keep showing once closings have started
-    (stage === 'close.pros' ||
-      stage === 'close.def' ||
-      stage === 'rebuttal' ||
-      trial.times.close.pros > 0 ||
-      trial.times.close.def > 0);
-
   return (
     <AirplaneModeBlocker>
       <ScrollView
@@ -180,20 +162,8 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
         style={{ height: '100%' }}
       >
         <View style={{ width: '100%', marginBottom: 10 }}>
-          {trial.setup.allLossEnabled && (
-            <AllLoss
-              flexEnabled={trial.setup.flexEnabled}
-              allLossTime={trial.loss}
-            />
-          )}
+          {trial.setup.allLossEnabled && <AllLoss allLossTime={trial.loss} />}
           <TimeSummaries trial={trial} />
-          <Link title="Individual Times" onPress={handleIndividualTimesPress} />
-          {showTimekeeperReport && (
-            <Link
-              title="Timekeeper Report Sheet"
-              onPress={handleTimekeeperReportPress}
-            />
-          )}
         </View>
         <Controls
           currentStageName={getCurrentStageName(trial)}

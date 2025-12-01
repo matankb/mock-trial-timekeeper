@@ -2,10 +2,6 @@ import React, { FC, useEffect, useState } from 'react';
 import { Platform, StyleSheet, Alert, ScrollView } from 'react-native';
 
 import AllLossSelector from './AllLossSelector';
-import {
-  CreateTrialHeaderRight,
-  CreateTrialHeaderLeft,
-} from './CreateTrialHeader';
 import TrialDetails from './TrialDetails/TrialDetails';
 import { WitnessSelectorInline } from './TrialDetails/WitnessSelector/WitnessSelectorInline';
 import TrialNameInput from './TrialNameInput';
@@ -17,12 +13,11 @@ import { createNewTrial } from '../../controllers/trial';
 import useTheme from '../../hooks/useTheme';
 import { Side } from '../../types/side';
 import Button from '../Button';
-import Text from '../Text';
-import { FLEX_TIMING_ENABLED } from '../../constants/feature-flags';
 import { RoundNumber } from '../../types/round-number';
 import { useProvidedContext } from '../../context/ContextProvider';
 import { useSettings } from '../../hooks/useSettings';
 import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
+import { CreateTrialHeaderLeft } from './CreateTrialHeader';
 
 const ALL_LOSS_MINUTES = 180;
 
@@ -33,12 +28,6 @@ export const createTrialScreenOptions: ScreenNavigationOptions<
   ...(Platform.OS === 'ios' && {
     presentation: 'modal',
     headerLeft: () => <CreateTrialHeaderLeft navigation={navigation} />,
-    headerRight: FLEX_TIMING_ENABLED
-      ? () => (
-          // dummy values hydrated when the component mounts
-          <CreateTrialHeaderRight onFlexToggle={() => {}} flexEnabled={false} />
-        )
-      : undefined,
   }),
 });
 
@@ -56,7 +45,6 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
   } = useProvidedContext();
 
   const [name, setName] = useState('');
-  const [flexEnabled, setFlexEnabled] = React.useState(false);
   const [allLossTime, setAllLossTime] = React.useState(
     Date.now() + ALL_LOSS_MINUTES * 60 * 1000,
   );
@@ -70,20 +58,6 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
   useEffect(() => {
     setCreateTrialState(emptyCreateTrialState);
   }, []);
-
-  // Hydrate controls
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: FLEX_TIMING_ENABLED
-        ? () => (
-            <CreateTrialHeaderRight
-              onFlexToggle={() => setFlexEnabled(!flexEnabled)}
-              flexEnabled={flexEnabled}
-            />
-          )
-        : undefined,
-    });
-  }, [setFlexEnabled, flexEnabled, navigation]);
 
   const validateInputs = () => {
     if (name === '') {
@@ -119,13 +93,7 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
         }
       : undefined;
 
-    const trial = await createNewTrial(
-      name,
-      allLossTime,
-      flexEnabled,
-      witnesses,
-      details,
-    );
+    const trial = await createNewTrial(name, allLossTime, witnesses, details);
     setTrials([...trials, trial]);
 
     navigation.goBack(); // close modal
@@ -148,9 +116,6 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
       }}
       contentContainerStyle={styles.container}
     >
-      {flexEnabled && (
-        <Text style={styles.flexEnabled}>Swing time enabled</Text>
-      )}
       <TrialNameInput name={name} setName={setName} />
 
       {settings.schoolAccount.connected && (
@@ -180,13 +145,6 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 40,
-  },
-  flexEnabled: {
-    color: 'gray',
-    marginTop: 13,
-    marginBottom: -10,
-    fontSize: 16,
-    textAlign: 'center',
   },
 });
 

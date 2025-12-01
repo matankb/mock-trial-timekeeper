@@ -31,6 +31,7 @@ export interface TrialSetup {
   pretrialEnabled: boolean;
   statementsSeparate: boolean;
   allLossEnabled: boolean;
+  // see createNewTrial for more information
   flexEnabled: boolean;
   pretrialTime?: number;
   statementTime?: number;
@@ -180,7 +181,6 @@ function generateEmptyTrialTimes(): TrialTimes {
 export async function createNewTrial(
   name: string,
   allLoss: number,
-  flexEnabled: boolean,
   witnesses: TrialWitnesses,
   details?: TrialDetails,
 ): Promise<Trial> {
@@ -195,7 +195,17 @@ export async function createNewTrial(
     id,
     name,
     date,
-    setup: { ...setup, flexEnabled },
+    setup: {
+      ...setup,
+      // In the Summer 2025 AMTA board meeting, flex timing was voted down.
+      // Following that, in v1.7.0, flex timing was removed from the codebase
+      // for simplicity. To keep type safety and avoid the need to migrate
+      // in case it is brought back in the future, we always set it to false.
+      // Note: the codebase does not currently handle flex timing,
+      // even for old trials where it was enabled, since it is highly unlikely
+      // that users will be looking at old trials with flex time from previous seasons.
+      flexEnabled: false,
+    },
     loss: allLoss,
     stage,
     witnesses,

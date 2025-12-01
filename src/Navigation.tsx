@@ -18,9 +18,6 @@ import About, { aboutScreenOptions } from './components/About/About';
 import Disclaimer, {
   disclaimerScreenOptions,
 } from './components/About/Disclaimer';
-import SwingTimingExplainer, {
-  swingTimingExplainerScreenOptions,
-} from './components/About/SwingTimingExplainer';
 import CreateTrial, {
   createTrialScreenOptions,
 } from './components/CreateTrial/CreateTrial';
@@ -39,9 +36,6 @@ import SchoolAccountLogin, {
 import Settings, {
   settingsScreenOptions,
 } from './components/Settings/Settings';
-import TimeReport, {
-  timeReportScreenOptions,
-} from './components/TimeReport/TimeReport';
 import TimesBreakdown, {
   TimeBreakdownRouteProps,
   timesBreakdownScreenOptions,
@@ -79,7 +73,6 @@ export type RouteProps = {
   [ScreenName.TRIAL_MANAGER]: TrialManagerRouteProps;
   [ScreenName.TIMES_BREAKDOWN]: TimeBreakdownRouteProps;
   [ScreenName.TEAM_TIMES_BREAKDOWN]: TeamTimesBreakdownRouteProps;
-  [ScreenName.TIMEKEEPER_REPORT]: TimeBreakdownRouteProps;
   // About
   [ScreenName.ABOUT]: undefined;
   [ScreenName.DISCLAIMER]: undefined;
@@ -120,7 +113,6 @@ const Navigation = () => {
     // Trial Manager
     { name: ScreenName.TRIAL_MANAGER, component: TrialManager, options: trialManagerScreenOptions },
     { name: ScreenName.TIMES_BREAKDOWN, component: TimesBreakdown, options: timesBreakdownScreenOptions },
-    { name: ScreenName.TIMEKEEPER_REPORT, component: TimeReport, options: timeReportScreenOptions },
     { name: ScreenName.TEAM_TIMES_BREAKDOWN, component: TeamTimesBreakdown, options: teamTimesBreakdownScreenOptions },
 
     // Settings
@@ -130,7 +122,6 @@ const Navigation = () => {
     // About
     { name: ScreenName.ABOUT, component: About, options: aboutScreenOptions },
     { name: ScreenName.DISCLAIMER, component: Disclaimer, options: disclaimerScreenOptions },
-    { name: ScreenName.SWING_TIMING_EXPLAINER, component: SwingTimingExplainer, options: swingTimingExplainerScreenOptions },
     { name: ScreenName.AMTA_POLICY, component: AMTAPolicy, options: amtaPolicyScreenOptions },
     { name: ScreenName.TEAM_ACCOUNT_POPUP, component: TeamAccountPopup, options: teamAccountPopupScreenOptions },
 

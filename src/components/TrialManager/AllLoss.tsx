@@ -6,12 +6,11 @@ import { formatTimeWords } from '../../utils';
 
 interface AllLossProps {
   allLossTime: number;
-  flexEnabled: boolean;
 }
 
 const ALERT_CUTOFF_MINUTES = 20;
 
-const AllLoss: FC<AllLossProps> = ({ allLossTime, flexEnabled }) => {
+const AllLoss: FC<AllLossProps> = ({ allLossTime }) => {
   const interval = React.useRef<NodeJS.Timeout>(null);
   const [, setRefresh] = React.useState(0);
 
@@ -45,7 +44,6 @@ const AllLoss: FC<AllLossProps> = ({ allLossTime, flexEnabled }) => {
         {allLossPassed
           ? 'All-Loss has passed'
           : `All-Loss in ${formatTimeWords(timeRemaining)}`}{' '}
-        {flexEnabled ? '• Swing time enabled' : ''}
       </Text>
     </View>
   );
