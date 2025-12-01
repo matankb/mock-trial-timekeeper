@@ -6,13 +6,13 @@ export const PLAINTIFF_WITNESSES = [
   'Riley Kaye',
   'Atlas Hartley',
   'Taren Rivera',
-];
+] as const;
 
 export const DEFENSE_WITNESSES = [
   'Charlie Martin',
   'Grey Marlowe',
   'Micah Lin',
-];
+] as const;
 
 export const SWING_WITNESSES = [
   'Nel Doos',
@@ -20,4 +20,4 @@ export const SWING_WITNESSES = [
   'Taylor Jha',
   'Lennox Reynolds',
   'Rowan Patel',
-];
+] as const;
