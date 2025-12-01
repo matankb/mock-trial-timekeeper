@@ -20,9 +20,7 @@ const Disclaimer = () => {
     <View style={styles.container}>
       <Text style={textStyle}>
         Mock Trial Timekeeper is permitted at AMTA-sanctioned competitions
-        (Regionals, ORCS, and Nationals). See "AMTA Policy" for more. However,
-        it may not be permitted at invitationals. Always check with invitational
-        staff before using this app during rounds.
+        (Regionals, ORCS, and Nationals). See &quot;AMTA Policy&quot; for more.
       </Text>
       <Text style={textStyle}>
         Mock Trial Timekeeper is not affiliated with or endorsed by AMTA.
@@ -41,7 +39,7 @@ const Disclaimer = () => {
         mobile devices used during rounds must be in Airplane Mode and
         disconnected from WiFi. While this application attempts to detect and
         warn against these conditions, it is not guaranteed to do so correctly.
-        It is the user's responsibility to ensure that their device is in
+        It is the user&apos;s responsibility to ensure that their device is in
         Airplane Mode and disconnected from WiFi before using this application
         during a competition. We are not responsible for any sanction that may
         result from improperly using this application during a competition.

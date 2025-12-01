@@ -6,6 +6,7 @@ import {
 } from '@react-navigation/native-stack';
 import { ScreenName } from '../constants/screen-names';
 import { RouteProps } from '../Navigation';
+import { useNavigation as useNativeNavigation } from '@react-navigation/native';
 
 type ScreenOptionsArgs<S extends ScreenName> = NativeStackOptionsArgs<
   RouteProps,
@@ -31,3 +32,5 @@ export type NavigationProp<S extends ScreenName> = NativeStackNavigationProp<
   S,
   undefined
 >;
+
+export const useNavigation = useNativeNavigation<NavigationProp<ScreenName>>;
