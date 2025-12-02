@@ -19,14 +19,14 @@ const Disclaimer = () => {
   return (
     <View style={styles.container}>
       <Text style={textStyle}>
-        Mock Trial Timekeeper is permitted at AMTA-sanctioned competitions
+        Mock Trial Timer is permitted at AMTA-sanctioned competitions
         (Regionals, ORCS, and Nationals). See &quot;AMTA Policy&quot; for more.
       </Text>
       <Text style={textStyle}>
-        Mock Trial Timekeeper is not affiliated with or endorsed by AMTA.
+        Mock Trial Timer is not affiliated with or endorsed by AMTA.
       </Text>
       <Text style={textStyle}>
-        Mock Trial Timekeeper is provided “as is”, without warranty of any kind.
+        Mock Trial Timer is provided “as is”, without warranty of any kind.
         While we are confident that this application functions correctly, we
         disclaim any liability for any software errors, including any problems
         of any kind that may arise from using this application during a

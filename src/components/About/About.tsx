@@ -1,6 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Constants from 'expo-constants';
-import * as Linking from 'expo-linking';
 import { FC } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -10,6 +9,7 @@ import { Theme } from '../../types/theme';
 import useTheme from '../../hooks/useTheme';
 import Card from '../Card';
 import Link from '../Link';
+import { openSupportEmail } from '../../utils/bug-report';
 
 type AboutProps = NativeStackScreenProps<RouteProps, ScreenName.ABOUT>;
 
@@ -31,27 +31,17 @@ const About: FC<AboutProps> = ({ navigation }) => {
       <View>
         <Card style={{ marginBottom: 10 }}>
           <Text style={textStyle}>
-            Mock Trial Timekeeper helps you timekeep for AMTA Mock Trial
-            competitions!
+            Mock Trial Timer helps you timekeep for mock trial competitions!
           </Text>
           <Text style={textStyle}>
             This app is permitted at all AMTA-sanctioned tournaments (see AMTA
             Policy for more). Not affiliated with or endorsed by AMTA.
           </Text>
           <Text style={textStyle}>
-            If you like Mock Trial Timekeeper, please leave a review!
+            If you like Mock Trial Timer, please leave a review!
           </Text>
         </Card>
-        <Link
-          title="Contact Us"
-          onPress={() =>
-            Linking.openURL(
-              `mailto:205matan@gmail.com?subject=${encodeURIComponent(
-                'Mock Trial Timekeeper - Contact',
-              )}`,
-            )
-          }
-        />
+        <Link title="Contact Us" onPress={openSupportEmail} />
         <Link
           title="Disclaimer"
           onPress={() => navigation.navigate(ScreenName.DISCLAIMER)}

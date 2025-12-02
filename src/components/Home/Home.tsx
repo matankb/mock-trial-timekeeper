@@ -16,7 +16,7 @@ import { Trial } from '../../controllers/trial';
 import Button from '../Button';
 
 export const homeScreenOptions: ScreenNavigationOptions<ScreenName.HOME> = {
-  title: 'Mock Trial Timekeeper',
+  title: 'Mock Trial Timer',
   headerTitleAlign: 'center',
 });
 

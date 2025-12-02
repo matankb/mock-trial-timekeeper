@@ -20,7 +20,7 @@ export function showBugReportAlert(
 export function openBugReportEmail(error: Error) {
   Linking.openURL(
     `mailto:205matan@gmail.com?subject=${encodeURIComponent(
-      'Mock Trial Timekeeper - Bug Report',
+      'Mock Trial Timer - Bug Report',
     )}&body=${encodeURIComponent(`Please describe the bug:
 
 
@@ -30,5 +30,13 @@ export function openBugReportEmail(error: Error) {
     ${error.message}
     ${error.stack}
   `)}`,
+  );
+}
+
+export function openSupportEmail() {
+  Linking.openURL(
+    `mailto:205matan@gmail.com?subject=${encodeURIComponent(
+      'Mock Trial Timer',
+    )}`,
   );
 }
