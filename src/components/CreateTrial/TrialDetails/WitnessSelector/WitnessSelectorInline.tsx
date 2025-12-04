@@ -1,11 +1,12 @@
 import { Promos } from '../../../../controllers/promos';
 import { usePromo } from '../../../../hooks/usePromos';
 import CreateTrialSection from '../../CreateTrialSection';
-import { Button, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Promo from '../../../Home/Promos/Promo';
 import { MaterialIcons } from '@expo/vector-icons';
 import WitnessSelector from './WitnessSelector';
 import colors from '../../../../constants/colors';
+import Text from '../../../Text';
 
 export const WitnessSelectorInline = () => {
   const promo = usePromo(Promos.WITNESS_CALL);
@@ -35,11 +36,7 @@ export const WitnessSelectorInline = () => {
             style={styles.buttonContainer}
             onPress={() => promo.dismiss()}
           >
-            <Button
-              color={colors.ORANGE}
-              title="Set witness call"
-              onPress={() => {}}
-            />
+            <Text style={styles.buttonText}>Set witness call</Text>
             <MaterialIcons
               name="navigate-next"
               size={25}
@@ -70,5 +67,10 @@ const styles = StyleSheet.create({
   promoContainer: {
     paddingHorizontal: 20,
     paddingVertical: 10,
+  },
+  buttonText: {
+    fontSize: 18,
+    paddingLeft: 10,
+    color: colors.ORANGE,
   },
 });
