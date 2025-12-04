@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyStateContainer: {
+    paddingTop: 20,
     display: 'flex',
   },
   emptyStateText: {
