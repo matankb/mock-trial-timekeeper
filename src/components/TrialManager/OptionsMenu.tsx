@@ -16,81 +16,111 @@ import { showBugReportAlert } from '../../utils/bug-report';
 import { supabaseDbErrorToReportableError } from '../../utils/supabase';
 
 import { NavigationProp } from '../../types/navigation';
+import { LeagueFeature } from '../../constants/leagues';
+import { useLeagueFeatureFlag } from '../../hooks/useLeagueFeatureFlag';
+import { Falsy, isFalsy } from 'utility-types';
+import LinkButton from '../LinkButton';
 
 interface OptionsMenuProps {
   navigation: NavigationProp<
     ScreenName.TRIAL_MANAGER | ScreenName.UPDATE_TRIAL
   >;
   trial: Trial;
+  editingTimes: boolean;
   handleDelete: () => void;
+  handleEditTimes: () => void;
+  handleEditTimesFinish: () => void;
 }
 
-interface OptionsConfig {
-  options: { name: string; onPress: () => void }[];
-  destructiveButtonIndex: number;
-  cancelButtonIndex: number;
+interface OptionConfig {
+  name: string;
+  onPress: () => void;
+  destructive?: boolean;
+  cancel?: boolean;
 }
 
 const OptionsMenu: FC<OptionsMenuProps> = ({
   navigation,
   trial,
+  editingTimes,
   handleDelete,
+  handleEditTimes,
+  handleEditTimesFinish,
 }) => {
   const { showActionSheetWithOptions } = useActionSheet();
   // TODO: check if this is reactive in the case where the view is not reloaded because
   // the same trial is visited
   const settings = useSettings();
 
+  const witnessSelectionEnabled = useLeagueFeatureFlag(
+    LeagueFeature.WITNESS_SELECTION,
+  );
+  const timesBreakdownEnabled = useLeagueFeatureFlag(
+    LeagueFeature.TIMES_BREAKDOWN,
+  );
+
   const [uploading, setUploading] = useState(false);
 
-  // ===============================
-  // Generic Action Sheet & Handlers
-  // ===============================
+  // ==================
+  // Action Sheet Items
+  // ==================
 
-  const optionsWithUpload: OptionsConfig = {
-    options: [
-      { name: 'Edit Trial', onPress: () => handleEditTrialPress() },
-      { name: 'Upload to Team Account', onPress: () => handleUploadPress() },
-      { name: 'Delete Trial', onPress: () => handleDeletePress() },
-      { name: 'Cancel', onPress: () => {} },
-    ],
-    destructiveButtonIndex: 2,
-    cancelButtonIndex: 3,
-  };
+  const editTrialLabel =
+    witnessSelectionEnabled || trial.setup.allLossEnabled
+      ? 'Edit Trial'
+      : // if these two features are disabled, the only functionality is to rename the trial.
+        'Rename Trial';
 
-  const optionsWithoutUpload: OptionsConfig = {
-    options: [
-      { name: 'Edit Trial', onPress: () => handleEditTrialPress() },
-      { name: 'Delete Trial', onPress: () => handleDeletePress() },
-      { name: 'Cancel', onPress: () => {} },
-    ],
-    destructiveButtonIndex: 1,
-    cancelButtonIndex: 2,
-  };
-
-  const optionsConfig = settings?.schoolAccount?.connected
-    ? optionsWithUpload
-    : optionsWithoutUpload;
+  const options: (OptionConfig | Falsy)[] = [
+    { name: editTrialLabel, onPress: () => handleEditTrialPress() },
+    settings?.schoolAccount?.connected && {
+      name: 'Upload to Team Account',
+      onPress: () => handleUploadPress(),
+    },
+    !timesBreakdownEnabled && {
+      name: 'Edit Times',
+      onPress: () => handleEditTimes(),
+    },
+    {
+      name: 'Delete Trial',
+      onPress: () => handleDeletePress(),
+      destructive: true,
+    },
+    { name: 'Cancel', onPress: () => {}, cancel: true },
+  ];
 
   const handleOptionsPress = () => {
+    const visibleOptions = options.filter(
+      (x): x is OptionConfig => !isFalsy(x),
+    );
+
+    const destructiveButtonIndex =
+      visibleOptions.findIndex((option) => option.destructive) ?? -1;
+    const cancelButtonIndex =
+      visibleOptions.findIndex((option) => option.cancel) ?? -1;
+
     showActionSheetWithOptions(
       {
-        options: optionsConfig.options.map((option) => option.name),
-        destructiveButtonIndex: optionsConfig.destructiveButtonIndex,
-        cancelButtonIndex: optionsConfig.cancelButtonIndex,
+        options: visibleOptions.map((option) => option.name),
+        destructiveButtonIndex,
+        cancelButtonIndex,
       },
       (buttonIndex) => {
         if (buttonIndex === undefined) {
           return;
         }
 
-        const handler = optionsConfig.options[buttonIndex]?.onPress;
+        const handler = visibleOptions[buttonIndex]?.onPress;
         if (typeof handler === 'function') {
           handler();
         }
       },
     );
   };
+
+  // =====================
+  // Action Sheet Handlers
+  // =====================
 
   const handleEditTrialPress = () => {
     navigation.navigate(ScreenName.UPDATE_TRIAL, {
@@ -141,6 +171,16 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
       Alert.alert('Trial uploaded!');
     }
   };
+
+  if (editingTimes) {
+    return (
+      <View>
+        <HeaderButton onPress={handleEditTimesFinish}>
+          <LinkButton title="Done" onPress={handleEditTimesFinish} />
+        </HeaderButton>
+      </View>
+    );
+  }
 
   return (
     <View>
