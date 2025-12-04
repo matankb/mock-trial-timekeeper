@@ -12,9 +12,17 @@ interface LinkProps {
   onPress: () => void;
   border?: boolean;
   inline?: boolean;
+  orientation?: 'horizontal' | 'vertical';
 }
 
-const Link: FC<LinkProps> = ({ title, subtitle, onPress, border, inline }) => {
+const Link: FC<LinkProps> = ({
+  title,
+  subtitle,
+  onPress,
+  border,
+  inline,
+  orientation = 'horizontal',
+}) => {
   const theme = useTheme();
 
   return (
@@ -38,7 +46,12 @@ const Link: FC<LinkProps> = ({ title, subtitle, onPress, border, inline }) => {
             </Text>
             {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
           </View>
-          <MaterialIcons name="navigate-next" size={25} color="gray" />
+          <MaterialIcons
+            name="navigate-next"
+            size={25}
+            color="gray"
+            style={orientation === 'vertical' ? styles.iconVertical : {}}
+          />
         </View>
       </TouchableOpacity>
     </Card>
@@ -58,6 +71,8 @@ const styles = StyleSheet.create({
   containerInline: {
     paddingLeft: 0,
     paddingRight: 0,
+    paddingVertical: 0,
+    width: '100%',
   },
   internalContainer: {
     display: 'flex',
@@ -76,6 +91,9 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: 'gray',
+  },
+  iconVertical: {
+    transform: [{ rotate: '90deg' }],
   },
 });
 export default Link;
