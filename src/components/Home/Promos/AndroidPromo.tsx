@@ -10,7 +10,7 @@ import Promo from './Promo';
  */
 
 interface AndroidPromoProps {
-  onPress: any;
+  onPress: () => void;
 }
 
 const AndroidPromo: FC<AndroidPromoProps> = ({ onPress }) => {
