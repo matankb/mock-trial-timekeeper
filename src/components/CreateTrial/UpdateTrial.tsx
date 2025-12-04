@@ -26,9 +26,10 @@ import { WitnessSelectorInline } from './TrialDetails/WitnessSelector/WitnessSel
 import { RoundNumber } from '../../types/round-number';
 import AllLossSelector from './AllLossSelector';
 import { useProvidedContext } from '../../context/ContextProvider';
-import { useSettings } from '../../hooks/useSettings';
+import { useSettings, useSettingsLeague } from '../../hooks/useSettings';
 import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
-
+import { useLeagueFeatureFlag } from '../../hooks/useLeagueFeatureFlag';
+import { LeagueFeature } from '../../constants/leagues';
 export interface UpdateTrialRouteProps {
   trialId: string;
   isBeforeUpload?: boolean;
@@ -50,6 +51,10 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
 }) => {
   const [trial, setTrial] = useTrial(route.params?.trialId);
   const theme = useTheme();
+
+  const witnessSelectionEnabled = useLeagueFeatureFlag(
+    LeagueFeature.WITNESS_SELECTION,
+  );
 
   const isBeforeUpload = route.params?.isBeforeUpload;
 
@@ -248,6 +253,9 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
     return null;
   }
 
+  const showWitnessSelector =
+    !settings.schoolAccount.connected && witnessSelectionEnabled;
+
   return (
     <ScrollView
       style={{
@@ -281,7 +289,7 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
           setAllLossTime={setAllLossTime}
         />
       )}
-      {!settings.schoolAccount.connected && <WitnessSelectorInline />}
+      {showWitnessSelector && <WitnessSelectorInline />}
       {isBeforeUpload && !uploading && (
         <Button
           title={route.params?.isBeforeUpload ? 'Save and Upload' : 'Save'}
