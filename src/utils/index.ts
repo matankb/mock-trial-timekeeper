@@ -27,20 +27,21 @@ export function formatTimeWords(seconds: number) {
   return `${hours}h ${minutes}m`;
 }
 
-function getPiSideName() {
+export function getPiSideName(date: Date) {
   // 2023-2024 season P = Prosecution, 2024-2025 season P = Plaintiff, etc.
-  const year = new Date().getFullYear();
+  const year = date.getFullYear();
   const yearFromStart = year - 2023;
   const isEven = yearFromStart % 2 === 0;
-  const isFirstHalfOfSeason = new Date().getMonth() >= 5; // Season starts in August
+  const isFirstHalfOfSeason = date.getMonth() >= 5; // Season starts in August
   if ((isEven && isFirstHalfOfSeason) || (!isEven && !isFirstHalfOfSeason)) {
     return 'Prosecution';
   }
   return 'Plaintiff';
 }
 
+// TODO: technically... old trials should have the side name from when they were created
 // presumably, this will stay the same for the entire session
-export const piSideName = getPiSideName();
+export const piSideName = getPiSideName(new Date());
 
 export function getSideName(side: Side) {
   if (side === 'p') {
@@ -48,7 +49,7 @@ export function getSideName(side: Side) {
   } else if (side === 'd') {
     return 'Defense';
   }
-  return null;
+  return 'Unknown Side';
 }
 
 export const duration = {
