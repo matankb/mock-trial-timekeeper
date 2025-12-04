@@ -24,6 +24,7 @@ import Text from '../../../Text';
 import { ScreenName } from '../../../../constants/screen-names';
 import { ScreenNavigationOptions } from '../../../../types/navigation';
 import { useProvidedContext } from '../../../../context/ContextProvider';
+import TeamSelector from './TeamSelector';
 
 type Tournament = Pick<Tables<'tournaments'>, 'id' | 'name'>;
 type Team = Pick<Tables<'teams'>, 'id' | 'name'>;
@@ -82,33 +83,6 @@ const TournamentSelector: FC = () => {
     }
   };
 
-  const getTeams = async () => {
-    setLoadingTeams(true);
-    const { data, error } = await supabase.from('teams').select('id, name');
-    setLoadingTeams(false);
-
-    if (error) {
-      showBugReportAlert(
-        "There was a problem loading your team's tournaments",
-        'Please try again, or contact support.',
-        error,
-      );
-      return;
-    }
-
-    setTeams(data);
-
-    // If the default teamId is not set, select the first team
-    // Use getSettings directly to avoid race conditions with `loadDefaultTeam`
-    const settings = await getSettings();
-    if (!settings.schoolAccount.teamId) {
-      setCreateTrialState((oldState) => ({
-        ...oldState,
-        teamId: data[0].id,
-      }));
-    }
-  };
-
   const getTournaments = async (teamId: string) => {
     setLoadingTournaments(true);
 
@@ -132,7 +106,6 @@ const TournamentSelector: FC = () => {
 
   useEffect(() => {
     loadDefaultTeam();
-    getTeams();
   }, []);
 
   useEffect(() => {
@@ -194,52 +167,18 @@ const TournamentSelector: FC = () => {
    * ================
    */
 
-  const teamPicker = (
-    <Picker
-      title="Select Team"
-      visible={teamPickerVisible}
-      onClose={() => setTeamPickerVisible(false)}
-      items={teams.map((team) => ({
-        label: team.name,
-        value: team.id,
-      }))}
-      selected={teamId}
-      onSelect={(value) =>
-        setCreateTrialState((oldState) => ({
-          ...oldState,
-          teamId: value,
-        }))
-      }
-    />
-  );
-
   return (
     <ScrollView style={styles.container}>
-      <Card onPress={() => setTeamPickerVisible(true)} style={styles.teamCard}>
-        <Text style={styles.sectionName}>Your Team</Text>
-        <View>
-          {loadingTeams ? (
-            <ActivityIndicator size="small" color="gray" />
-          ) : (
-            <TouchableOpacity style={styles.teamSelector}>
-              <Text
-                style={[styles.teamName, !teamId && styles.placeholderText]}
-              >
-                {teams.find((team) => team.id === teamId)?.name ||
-                  'Select a team'}
-              </Text>
-              <Entypo
-                name="chevron-small-down"
-                size={25}
-                color={colors.HEADER_BLUE}
-              />
-            </TouchableOpacity>
-          )}
-        </View>
-      </Card>
-
+      <TeamSelector
+        selectedTeamId={teamId}
+        setSelectedTeamId={(teamId) =>
+          setCreateTrialState((oldState) => ({
+            ...oldState,
+            teamId,
+          }))
+        }
+      />
       <Card style={styles.tournamentCard}>
-        <Text style={styles.sectionName}>Tournaments</Text>
         <TournamentList
           tournaments={tournaments}
           selectedTournamentId={tournamentId}
@@ -248,8 +187,6 @@ const TournamentSelector: FC = () => {
           onAddNewTournament={handleAddNewTournament}
         />
       </Card>
-
-      {teamPicker}
     </ScrollView>
   );
 };
@@ -259,33 +196,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
-  teamCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
   tournamentCard: {
     padding: 0,
   },
   sectionName: {
     fontSize: 16,
-    fontWeight: 'bold',
     padding: 16,
     color: '#333',
-  },
-  teamSelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-  },
-  teamName: {
-    fontSize: 16,
-    color: '#333',
-  },
-  placeholderText: {
-    color: '#999',
   },
 });
 
