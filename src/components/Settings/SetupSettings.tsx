@@ -1,32 +1,68 @@
-import React, { FC } from 'react';
-import { StyleSheet, Switch, View } from 'react-native';
+import React, { FC, useEffect, useState } from 'react';
+import { StyleSheet, Switch, View , ScrollView } from 'react-native';
 
 import Option from './Option';
 import SettingSection from './SettingSection';
 import colors from '../../constants/colors';
-import { defaultSettings, SettingsSetup } from '../../controllers/settings';
+import {
+  defaultSettings,
+  getSettings,
+  setSettings,
+  SettingsSetup,
+} from '../../controllers/settings';
 import LinkButton from '../LinkButton';
 import TimeEditor from '../TimeEditor/TimeEditor';
 import { PickByValue } from 'utility-types';
+import {
+  ScreenNavigationOptions,
+  ScreenProps,
+  useNavigation,
+} from '../../types/navigation';
+import { ScreenName } from '../../constants/screen-names';
+import { useSettings } from '../../hooks/useSettings';
+import { TrialSetup } from '../../controllers/trial';
+import Text from '../Text';
+import Link from '../Link';
 
-interface SetupSettingsProps {
-  setup: SettingsSetup;
-  handleSetupChange: (setup: SettingsSetup) => void;
-}
+export const setupSettingsScreenOptions: ScreenNavigationOptions<ScreenName.SETUP_SETTINGS> =
+  {
+    headerTitle: 'Advanced Trial Setup',
+  };
 
-const SetupSettings: FC<SetupSettingsProps> = ({
-  setup,
-  handleSetupChange,
+const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = ({
+  navigation,
 }) => {
+  const [setupState, setSetupState] = useState<SettingsSetup | null>(null);
+
+  useEffect(() => {
+    getSettings().then((settings) => {
+      setSetupState(settings.setup);
+    });
+  }, []);
+
+  if (!setupState) {
+    return null;
+  }
+
+  const handleSetupChange = (newSetup: SettingsSetup) => {
+    setSetupState(newSetup);
+    setSettings({
+      setup: newSetup,
+    });
+  };
+
   const createSetupToggleOption = (
     name: string,
     property: keyof PickByValue<SettingsSetup, boolean>,
   ) => (
     <Option name={name}>
       <Switch
-        value={setup[property]}
+        value={setupState[property]}
         onValueChange={() => {
-          handleSetupChange({ ...setup, [property]: !setup[property] });
+          handleSetupChange({
+            ...setupState,
+            [property]: !setupState[property],
+          });
         }}
         trackColor={{ true: colors.HEADER_BLUE }}
       />
@@ -39,36 +75,55 @@ const SetupSettings: FC<SetupSettingsProps> = ({
   ) => (
     <Option name={name}>
       <TimeEditor
-        value={setup[property]}
+        value={setupState[property]}
         name={name}
         onChange={(value) => {
-          handleSetupChange({ ...setup, [property]: value });
+          handleSetupChange({ ...setupState, [property]: value });
         }}
       />
     </Option>
   );
-
-  const handleSetupReset = () => {
-    handleSetupChange(defaultSettings.setup);
-  };
-
   return (
-    <SettingSection
-      title="Trial Setup"
-      description="Changes will only apply to new trials"
-      headerRight={<LinkButton title="Reset" onPress={handleSetupReset} />}
-    >
+    <ScrollView style={styles.container}>
+      <Text style={[styles.description, styles.warningDescription]}>
+        Most users will not need to change these settings.
+      </Text>
+      <Text style={styles.description}>
+        Changes will only apply to new trials.
+      </Text>
+      <Text style={styles.description}>
+        To reset to your league&apos;s default settings, re-select your league
+        on the league settings screen:
+      </Text>
+      <Link
+        border
+        title="League Settings"
+        onPress={() => navigation.navigate(ScreenName.LEAGUE_SELECTION)}
+      />
+      <View style={styles.divider} />
       {createSetupToggleOption('Enable Pretrial Timer', 'pretrialEnabled')}
+      {createSetupToggleOption(
+        'Enable Closings Preperation Timer',
+        'jointPrepClosingsEnabled',
+      )}
+      {createSetupToggleOption(
+        'Enable Team Conference Timer',
+        'jointConferenceEnabled',
+      )}
+      {createSetupToggleOption(
+        'Enable Rebuttal Maximum Time',
+        'rebuttalMaxEnabled',
+      )}
       {createSetupToggleOption('Enable All-Loss Timer', 'allLossEnabled')}
       {createSetupToggleOption(
         'Separate Statement Times',
         'statementsSeparate',
       )}
       <View style={styles.divider} />
-      {setup.pretrialEnabled &&
+      {setupState.pretrialEnabled &&
         createSetupTimeOption('Pretrial', 'pretrialTime')}
 
-      {setup.statementsSeparate ? (
+      {setupState.statementsSeparate ? (
         <>
           {createSetupTimeOption('Opening Statements', 'openTime')}
           {createSetupTimeOption('Closing Statements', 'closeTime')}
@@ -79,7 +134,13 @@ const SetupSettings: FC<SetupSettingsProps> = ({
 
       {createSetupTimeOption('Direct Examinations', 'directTime')}
       {createSetupTimeOption('Cross Examinations', 'crossTime')}
-    </SettingSection>
+      {setupState.jointPrepClosingsEnabled &&
+        createSetupTimeOption('Closings Preperation', 'jointPrepClosingsTime')}
+      {setupState.jointConferenceEnabled &&
+        createSetupTimeOption('Team Conference', 'jointConferenceTime')}
+      {setupState.rebuttalMaxEnabled &&
+        createSetupTimeOption('Rebuttal Maximum Time', 'rebuttalMaxTime')}
+    </ScrollView>
   );
 };
 
@@ -88,6 +149,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: 'lightgray',
     marginVertical: 10,
+  },
+  container: {
+    padding: 10,
+    paddingBottom: 30,
+    backgroundColor: 'white',
+  },
+  description: {
+    fontSize: 16,
+    padding: 10,
+    color: 'gray',
+  },
+  warningDescription: {
+    color: colors.WARNING_RED,
+    fontWeight: 500,
   },
 });
 

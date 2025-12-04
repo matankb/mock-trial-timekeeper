@@ -4,19 +4,21 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 
 import AppearenceSettings from './AppearenceSettings';
 import SchoolAccountSettings from './SchoolAccount/SchoolAccountSettings';
-import SetupSettings from './SetupSettings';
 import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
 import {
   Settings as SettingsData,
   SettingsSchoolAccount,
-  SettingsSetup,
   SettingsTheme,
   getSettings,
   setSettings,
   settingsThemeToThemeContextTheme,
 } from '../../controllers/settings';
 import { useProvidedContext } from '../../context/ContextProvider';
+import LeagueSettings from './LeagueSettings/LeagueSettings';
+import Link from '../Link';
+import { LeagueFeature } from '../../constants/leagues';
+import { useLeagueFeatureFlag } from '../../hooks/useLeagueFeatureFlag';
 
 type SettingsProps = NativeStackScreenProps<RouteProps, ScreenName.SETTINGS>;
 
@@ -30,6 +32,8 @@ const Settings: FC<SettingsProps> = ({ navigation }) => {
     theme: { setTheme },
   } = useProvidedContext();
   const [settingsState, setSettingsState] = useState<SettingsData | null>(null);
+
+  const teamAccountsEnabled = useLeagueFeatureFlag(LeagueFeature.TEAM_ACCOUNTS);
 
   useEffect(() => {
     getSettings().then((settings) => {
@@ -63,29 +67,33 @@ const Settings: FC<SettingsProps> = ({ navigation }) => {
     updateSettings({ theme });
   };
 
-  const handleSetupChange = (setup: SettingsSetup) => {
-    updateSettings({ setup });
-  };
-
   const handleSchoolAccountChange = (schoolAccount: SettingsSchoolAccount) => {
     updateSettings({ schoolAccount });
   };
 
+  const handleSetupSettings = () => {
+    navigation.navigate(ScreenName.SETUP_SETTINGS);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <LeagueSettings />
       <AppearenceSettings
         theme={settingsState.theme}
         handleThemeChange={handleThemeChange}
       />
-      <SchoolAccountSettings
-        navigation={navigation}
-        schoolAccountSettings={settingsState.schoolAccount}
-        handleSchoolAccountSettingsChange={handleSchoolAccountChange}
-      />
-      <SetupSettings
+      {teamAccountsEnabled && (
+        <SchoolAccountSettings
+          navigation={navigation}
+          schoolAccountSettings={settingsState.schoolAccount}
+          handleSchoolAccountSettingsChange={handleSchoolAccountChange}
+        />
+      )}
+      {/* <SetupSettings
         setup={settingsState.setup}
         handleSetupChange={handleSetupChange}
-      />
+      /> */}
+      <Link title="Advanced Trial Setup" onPress={handleSetupSettings} />
     </ScrollView>
   );
 };
