@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useKeepAwake } from 'expo-keep-awake';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 
 import AirplaneModeBlocker from './AirplaneModeBlocker/AirplaneModeBlocker';
@@ -21,9 +21,14 @@ import {
   calculateNewTrialTime,
 } from '../../controllers/trial';
 import useTrial from '../../hooks/useTrial';
-import Link from '../Link';
 import { useProvidedContext } from '../../context/ContextProvider';
 import { ScreenNavigationOptions } from '../../types/navigation';
+import { TimeSummaryRowType } from './TimeSummaries/SideTimeSummary';
+import ManagerTimeEditor from './ManagerTimeEditor';
+import { Side } from '../../types/side';
+import { LeagueFeature } from '../../constants/leagues';
+import { useLeagueFeatureFlag } from '../../hooks/useLeagueFeatureFlag';
+import Link from '../Link';
 
 type TrialManagerProps = NativeStackScreenProps<
   RouteProps,
@@ -44,9 +49,13 @@ export const trialManagerScreenOptions: ScreenNavigationOptions<
 
 const TrialManager: FC<TrialManagerProps> = (props) => {
   const [trial, setTrial] = useTrial(props.route.params.trialId);
+  const timeBreakdownEnabled = useLeagueFeatureFlag(
+    LeagueFeature.TIMES_BREAKDOWN,
+  );
 
   const intervalId = React.useRef<NodeJS.Timeout>(null);
   const [counting, setCounting] = useState(false);
+  const [editingTimes, setEditingTimes] = useState(false);
   const startedCounting = React.useRef<number>(null);
   const timeBeforeCounting = React.useRef<number>(null);
   const {
@@ -67,24 +76,6 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
       }
     };
   }, [counting, trial]);
-
-  useEffect(() => {
-    if (!trial) {
-      return;
-    }
-
-    const optionsMenu = (
-      <OptionsMenu
-        navigation={props.navigation}
-        trial={trial}
-        handleDelete={handleDelete}
-      />
-    );
-
-    props.navigation.setOptions({
-      headerRight: () => optionsMenu,
-    });
-  }, [trial]);
 
   const startTimer = () => {
     startedCounting.current = Date.now();
@@ -129,7 +120,8 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
   };
 
   // when this is called, the user has already confirmed
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
+    // TODO: test if this gets re-rendered every second or whatever.
     if (!allTrials) {
       throw new Error(
         'Attempted to delete trials, but all trials have not been initialized.',
@@ -142,11 +134,13 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
     setAllTrials(filteredTrials);
     deleteTrial(trial.id);
     props.navigation.goBack();
-  };
-
-  if (!trial) {
-    return null;
-  }
+  }, [
+    allTrials,
+    props.route.params.trialId,
+    props.navigation,
+    trial.id,
+    setAllTrials,
+  ]);
 
   const handleIndividualTimesPress = () => {
     props.navigation.navigate(ScreenName.TIMES_BREAKDOWN, {
@@ -154,6 +148,31 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
       trialName: trial.name, // name included to set as header title
     });
   };
+
+  useEffect(() => {
+    if (!trial) {
+      return;
+    }
+
+    const optionsMenu = (
+      <OptionsMenu
+        navigation={props.navigation}
+        trial={trial}
+        editingTimes={editingTimes}
+        handleDelete={handleDelete}
+        handleEditTimes={() => setEditingTimes(true)}
+        handleEditTimesFinish={() => setEditingTimes(false)}
+      />
+    );
+
+    props.navigation.setOptions({
+      headerRight: () => optionsMenu,
+    });
+  }, [trial, editingTimes, props.navigation, handleDelete]);
+
+  if (!trial) {
+    return null;
+  }
 
   return (
     <AirplaneModeBlocker>
@@ -163,7 +182,13 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
       >
         <View style={{ width: '100%', marginBottom: 10 }}>
           {trial.setup.allLossEnabled && <AllLoss allLossTime={trial.loss} />}
-          <TimeSummaries trial={trial} />
+          <TimeSummaries trial={trial} editingTimes={editingTimes} />
+          {timeBreakdownEnabled && (
+            <Link
+              title="Individual Times"
+              onPress={handleIndividualTimesPress}
+            />
+          )}
         </View>
         <Controls
           currentStageName={getCurrentStageName(trial)}
