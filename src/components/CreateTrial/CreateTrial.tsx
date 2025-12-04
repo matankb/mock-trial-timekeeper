@@ -18,6 +18,8 @@ import { useProvidedContext } from '../../context/ContextProvider';
 import { useSettings } from '../../hooks/useSettings';
 import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
 import { CreateTrialHeaderLeft } from './CreateTrialHeader';
+import { LeagueFeature } from '../../constants/leagues';
+import { useLeagueFeatureFlag } from '../../hooks/useLeagueFeatureFlag';
 
 const ALL_LOSS_MINUTES = 180;
 
@@ -38,6 +40,9 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
 
   // Create Trial State
   const settings = useSettings();
+  const witnessSelectionEnabled = useLeagueFeatureFlag(
+    LeagueFeature.WITNESS_SELECTION,
+  );
 
   const {
     trials: { trials, setTrials },
@@ -107,6 +112,9 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
     return null;
   }
 
+  const showWitnessSelector =
+    !settings.schoolAccount.connected && witnessSelectionEnabled;
+
   return (
     <ScrollView
       style={{
@@ -135,7 +143,7 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
           setAllLossTime={setAllLossTime}
         />
       )}
-      {!settings.schoolAccount.connected && <WitnessSelectorInline />}
+      {showWitnessSelector && <WitnessSelectorInline />}
 
       <Button title="Create Trial" onPress={handleCreatePress} />
     </ScrollView>
