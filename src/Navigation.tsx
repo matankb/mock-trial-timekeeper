@@ -49,10 +49,6 @@ import {
   teamAccountPopupScreenOptions,
 } from './components/Home/Promos/TeamAccountPopup';
 
-import {
-  TeamTrials,
-  teamTrialsScreenOptions,
-} from './components/Home/TeamTrials';
 import TeamTimesBreakdown, {
   TeamTimesBreakdownRouteProps,
   teamTimesBreakdownScreenOptions,
@@ -75,7 +71,6 @@ export type RouteProps = {
   // Home
   [ScreenName.HOME]: undefined;
   [ScreenName.ALL_TRIALS]: undefined;
-  [ScreenName.TEAM_TRIALS]: undefined;
   [ScreenName.WELCOME]: undefined;
 
   // Trial Manager
@@ -121,7 +116,6 @@ const Navigation = () => {
     // Home
     { name: ScreenName.HOME, component: Home, options: homeScreenOptions },
     { name: ScreenName.ALL_TRIALS, component: AllTrials, options: allTrialsScreenOptions },
-    { name: ScreenName.TEAM_TRIALS, component: TeamTrials, options: teamTrialsScreenOptions },
     { name: ScreenName.WELCOME, component: Welcome, options: welcomeScreenOptions},
 
     // Trial Manager

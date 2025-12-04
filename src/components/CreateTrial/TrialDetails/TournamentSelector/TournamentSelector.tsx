@@ -1,33 +1,21 @@
-import { Entypo } from '@expo/vector-icons';
 import { useNetworkState } from 'expo-network';
 import React, { FC, useEffect, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  Platform,
-  ScrollView,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
+import { StyleSheet, Platform, ScrollView } from 'react-native';
 
 import TournamentList from './TournamentList';
-import TournamentSelectorOffline from './TournamentSelectorOffline';
-import colors from '../../../../constants/colors';
 import { getSettings } from '../../../../controllers/settings';
 import { Tables } from '../../../../types/supabase';
 import { showBugReportAlert } from '../../../../utils/bug-report';
 import { supabase } from '../../../../utils/supabase';
 import Card from '../../../Card';
-import LinkButton from '../../../LinkButton';
-import Picker from '../../../Picker';
-import Text from '../../../Text';
 import { ScreenName } from '../../../../constants/screen-names';
 import { ScreenNavigationOptions } from '../../../../types/navigation';
 import { useProvidedContext } from '../../../../context/ContextProvider';
 import TeamSelector from './TeamSelector';
+import LinkButton from '../../../LinkButton';
+import TournamentSelectorOffline from './TournamentSelectorOffline';
 
 type Tournament = Pick<Tables<'tournaments'>, 'id' | 'name'>;
-type Team = Pick<Tables<'teams'>, 'id' | 'name'>;
 
 export const tournamentSelectorScreenOptions: ScreenNavigationOptions<
   ScreenName.TOURNAMENT_SELECTOR
@@ -57,12 +45,9 @@ const TournamentSelector: FC = () => {
   const { tournamentId, teamId } = createTrialState;
 
   // Database State
-  const [teams, setTeams] = useState<Team[]>([]);
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
 
   // UI State
-  const [teamPickerVisible, setTeamPickerVisible] = useState(false);
-  const [loadingTeams, setLoadingTeams] = useState(false);
   const [loadingTournaments, setLoadingTournaments] = useState(false);
 
   /**
@@ -181,7 +166,7 @@ const TournamentSelector: FC = () => {
       <Card style={styles.tournamentCard}>
         <TournamentList
           tournaments={tournaments}
-          selectedTournamentId={tournamentId}
+          selectedTournamentId={tournamentId ?? undefined}
           loading={loadingTournaments}
           onSelectTournament={handleTournamentSelect}
           onAddNewTournament={handleAddNewTournament}

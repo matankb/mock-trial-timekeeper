@@ -1,9 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import {
   Alert,
-  FlatList,
-  ImageSourcePropType,
-  ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
@@ -11,35 +8,12 @@ import LeagueCard from './LeagueCard';
 import Button from '../../Button';
 import colors from '../../../constants/colors';
 import { League, leagueNames } from '../../../constants/leagues';
-import LinkButton from '../../LinkButton';
 import { LeagueSelectorHelp } from './LeagueSelectorHelp';
 import { useSettings } from '../../../hooks/useSettings';
 import { setLeague } from '../../../controllers/settings';
 import { useNavigation } from '../../../types/navigation';
 import { ScreenName } from '../../../constants/screen-names';
 import Link from '../../Link';
-
-interface LeagueDisplay {
-  league: League;
-  name: string;
-  description: string;
-  image: ImageSourcePropType;
-}
-
-const leagues: LeagueDisplay[] = [
-  {
-    league: League.AMTA,
-    name: 'American Mock Trial Association',
-    description: 'College Mock Trial',
-    image: require('../../../../assets/leagues/amta.png'),
-  },
-  {
-    league: League.Minnesota,
-    name: null,
-    description: 'High School Mock Trial in Minnesota',
-    image: require('../../../../assets/leagues/minnesota.jpg'),
-  },
-];
 
 const LeagueSelector: FC = () => {
   const navigation = useNavigation();

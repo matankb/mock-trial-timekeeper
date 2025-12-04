@@ -23,9 +23,6 @@ import {
 import useTrial from '../../hooks/useTrial';
 import { useProvidedContext } from '../../context/ContextProvider';
 import { ScreenNavigationOptions } from '../../types/navigation';
-import { TimeSummaryRowType } from './TimeSummaries/SideTimeSummary';
-import ManagerTimeEditor from './ManagerTimeEditor';
-import { Side } from '../../types/side';
 import { LeagueFeature } from '../../constants/leagues';
 import { useLeagueFeatureFlag } from '../../hooks/useLeagueFeatureFlag';
 import Link from '../Link';

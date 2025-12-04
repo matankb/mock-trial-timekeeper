@@ -26,7 +26,7 @@ import { WitnessSelectorInline } from './TrialDetails/WitnessSelector/WitnessSel
 import { RoundNumber } from '../../types/round-number';
 import AllLossSelector from './AllLossSelector';
 import { useProvidedContext } from '../../context/ContextProvider';
-import { useSettings, useSettingsLeague } from '../../hooks/useSettings';
+import { useSettings } from '../../hooks/useSettings';
 import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
 import { useLeagueFeatureFlag } from '../../hooks/useLeagueFeatureFlag';
 import { LeagueFeature } from '../../constants/leagues';

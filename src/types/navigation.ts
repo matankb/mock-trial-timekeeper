@@ -9,8 +9,7 @@ import { RouteProps } from '../Navigation';
 import {
   RouteProp,
   useNavigation as useNativeNavigation,
-} from '@react-navigation/native';
-import { useRoute as useNativeRoute } from '@react-navigation/native';
+ useRoute as useNativeRoute } from '@react-navigation/native';
 
 type ScreenOptionsArgs<S extends ScreenName> = NativeStackOptionsArgs<
   RouteProps,

@@ -10,7 +10,6 @@ import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
 import { useProvidedContext } from '../../context/ContextProvider';
 import HomeTrialsList from './TrialsList/HomeTrialsList';
 import { useSettings } from '../../hooks/useSettings';
-import Link from '../Link';
 
 export const homeScreenOptions: ScreenNavigationOptions<ScreenName.HOME> = {
   title: 'Mock Trial Timer',

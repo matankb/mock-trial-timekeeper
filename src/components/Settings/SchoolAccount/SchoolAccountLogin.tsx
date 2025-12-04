@@ -1,4 +1,3 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { FC, useState } from 'react';
 import {
   View,

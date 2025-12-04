@@ -2,25 +2,19 @@ import React, { FC, useEffect, useState } from 'react';
 import { StyleSheet, Switch, View , ScrollView } from 'react-native';
 
 import Option from './Option';
-import SettingSection from './SettingSection';
 import colors from '../../constants/colors';
 import {
-  defaultSettings,
   getSettings,
   setSettings,
   SettingsSetup,
 } from '../../controllers/settings';
-import LinkButton from '../LinkButton';
 import TimeEditor from '../TimeEditor/TimeEditor';
 import { PickByValue } from 'utility-types';
 import {
   ScreenNavigationOptions,
   ScreenProps,
-  useNavigation,
 } from '../../types/navigation';
 import { ScreenName } from '../../constants/screen-names';
-import { useSettings } from '../../hooks/useSettings';
-import { TrialSetup } from '../../controllers/trial';
 import Text from '../Text';
 import Link from '../Link';
 
