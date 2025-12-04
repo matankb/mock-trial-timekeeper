@@ -10,7 +10,7 @@ import useTheme from '../../../hooks/useTheme';
 import Button from '../../Button';
 import LinkButton from '../../LinkButton';
 import Text from '../../Text';
-import { useSettings, useSettingsLeague } from '../../../hooks/useSettings';
+import { useSettingsLeague } from '../../../hooks/useSettings';
 import { leagueNames } from '../../../constants/leagues';
 
 interface AirplaneModeBlockerProps {
@@ -19,8 +19,7 @@ interface AirplaneModeBlockerProps {
 
 const AirplaneModeBlocker: FC<AirplaneModeBlockerProps> = ({ children }) => {
   const theme = useTheme();
-  const settings = useSettings();
-  const league = useSettingsLeague(settings);
+  const league = useSettingsLeague();
 
   const [showWarning, setShowWarning] = useState(false);
   const {
@@ -76,8 +75,9 @@ const AirplaneModeBlocker: FC<AirplaneModeBlockerProps> = ({ children }) => {
       >
         It looks like your device is connected to the internet. According
         to&nbsp;
-        {leagueNames[league]} rules, you must enable Airplane Mode and turn off
-        Wi-Fi to use the timer during sanctioned tournaments.
+        {league ? leagueNames[league] : 'your league'} rules, you must enable
+        Airplane Mode and turn off Wi-Fi to use the timer during sanctioned
+        tournaments.
       </Text>
       <View style={styles.buttonContainer}>
         <Button

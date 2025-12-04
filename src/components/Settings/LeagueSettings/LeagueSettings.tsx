@@ -5,21 +5,20 @@ import { useNavigation } from '../../../types/navigation';
 import SettingSection from '../SettingSection';
 import Link from '../../Link';
 import { StyleSheet, View } from 'react-native';
-import { useSettings, useSettingsLeague } from '../../../hooks/useSettings';
+import { useSettingsLeague } from '../../../hooks/useSettings';
 import { leagueNames, League } from '../../../constants/leagues';
 
 const LeagueSettings: FC = () => {
   const navigation = useNavigation();
-  const settings = useSettings();
 
-  const league = useSettingsLeague(settings);
+  const league = useSettingsLeague();
   const description = league === League.AMTA ? '(AMTA)' : '';
 
   return (
     <SettingSection title="League">
       <View style={styles.container}>
         <Link
-          title={leagueNames[league]}
+          title={league ? leagueNames[league] : ''}
           subtitle={description}
           onPress={() => navigation.navigate(ScreenName.LEAGUE_SELECTION)}
           inline
