@@ -21,6 +21,15 @@ const Home: FC<ScreenProps<ScreenName.HOME>> = ({ navigation, route }) => {
   const {
     trials: { trials },
   } = useProvidedContext();
+
+  const settings = useSettings();
+
+  useEffect(() => {
+    if (settings && settings.league.league === null) {
+      navigation.replace(ScreenName.WELCOME);
+    }
+  }, [settings, navigation]);
+
   // This is a workaround to prevent a known issue
   // Ideally, options would be set in homeScreenOptions
   // see: https://github.com/react-navigation/react-navigation/issues/8657
