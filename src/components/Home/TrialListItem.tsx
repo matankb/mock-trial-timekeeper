@@ -7,23 +7,35 @@ import useTheme from '../../hooks/useTheme';
 
 interface TrialListItemProps {
   title: string;
+  subtitle?: string;
+  icon?: React.ReactNode;
   divider: boolean;
   onPress: () => void;
 }
 
-const TrialListItem: FC<TrialListItemProps> = ({ title, divider, onPress }) => {
+const TrialListItem: FC<TrialListItemProps> = ({
+  title,
+  subtitle,
+  icon,
+  divider,
+  onPress,
+}) => {
   const theme = useTheme();
 
   const nameComponent = (
-    <Text
-      style={{
-        ...styles.name,
-        color: theme === Theme.LIGHT ? 'black' : 'white',
-      }}
-      numberOfLines={1}
-    >
-      {title}
-    </Text>
+    <View style={styles.nameContainer}>
+      {icon}
+      <Text
+        style={{
+          ...styles.name,
+          color: theme === Theme.LIGHT ? 'black' : 'white',
+        }}
+        numberOfLines={1}
+      >
+        {title}
+      </Text>
+      {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+    </View>
   );
 
   const dividerComponent = (
@@ -56,10 +68,20 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 10,
   },
+  nameContainer: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
   name: {
     fontSize: 16,
-    flex: 1,
     color: 'white',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: 'gray',
   },
   divider: {
     borderColor: 'gray',

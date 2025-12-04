@@ -1,36 +1,21 @@
-import {
-  NativeStackNavigationOptions,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack';
-import React, { FC, useContext } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { FC, useEffect } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import AirplaneModeWarning from './AirplaneModeWarning';
 import { HomeHeaderIconLeft, HomeHeaderIconRight } from './HomeHeaderIcons';
 import TeamAccountPromo from './Promos/TeamAccountPromo';
-import TrialsList from './TrialsList';
-import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
-import { TrialsContext } from '../../context/TrialsContext';
-import { Trial } from '../../controllers/trial';
 import Button from '../Button';
+import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
+import { useProvidedContext } from '../../context/ContextProvider';
+import HomeTrialsList from './TrialsList/HomeTrialsList';
+import { useSettings } from '../../hooks/useSettings';
+import Link from '../Link';
 
 export const homeScreenOptions: ScreenNavigationOptions<ScreenName.HOME> = {
   title: 'Mock Trial Timer',
   headerTitleAlign: 'center',
-});
-
-const MAX_DISPLAYED_TRIALS = 9;
-
-const Home: FC<HomeProps> = ({ navigation, route }) => {
-  const [trials] = useContext(TrialsContext);
-
-  const handleTrialSelect = (trial: Trial) => {
-    navigation.navigate(ScreenName.TRIAL_MANAGER, {
-      trialId: trial.id,
-      trialName: trial.name, // name included to set as header title
-    });
-  };
+};
 
 const Home: FC<ScreenProps<ScreenName.HOME>> = ({ navigation, route }) => {
   const {
@@ -60,14 +45,7 @@ const Home: FC<ScreenProps<ScreenName.HOME>> = ({ navigation, route }) => {
       onLayout={() => setHeaderButtons()}
     >
       <View>
-        <TrialsList
-          trials={trials
-            .sort((a, b) => b.date - a.date)
-            .slice(0, MAX_DISPLAYED_TRIALS)}
-          handleSelect={handleTrialSelect}
-          showAllTrialsLink={trials.length > MAX_DISPLAYED_TRIALS}
-          onAllTrialsPress={() => navigation.navigate(ScreenName.ALL_TRIALS)}
-        />
+        <HomeTrialsList trials={trials} navigation={navigation} />
         <Button
           title="New Trial"
           onPress={() => navigation.navigate(ScreenName.CREATE_TRIAL)}
