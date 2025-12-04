@@ -75,9 +75,9 @@ export const TeamAccountPopup = () => {
         <View style={styles.promoSection}>
           <Text style={styles.promoTitle}>Comprehensive Dashboard</Text>
           <Text style={styles.promoText}>
-            Monitor your team's progress with detailed analytics and performance
-            insights. Track individual and team improvements over time with our
-            intuitive dashboard.
+            Monitor your team&apos;s progress with detailed analytics and
+            performance insights. Track individual and team improvements over
+            time with our intuitive dashboard.
           </Text>
         </View>
 
