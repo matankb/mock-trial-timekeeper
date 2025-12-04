@@ -61,6 +61,13 @@ import { ScreenNavigationOptions, ScreenProps } from './types/navigation';
 import WitnessSelectorScreen, {
   witnessSelectorScreenOptions,
 } from './components/CreateTrial/TrialDetails/WitnessSelector/WitnessSelectorScreen';
+import Welcome, { welcomeScreenOptions } from './components/Welcome/Welcome';
+import LeagueSelectionScreen, {
+  leagueSelectionScreenOptions,
+} from './components/Settings/LeagueSettings/LeagueSelectionScreen';
+import SetupSettings, {
+  setupSettingsScreenOptions,
+} from './components/Settings/SetupSettings';
 
 const Stack = createNativeStackNavigator<RouteProps>();
 
@@ -69,19 +76,25 @@ export type RouteProps = {
   [ScreenName.HOME]: undefined;
   [ScreenName.ALL_TRIALS]: undefined;
   [ScreenName.TEAM_TRIALS]: undefined;
+  [ScreenName.WELCOME]: undefined;
+
   // Trial Manager
   [ScreenName.TRIAL_MANAGER]: TrialManagerRouteProps;
   [ScreenName.TIMES_BREAKDOWN]: TimeBreakdownRouteProps;
   [ScreenName.TEAM_TIMES_BREAKDOWN]: TeamTimesBreakdownRouteProps;
+
   // About
   [ScreenName.ABOUT]: undefined;
   [ScreenName.DISCLAIMER]: undefined;
   [ScreenName.AMTA_POLICY]: undefined;
-  [ScreenName.SWING_TIMING_EXPLAINER]: undefined;
   [ScreenName.TEAM_ACCOUNT_POPUP]: undefined;
+
   // Settings
   [ScreenName.SETTINGS]: undefined;
+  [ScreenName.SETUP_SETTINGS]: undefined;
   [ScreenName.SCHOOL_ACCOUNT_LOGIN]: undefined;
+  [ScreenName.LEAGUE_SELECTION]: undefined;
+
   // Create Trial
   [ScreenName.CREATE_TRIAL]: undefined;
   [ScreenName.UPDATE_TRIAL]: UpdateTrialRouteProps;
@@ -109,6 +122,7 @@ const Navigation = () => {
     { name: ScreenName.HOME, component: Home, options: homeScreenOptions },
     { name: ScreenName.ALL_TRIALS, component: AllTrials, options: allTrialsScreenOptions },
     { name: ScreenName.TEAM_TRIALS, component: TeamTrials, options: teamTrialsScreenOptions },
+    { name: ScreenName.WELCOME, component: Welcome, options: welcomeScreenOptions},
 
     // Trial Manager
     { name: ScreenName.TRIAL_MANAGER, component: TrialManager, options: trialManagerScreenOptions },
@@ -118,6 +132,8 @@ const Navigation = () => {
     // Settings
     { name: ScreenName.SETTINGS, component: Settings, options: settingsScreenOptions },
     { name: ScreenName.SCHOOL_ACCOUNT_LOGIN, component: SchoolAccountLogin, options: schoolAccountLoginScreenOptions },
+    { name: ScreenName.LEAGUE_SELECTION, component: LeagueSelectionScreen, options: leagueSelectionScreenOptions },
+    { name: ScreenName.SETUP_SETTINGS, component: SetupSettings, options: setupSettingsScreenOptions },
 
     // About
     { name: ScreenName.ABOUT, component: About, options: aboutScreenOptions },
