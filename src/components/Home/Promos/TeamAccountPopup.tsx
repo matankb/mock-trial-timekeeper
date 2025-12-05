@@ -48,11 +48,11 @@ export const TeamAccountPopup = () => {
         </View>
 
         {/* First Image */}
-        <PromoImage
+        {/* <PromoImage
           source={require('../../../../assets/promos/examinations.jpg')}
           width={820}
           height={544}
-        />
+        /> */}
 
         {/* First Promotional Section */}
         <View style={styles.promoSection}>
@@ -65,11 +65,11 @@ export const TeamAccountPopup = () => {
         </View>
 
         {/* Second Image */}
-        <PromoImage
+        {/* <PromoImage
           source={require('../../../../assets/promos/dashboard.jpg')}
           width={888}
           height={1554}
-        />
+        /> */}
 
         {/* Second Promotional Section */}
         <View style={styles.promoSection}>

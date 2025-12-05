@@ -40,7 +40,7 @@ const HomeTrialsList: FC<HomeTrialsListProps> = ({ trials, navigation }) => {
   };
 
   const handleTeamTrialsPress = () => {
-    navigation.navigate(ScreenName.TEAM_TRIALS);
+    return; // not implemented yet
   };
 
   // Additional links

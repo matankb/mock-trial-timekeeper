@@ -21,7 +21,10 @@ const LeagueCard: FC<LeagueProps> = ({
 }) => {
   return (
     <Card
-      style={[styles.container, selected && styles.selected]}
+      style={StyleSheet.flatten([
+        styles.container,
+        selected && styles.selected,
+      ])}
       onPress={onSelect}
     >
       <Image source={image} style={styles.image} />
