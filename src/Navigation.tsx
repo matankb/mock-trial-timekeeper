@@ -100,12 +100,12 @@ export type RouteProps = {
 };
 
 type ScreenConfiguration = {
-  [Screen in ScreenName]: {
+  [Screen in keyof RouteProps]: {
     name: Screen;
     component: FC<ScreenProps<Screen>>;
     options: ScreenNavigationOptions<Screen>;
   };
-}[ScreenName];
+}[keyof RouteProps];
 
 const Navigation = () => {
   const theme = useTheme();

@@ -4,39 +4,38 @@ import {
   NativeStackOptionsArgs,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
-import { ScreenName } from '../constants/screen-names';
 import { RouteProps } from '../Navigation';
 import {
   RouteProp,
   useNavigation as useNativeNavigation,
- useRoute as useNativeRoute } from '@react-navigation/native';
+  useRoute as useNativeRoute,
+} from '@react-navigation/native';
 
-type ScreenOptionsArgs<S extends ScreenName> = NativeStackOptionsArgs<
+type ScreenOptionsArgs<S extends keyof RouteProps> = NativeStackOptionsArgs<
   RouteProps,
   S
 >;
 
-type ScreenNavigationOptionsFunction<S extends ScreenName> = (
+type ScreenNavigationOptionsFunction<S extends keyof RouteProps> = (
   args: ScreenOptionsArgs<S>,
 ) => NativeStackNavigationOptions;
 
-export type ScreenNavigationOptions<S extends ScreenName> =
+export type ScreenNavigationOptions<S extends keyof RouteProps> =
   | ScreenNavigationOptionsFunction<S>
   | NativeStackNavigationOptions;
 
-export type ScreenProps<S extends ScreenName> = NativeStackScreenProps<
+export type ScreenProps<S extends keyof RouteProps> = NativeStackScreenProps<
   RouteProps,
   S,
   undefined
 >;
 
-export type NavigationProp<S extends ScreenName> = NativeStackNavigationProp<
-  RouteProps,
-  S,
-  undefined
->;
+export type NavigationProp<S extends keyof RouteProps> =
+  NativeStackNavigationProp<RouteProps, S, undefined>;
 
-export const useNavigation = useNativeNavigation<NavigationProp<ScreenName>>;
-export const useRoute = <T extends ScreenName = ScreenName>() => {
-  return useNativeRoute<RouteProp<RouteProps, T>>();
+export const useNavigation = useNativeNavigation<
+  NavigationProp<keyof RouteProps>
+>;
+export const useRoute = <S extends keyof RouteProps>() => {
+  return useNativeRoute<RouteProp<RouteProps, S>>();
 };
