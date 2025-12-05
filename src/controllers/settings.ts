@@ -117,8 +117,11 @@ export async function getSettings(): Promise<Settings> {
 export async function setSettings(newSettings: Partial<Settings>) {
   const settings = await getSettings();
   const updatedSettings = { ...settings, ...newSettings };
-  AsyncStorage.setItem(SETTINGS_SCHEMA_VERSION_KEY, SETTINGS_SCHEMA_VERSION);
-  AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(updatedSettings));
+  await AsyncStorage.setItem(
+    SETTINGS_SCHEMA_VERSION_KEY,
+    SETTINGS_SCHEMA_VERSION,
+  );
+  await AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(updatedSettings));
 }
 
 export async function setLeague(league: League) {
@@ -133,7 +136,7 @@ export async function setLeague(league: League) {
     },
   };
 
-  setSettings(updatedSettings);
+  return setSettings(updatedSettings);
 }
 
 export function settingsThemeToThemeContextTheme(settingsTheme: SettingsTheme) {

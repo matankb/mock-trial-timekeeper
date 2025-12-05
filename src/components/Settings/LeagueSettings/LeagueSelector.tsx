@@ -1,9 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import {
-  Alert,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import LeagueCard from './LeagueCard';
 import Button from '../../Button';
 import colors from '../../../constants/colors';
@@ -28,9 +24,9 @@ const LeagueSelector: FC = () => {
     }
   }, [settings, selected]);
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (selected) {
-      setLeague(selected);
+      await setLeague(selected);
       navigation.reset({
         index: 0,
         routes: [{ name: ScreenName.HOME }],
