@@ -21,8 +21,6 @@ import { CreateTrialHeaderLeft } from './CreateTrialHeader';
 import { LeagueFeature } from '../../constants/leagues';
 import { useLeagueFeatureFlag } from '../../hooks/useLeagueFeatureFlag';
 
-const ALL_LOSS_MINUTES = 180;
-
 export const createTrialScreenOptions: ScreenNavigationOptions<
   ScreenName.CREATE_TRIAL
 > = ({ navigation }) => ({
@@ -50,9 +48,7 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
   } = useProvidedContext();
 
   const [name, setName] = useState('');
-  const [allLossTime, setAllLossTime] = React.useState(
-    Date.now() + ALL_LOSS_MINUTES * 60 * 1000,
-  );
+  const [allLossTime, setAllLossTime] = React.useState(0);
 
   // Trial Details State
   // If school account is not connected, these are not used
@@ -63,6 +59,17 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
   useEffect(() => {
     setCreateTrialState(emptyCreateTrialState);
   }, []);
+
+  useEffect(() => {
+    if (!settings) {
+      return;
+    }
+
+    const duration = settings.additionalSetup.allLossDuration; // duration in seconds
+    const allLossTime = Date.now() + duration * 1000;
+
+    setAllLossTime(allLossTime);
+  }, [settings]);
 
   const validateInputs = () => {
     if (name === '') {

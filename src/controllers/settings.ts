@@ -18,6 +18,18 @@ export enum SettingsTheme {
 // since flex is enabled on a per-tournament basis, it's not a setting
 export type SettingsSetup = DeepNonNullable<Omit<TrialSetup, 'flexEnabled'>>;
 
+// Settings that are part of the advanced trial setup section, but
+// should not be copied to the trial.setup object when creating a new trial.
+export interface SettingsAdditionalSetup {
+  // sets the default duration for the all loss input
+  // but when the trial is created, the exact loss time
+  // is set from the input value
+  allLossDuration: number;
+}
+
+export type SettingsLeague = {
+  league: League | null;
+};
 export interface SettingsSchoolAccount {
   connected: boolean;
   teamId: string | null;
@@ -42,6 +54,11 @@ export const defaultSettings: Settings = {
     directTime: duration.minutes(25),
     crossTime: duration.minutes(25),
   },
+
+  additionalSetup: {
+    allLossDuration: duration.hours(3),
+  },
+
   schoolAccount: {
     connected: false,
     teamId: null,
