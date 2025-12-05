@@ -4,11 +4,15 @@ import Dialog from 'react-native-dialog';
 
 interface TimeEditorAndroidDialogProps {
   visible: boolean;
-  field: 'minutes' | 'seconds';
+  field: 'hours' | 'minutes' | 'seconds';
   stage: string;
   value: number;
   handleSave: (newValue: string) => void;
   handleCancel: () => void;
+
+  hoursLabel?: string;
+  minutesLabel?: string;
+  secondsLabel?: string;
 }
 
 const TimeEditorAndroidDialog: FC<TimeEditorAndroidDialogProps> = (props) => {
@@ -18,10 +22,17 @@ const TimeEditorAndroidDialog: FC<TimeEditorAndroidDialogProps> = (props) => {
     setValue(props.value.toString());
   }, [props.value]);
 
+  const label =
+    props.field === 'hours'
+      ? props.hoursLabel
+      : props.field === 'minutes'
+      ? props.minutesLabel
+      : props.secondsLabel;
+
   return (
     <Dialog.Container visible={props.visible}>
       <Dialog.Title style={styles.title}>
-        Enter a new {props.field} value
+        {label ?? `Enter a new ${props.field} value`}
       </Dialog.Title>
       <Dialog.Description>For {props.stage}</Dialog.Description>
       <Dialog.Input
