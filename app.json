@@ -2,7 +2,7 @@
   "expo": {
     "name": "Mock Timer",
     "slug": "mock-trial-timekeeper",
-    "version": "1.6.0",
+    "version": "1.6.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -17,7 +17,10 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.matankb.mocktrialtimekeeper"
+      "bundleIdentifier": "com.matankb.mocktrialtimekeeper",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -35,7 +38,7 @@
     },
     "android": {
       "package": "com.matankb.mocktrialtimekeeper",
-      "versionCode": 10
+      "versionCode": 11
     }
   }
 }
