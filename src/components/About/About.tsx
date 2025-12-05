@@ -1,5 +1,4 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import Constants from 'expo-constants';
 import { FC } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -50,11 +49,12 @@ const About: FC<AboutProps> = ({ navigation }) => {
           title="AMTA Policy"
           onPress={() => navigation.navigate(ScreenName.AMTA_POLICY)}
         />
+        <Link
+          title="App Version"
+          onPress={() => navigation.navigate(ScreenName.VERSION)}
+        />
       </View>
       <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          Version {Constants.expoConfig?.version ?? 'unknown'}
-        </Text>
         <Text style={styles.footerText}>Created by Matan Kotler-Berkowitz</Text>
       </View>
     </ScrollView>
