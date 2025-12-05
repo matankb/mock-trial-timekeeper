@@ -64,6 +64,7 @@ import LeagueSelectionScreen, {
 import SetupSettings, {
   setupSettingsScreenOptions,
 } from './components/Settings/SetupSettings';
+import Version, { versionScreenOptions } from './components/About/Version';
 
 const Stack = createNativeStackNavigator<RouteProps>();
 
@@ -83,6 +84,7 @@ export type RouteProps = {
   [ScreenName.DISCLAIMER]: undefined;
   [ScreenName.AMTA_POLICY]: undefined;
   [ScreenName.TEAM_ACCOUNT_POPUP]: undefined;
+  [ScreenName.VERSION]: undefined;
 
   // Settings
   [ScreenName.SETTINGS]: undefined;
@@ -134,6 +136,7 @@ const Navigation = () => {
     { name: ScreenName.DISCLAIMER, component: Disclaimer, options: disclaimerScreenOptions },
     { name: ScreenName.AMTA_POLICY, component: AMTAPolicy, options: amtaPolicyScreenOptions },
     { name: ScreenName.TEAM_ACCOUNT_POPUP, component: TeamAccountPopup, options: teamAccountPopupScreenOptions },
+    { name: ScreenName.VERSION, component: Version, options: versionScreenOptions },
 
     // Create Trial
     { name: ScreenName.CREATE_TRIAL, component: CreateTrial, options: createTrialScreenOptions },
