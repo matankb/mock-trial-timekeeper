@@ -89,10 +89,6 @@ const Settings: FC<SettingsProps> = ({ navigation }) => {
           handleSchoolAccountSettingsChange={handleSchoolAccountChange}
         />
       )}
-      {/* <SetupSettings
-        setup={settingsState.setup}
-        handleSetupChange={handleSetupChange}
-      /> */}
       <Link title="Advanced Trial Setup" onPress={handleSetupSettings} />
     </ScrollView>
   );

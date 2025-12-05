@@ -1,19 +1,17 @@
 import React, { FC, useEffect, useState } from 'react';
-import { StyleSheet, Switch, View , ScrollView } from 'react-native';
+import { StyleSheet, Switch, View, ScrollView } from 'react-native';
 
 import Option from './Option';
 import colors from '../../constants/colors';
 import {
   getSettings,
   setSettings,
+  SettingsAdditionalSetup,
   SettingsSetup,
 } from '../../controllers/settings';
 import TimeEditor from '../TimeEditor/TimeEditor';
 import { PickByValue } from 'utility-types';
-import {
-  ScreenNavigationOptions,
-  ScreenProps,
-} from '../../types/navigation';
+import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
 import { ScreenName } from '../../constants/screen-names';
 import Text from '../Text';
 import Link from '../Link';
@@ -27,14 +25,17 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = ({
   navigation,
 }) => {
   const [setupState, setSetupState] = useState<SettingsSetup | null>(null);
+  const [additionalSetupState, setAdditionalSetupState] =
+    useState<SettingsAdditionalSetup | null>(null);
 
   useEffect(() => {
     getSettings().then((settings) => {
       setSetupState(settings.setup);
+      setAdditionalSetupState(settings.additionalSetup);
     });
   }, []);
 
-  if (!setupState) {
+  if (!setupState || !additionalSetupState) {
     return null;
   }
 
@@ -42,6 +43,16 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = ({
     setSetupState(newSetup);
     setSettings({
       setup: newSetup,
+    });
+  };
+
+  const handleAdditionalSetupChange = (
+    newAdditionalSetup: SettingsAdditionalSetup,
+  ) => {
+    setAdditionalSetupState(newAdditionalSetup);
+    console.log('newAdditionalSetup', newAdditionalSetup);
+    setSettings({
+      additionalSetup: newAdditionalSetup,
     });
   };
 
@@ -77,6 +88,25 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = ({
       />
     </Option>
   );
+
+  const createAdditionalSetupTimeOption = (
+    name: string,
+    property: keyof PickByValue<SettingsAdditionalSetup, number>,
+  ) => (
+    <Option name={name}>
+      <TimeEditor
+        value={additionalSetupState[property]}
+        name={name}
+        onChange={(value) => {
+          handleAdditionalSetupChange({
+            ...additionalSetupState,
+            [property]: value,
+          });
+        }}
+      />
+    </Option>
+  );
+
   return (
     <ScrollView style={styles.container}>
       <Text style={[styles.description, styles.warningDescription]}>
@@ -134,6 +164,7 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = ({
         createSetupTimeOption('Team Conference', 'jointConferenceTime')}
       {setupState.rebuttalMaxEnabled &&
         createSetupTimeOption('Rebuttal Maximum Time', 'rebuttalMaxTime')}
+      {createAdditionalSetupTimeOption('All-Loss Duration', 'allLossDuration')}
     </ScrollView>
   );
 };
