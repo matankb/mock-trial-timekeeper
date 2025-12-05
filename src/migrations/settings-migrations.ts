@@ -76,6 +76,8 @@ export const settingsMigrations = [
           jointConferenceEnabled: false,
           jointPrepClosingsTime: duration.minutes(2),
           jointConferenceTime: duration.minutes(2),
+        },
+        additionalSetup: {
           allLossDuration: duration.hours(3),
         },
         theme: settings.theme as SettingsTheme,

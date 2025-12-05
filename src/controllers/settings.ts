@@ -5,6 +5,9 @@ import { Theme } from '../types/theme';
 import { TrialSetup } from './trial';
 import { duration } from '../utils';
 import { DeepNonNullable } from 'utility-types';
+import { League } from '../constants/leagues';
+import { settingsMigrations } from '../migrations/settings-migrations';
+import { getStorageItem } from '../migrations/migration';
 
 // settings theme is distinct from the themecontext theme,
 // because settings theme can include auto, but the context
@@ -38,11 +41,15 @@ export interface SettingsSchoolAccount {
 export interface Settings {
   theme: SettingsTheme;
   setup: SettingsSetup;
+  additionalSetup: SettingsAdditionalSetup;
   schoolAccount: SettingsSchoolAccount;
+  league: SettingsLeague;
 }
 
 export const defaultSettings: Settings = {
   theme: SettingsTheme.LIGHT,
+
+  // The default setup is for AMTA
   setup: {
     pretrialEnabled: false,
     statementsSeparate: false,
@@ -51,8 +58,14 @@ export const defaultSettings: Settings = {
     statementTime: duration.minutes(14),
     openTime: duration.minutes(7),
     closeTime: duration.minutes(7),
+    rebuttalMaxEnabled: false,
+    rebuttalMaxTime: duration.minutes(3),
     directTime: duration.minutes(25),
     crossTime: duration.minutes(25),
+    jointPrepClosingsEnabled: false,
+    jointConferenceEnabled: false,
+    jointPrepClosingsTime: duration.minutes(2),
+    jointConferenceTime: duration.minutes(2),
   },
 
   additionalSetup: {
@@ -63,53 +76,42 @@ export const defaultSettings: Settings = {
     connected: false,
     teamId: null,
   },
+
+  league: {
+    league: null,
+  },
+};
+
+export const leagueSetupOverrides: Record<League, Partial<SettingsSetup>> = {
+  [League.AMTA]: defaultSettings.setup, // TODO: document why this needs to be contained here - it's so that it gets overridden when they switch leagues.
+  [League.Minnesota]: {
+    allLossEnabled: false,
+    jointPrepClosingsEnabled: true,
+    jointPrepClosingsTime: duration.minutes(2),
+    jointConferenceEnabled: true,
+    jointConferenceTime: duration.minutes(2),
+    rebuttalMaxEnabled: true,
+    rebuttalMaxTime: duration.minutes(3),
+    statementsSeparate: true,
+    openTime: duration.minutes(5),
+    closeTime: duration.minutes(7),
+    directTime: duration.minutes(25),
+    crossTime: duration.minutes(18),
+  },
 };
 
 const SETTINGS_KEY = 'settings';
 const SETTINGS_SCHEMA_VERSION_KEY = 'settings_schema_version';
-const SETTINGS_SCHEMA_VERSION = '1.1.0';
-
-function migrateSchemaVersion(oldSettings: any, oldVersion: string): Settings {
-  // Version 1.1.0: Add schoolAccount
-  if (oldVersion === '1.0.0') {
-    const newSettings = {
-      ...oldSettings,
-      schoolAccount: {
-        connected: false,
-        teamId: null,
-      },
-    };
-
-    return newSettings;
-  }
-
-  return oldSettings;
-}
+const SETTINGS_SCHEMA_VERSION = '1.2.0';
 
 export async function getSettings(): Promise<Settings> {
-  const settings = await AsyncStorage.getItem('settings');
-  const schemaVersion = await AsyncStorage.getItem(SETTINGS_SCHEMA_VERSION_KEY);
-
-  // if the schema version is missing, then we won't be able to migrate/recover
-  // the stored settings, so return the default settings
-  if (!settings || schemaVersion === null) {
-    return defaultSettings;
-  }
-
-  if (schemaVersion !== SETTINGS_SCHEMA_VERSION) {
-    const newSettings = migrateSchemaVersion(
-      JSON.parse(settings),
-      schemaVersion,
-    );
-
-    // directly set new settings, to avoid any merging via setSettings
-    AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(newSettings));
-    AsyncStorage.setItem(SETTINGS_SCHEMA_VERSION_KEY, SETTINGS_SCHEMA_VERSION);
-
-    return newSettings;
-  }
-
-  return JSON.parse(settings);
+  return getStorageItem({
+    key: SETTINGS_KEY,
+    schemaVersionKey: SETTINGS_SCHEMA_VERSION_KEY,
+    currentSchemaVersion: SETTINGS_SCHEMA_VERSION,
+    migrations: settingsMigrations,
+    defaultValue: defaultSettings,
+  });
 }
 
 export async function setSettings(newSettings: Partial<Settings>) {
@@ -117,6 +119,21 @@ export async function setSettings(newSettings: Partial<Settings>) {
   const updatedSettings = { ...settings, ...newSettings };
   AsyncStorage.setItem(SETTINGS_SCHEMA_VERSION_KEY, SETTINGS_SCHEMA_VERSION);
   AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(updatedSettings));
+}
+
+export async function setLeague(league: League) {
+  const settings = await getSettings();
+  const updatedSettings = {
+    ...settings,
+    league: { league: league },
+    // TODO: maybe warn if any settings are already overriden from the default?
+    setup: {
+      ...settings.setup,
+      ...leagueSetupOverrides[league],
+    },
+  };
+
+  setSettings(updatedSettings);
 }
 
 export function settingsThemeToThemeContextTheme(settingsTheme: SettingsTheme) {

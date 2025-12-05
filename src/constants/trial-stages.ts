@@ -1,3 +1,4 @@
+import { Mutable } from 'utility-types';
 import { Trial } from '../controllers/trial';
 import { Side } from '../types/side';
 import { getSideName } from '../utils';
@@ -19,9 +20,11 @@ export const stages = [
   'cic.def.two.cross',
   'cic.def.three.direct',
   'cic.def.three.cross',
+  'joint.prep.closings',
   'close.pros',
   'close.def',
   'rebuttal',
+  'joint.conference',
 ] as const;
 
 export type TrialStage = (typeof stages)[number];
@@ -31,12 +34,26 @@ export function isTrialStage(stage: string): stage is TrialStage {
 }
 
 // get the stages that are in use for this trial
-export function getTrialStages(trial: Trial) {
-  if (trial.setup.pretrialEnabled) {
-    return stages;
+export function getTrialStages(trial: Trial): readonly Partial<TrialStage>[] {
+  let trialStages: Mutable<Partial<TrialStage>>[] = [...stages];
+
+  if (!trial.setup.pretrialEnabled) {
+    trialStages = trialStages.filter(
+      (stage) => stage !== 'pretrial.pros' && stage !== 'pretrial.def',
+    );
   }
 
-  return stages.filter((stage) => !stage.includes('pretrial'));
+  if (!trial.setup.jointPrepClosingsEnabled) {
+    trialStages = trialStages.filter(
+      (stage) => stage !== 'joint.prep.closings',
+    );
+  }
+
+  if (!trial.setup.jointConferenceEnabled) {
+    trialStages = trialStages.filter((stage) => stage !== 'joint.conference');
+  }
+
+  return trialStages;
 }
 
 export const getNextStage = (trial: Trial) => {
@@ -124,6 +141,10 @@ export const getStageName = (
     return minimal ? 'Closing' : `${sideName} Closing`;
   } else if (stage.startsWith('rebuttal')) {
     return 'Rebuttal';
+  } else if (stage === 'joint.prep.closings') {
+    return 'Preparation for Closings';
+  } else if (stage === 'joint.conference') {
+    return 'Team Conference';
   }
 
   return stage;

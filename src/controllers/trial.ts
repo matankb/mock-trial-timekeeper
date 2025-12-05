@@ -7,12 +7,15 @@ import { Side } from '../types/side';
 import { Json } from '../types/supabase';
 import { supabase } from '../utils/supabase';
 import { TrialStage } from '../constants/trial-stages';
-import { migrateTrialSchema } from '../migrations/trial-migrations';
+import { trialMigrations } from '../migrations/trial-migrations';
 import { RoundNumber } from '../types/round-number';
 import { DeepNonNullable } from 'utility-types';
+import { League } from '../constants/leagues';
+import { getStorageItem } from '../migrations/migration';
 
 export interface Trial {
   id: string;
+  league: League;
   name: string;
   date: number;
   setup: TrialSetup;
@@ -29,16 +32,24 @@ interface UploadableTrial extends Trial {
 
 export interface TrialSetup {
   pretrialEnabled: boolean;
+  rebuttalMaxEnabled: boolean;
+  jointPrepClosingsEnabled: boolean;
+  jointConferenceEnabled: boolean;
   statementsSeparate: boolean;
   allLossEnabled: boolean;
+
   // see createNewTrial for more information
   flexEnabled: boolean;
+
   pretrialTime?: number;
   statementTime?: number;
   openTime?: number;
   closeTime?: number;
+  rebuttalMaxTime?: number;
   directTime: number;
   crossTime: number;
+  jointPrepClosingsTime?: number;
+  jointConferenceTime?: number;
 }
 
 // Witness call
@@ -80,36 +91,25 @@ export interface TrialTimes {
   close: StatementTimeSet;
   prosCic: CaseInChief;
   defCic: CaseInChief;
+  joint: {
+    prepClosings: number;
+    conference: number;
+  };
   rebuttal: number;
 }
 
 const TRIALS_KEY = 'trials';
-const TRIALS_SCHEMA_VERSION = '2.2.0';
+const TRIALS_SCHEMA_VERSION = '2.3.0';
 const TRIAL_SCHEMA_VERSION_KEY = 'trials_schema_version';
 
 export async function getTrialsFromStorage(): Promise<Trial[]> {
-  const trials = await AsyncStorage.getItem(TRIALS_KEY);
-  const storedSchemaVersion = await AsyncStorage.getItem(
-    TRIAL_SCHEMA_VERSION_KEY,
-  );
-
-  // if the stored schema version is missing, then we won't be able to migrate/recover
-  // the stored trials, so return an empty array
-  if (!trials || storedSchemaVersion === null) {
-    return [];
-  }
-
-  if (storedSchemaVersion !== TRIALS_SCHEMA_VERSION) {
-    const migratedTrials = migrateTrialSchema(
-      JSON.parse(trials),
-      storedSchemaVersion,
-    );
-    await AsyncStorage.setItem(TRIALS_KEY, JSON.stringify(migratedTrials));
-    await AsyncStorage.setItem(TRIAL_SCHEMA_VERSION_KEY, TRIALS_SCHEMA_VERSION);
-    return migratedTrials;
-  }
-
-  return JSON.parse(trials);
+  return getStorageItem({
+    key: TRIALS_KEY,
+    schemaVersionKey: TRIAL_SCHEMA_VERSION_KEY,
+    currentSchemaVersion: TRIALS_SCHEMA_VERSION,
+    migrations: trialMigrations,
+    defaultValue: [],
+  });
 }
 
 export async function setTrialToStorage(trial: Trial) {
@@ -166,6 +166,10 @@ function generateEmptyTrialTimes(): TrialTimes {
     rebuttal: 0,
     prosCic: generateEmptyCaseInChief(),
     defCic: generateEmptyCaseInChief(),
+    joint: {
+      prepClosings: 0,
+      conference: 0,
+    },
   };
 }
 
@@ -187,12 +191,14 @@ export async function createNewTrial(
   const id = uuid.v4() as string;
   const date = new Date().valueOf();
 
-  const { setup } = await getSettings();
+  const { setup, league } = await getSettings();
+  const selectedLeague = league.league ?? League.AMTA; // this should never be null, but handle it in case
 
   const stage = setup.pretrialEnabled ? 'pretrial.pros' : 'open.pros';
 
   const trial: Trial = {
     id,
+    league: selectedLeague,
     name,
     date,
     setup: {
@@ -223,152 +229,75 @@ type DeepPartial<T> = {
 
 const getTrialTimeChangeObject = (
   newValue: number,
-  stage: string,
+  stage: TrialStage,
 ): DeepPartial<TrialTimes> => {
-  switch (stage) {
-    case 'pretrial.pros':
-      return { pretrial: { pros: newValue } };
-    case 'pretrial.def':
-      return { pretrial: { def: newValue } };
-    case 'open.pros':
-      return { open: { pros: newValue } };
-    case 'open.def':
-      return { open: { def: newValue } };
+  const stageMap: Record<TrialStage, DeepPartial<TrialTimes>> = {
+    'pretrial.pros': { pretrial: { pros: newValue } },
+    'pretrial.def': { pretrial: { def: newValue } },
+    'open.pros': { open: { pros: newValue } },
+    'open.def': { open: { def: newValue } },
+    'cic.pros.one.direct': { prosCic: { witnessOne: { direct: newValue } } },
+    'cic.pros.one.cross': { prosCic: { witnessOne: { cross: newValue } } },
+    'cic.pros.two.direct': { prosCic: { witnessTwo: { direct: newValue } } },
+    'cic.pros.two.cross': { prosCic: { witnessTwo: { cross: newValue } } },
+    'cic.pros.three.direct': {
+      prosCic: { witnessThree: { direct: newValue } },
+    },
+    'cic.pros.three.cross': { prosCic: { witnessThree: { cross: newValue } } },
+    'cic.def.one.direct': { defCic: { witnessOne: { direct: newValue } } },
+    'cic.def.one.cross': { defCic: { witnessOne: { cross: newValue } } },
+    'cic.def.two.direct': { defCic: { witnessTwo: { direct: newValue } } },
+    'cic.def.two.cross': { defCic: { witnessTwo: { cross: newValue } } },
+    'cic.def.three.direct': { defCic: { witnessThree: { direct: newValue } } },
+    'cic.def.three.cross': { defCic: { witnessThree: { cross: newValue } } },
+    'close.pros': { close: { pros: newValue } },
+    'close.def': { close: { def: newValue } },
+    rebuttal: { rebuttal: newValue },
+    'joint.prep.closings': { joint: { prepClosings: newValue } },
+    'joint.conference': { joint: { conference: newValue } },
+  };
 
-    case 'cic.pros.one.direct':
-      return {
-        prosCic: {
-          witnessOne: { direct: newValue },
-        },
-      };
-    case 'cic.pros.one.cross':
-      return {
-        prosCic: {
-          witnessOne: {
-            cross: newValue,
-          },
-        },
-      };
-    case 'cic.pros.two.direct':
-      return {
-        prosCic: {
-          witnessTwo: { direct: newValue },
-        },
-      };
-    case 'cic.pros.two.cross':
-      return {
-        prosCic: {
-          witnessTwo: { cross: newValue },
-        },
-      };
-    case 'cic.pros.three.direct':
-      return {
-        prosCic: {
-          witnessThree: { direct: newValue },
-        },
-      };
-    case 'cic.pros.three.cross':
-      return {
-        prosCic: {
-          witnessThree: { cross: newValue },
-        },
-      };
-
-    case 'cic.def.one.direct':
-      return {
-        defCic: {
-          witnessOne: { direct: newValue },
-        },
-      };
-    case 'cic.def.one.cross':
-      return {
-        defCic: {
-          witnessOne: { cross: newValue },
-        },
-      };
-    case 'cic.def.two.direct':
-      return {
-        defCic: {
-          witnessTwo: { direct: newValue },
-        },
-      };
-    case 'cic.def.two.cross':
-      return {
-        defCic: {
-          witnessTwo: { cross: newValue },
-        },
-      };
-    case 'cic.def.three.direct':
-      return {
-        defCic: {
-          witnessThree: { direct: newValue },
-        },
-      };
-    case 'cic.def.three.cross':
-      return {
-        defCic: {
-          witnessThree: { cross: newValue },
-        },
-      };
-
-    case 'close.pros':
-      return { close: { pros: newValue } };
-    case 'close.def':
-      return { close: { def: newValue } };
-    case 'rebuttal':
-      return { rebuttal: newValue };
-
-    default:
-      return {};
+  if (!stageMap[stage]) {
+    throw new Error(`Unknown stage: ${stage}`);
   }
+
+  return stageMap[stage];
 };
 
-export const getStageTime = (trial: Trial, stage: string): any => {
+export const getStageTime = (trial: Trial, stage: TrialStage): number => {
   const { times } = trial;
 
-  switch (stage) {
-    case 'pretrial.pros':
-      return times.pretrial.pros;
-    case 'pretrial.def':
-      return times.pretrial.def;
-    case 'open.pros':
-      return times.open.pros;
-    case 'open.def':
-      return times.open.def;
-    case 'cic.pros.one.direct':
-      return times.prosCic.witnessOne.direct;
-    case 'cic.pros.one.cross':
-      return times.prosCic.witnessOne.cross;
-    case 'cic.pros.two.direct':
-      return times.prosCic.witnessTwo.direct;
-    case 'cic.pros.two.cross':
-      return times.prosCic.witnessTwo.cross;
-    case 'cic.pros.three.direct':
-      return times.prosCic.witnessThree.direct;
-    case 'cic.pros.three.cross':
-      return times.prosCic.witnessThree.cross;
-    case 'cic.def.one.direct':
-      return times.defCic.witnessOne.direct;
-    case 'cic.def.one.cross':
-      return times.defCic.witnessOne.cross;
-    case 'cic.def.two.direct':
-      return times.defCic.witnessTwo.direct;
-    case 'cic.def.two.cross':
-      return times.defCic.witnessTwo.cross;
-    case 'cic.def.three.direct':
-      return times.defCic.witnessThree.direct;
-    case 'cic.def.three.cross':
-      return times.defCic.witnessThree.cross;
-    case 'close.pros':
-      return times.close.pros;
-    case 'close.def':
-      return times.close.def;
-    case 'rebuttal':
-      return times.rebuttal;
-    default:
-      alert('Error!');
-      return null;
+  const stageTimeMap: Record<TrialStage, number> = {
+    'pretrial.pros': times.pretrial.pros,
+    'pretrial.def': times.pretrial.def,
+    'open.pros': times.open.pros,
+    'open.def': times.open.def,
+    'cic.pros.one.direct': times.prosCic.witnessOne.direct,
+    'cic.pros.one.cross': times.prosCic.witnessOne.cross,
+    'cic.pros.two.direct': times.prosCic.witnessTwo.direct,
+    'cic.pros.two.cross': times.prosCic.witnessTwo.cross,
+    'cic.pros.three.direct': times.prosCic.witnessThree.direct,
+    'cic.pros.three.cross': times.prosCic.witnessThree.cross,
+    'cic.def.one.direct': times.defCic.witnessOne.direct,
+    'cic.def.one.cross': times.defCic.witnessOne.cross,
+    'cic.def.two.direct': times.defCic.witnessTwo.direct,
+    'cic.def.two.cross': times.defCic.witnessTwo.cross,
+    'cic.def.three.direct': times.defCic.witnessThree.direct,
+    'cic.def.three.cross': times.defCic.witnessThree.cross,
+    'close.pros': times.close.pros,
+    'close.def': times.close.def,
+    rebuttal: times.rebuttal,
+    'joint.prep.closings': times.joint.prepClosings,
+    'joint.conference': times.joint.conference,
+  };
+
+  const time = stageTimeMap[stage];
+
+  if (time === undefined) {
+    throw new Error(`Unknown stage: ${stage}`);
   }
+
+  return time;
 };
 
 export interface TotalTimeSet {
@@ -376,6 +305,7 @@ export interface TotalTimeSet {
   statements: number | null;
   open: number | null;
   close: number | null;
+  rebuttal?: number;
   direct: number;
   cross: number;
 }
@@ -423,8 +353,8 @@ export const getTotalTimes = (trial: Trial): Record<Side, TotalTimeSide> => {
     ? setup.pretrialTime
     : undefined;
   const setupStatementTime = setup.statementsSeparate
-    ? setup.statementTime
-    : undefined;
+    ? undefined
+    : setup.statementTime;
   const setupOpenTime = setup.statementsSeparate ? setup.openTime : undefined;
   const setupCloseTime = setup.statementsSeparate ? setup.closeTime : undefined;
 
@@ -447,6 +377,7 @@ export const getTotalTimes = (trial: Trial): Record<Side, TotalTimeSide> => {
         : null,
     direct: setup.directTime - prosecutionTimeUsed.direct,
     cross: setup.crossTime - prosecutionTimeUsed.cross,
+    rebuttal: getRebuttalTimeRemaining(trial),
   };
 
   const defenseTimeRemaining = {
@@ -474,10 +405,43 @@ export const getTotalTimes = (trial: Trial): Record<Side, TotalTimeSide> => {
   };
 };
 
+const getRebuttalTimeRemaining = (trial: Trial): number => {
+  const { setup, times } = trial;
+
+  const setupMaxRebuttalTime = setup.rebuttalMaxEnabled
+    ? setup.rebuttalMaxTime
+    : undefined;
+  const currentRebuttalTime = times.rebuttal;
+
+  // Calculate how much time is available for the rebuttal, before the rebuttal is started and before incorporating the max time
+  let totalRebuttalTimeBeforeMax;
+  if (setup.statementsSeparate) {
+    // TODO: UGH the bangs. I should run a migration that makes these all not null. Okay I'm
+    totalRebuttalTimeBeforeMax = setup.closeTime! - times.close.pros;
+  } else {
+    totalRebuttalTimeBeforeMax =
+      setup.statementTime! - times.open.pros - times.close.pros;
+  }
+
+  // Calculate how much time is actually available for the rebuttal, before the rebuttal is started
+  let totalRebuttalTime;
+  if (setup.rebuttalMaxEnabled) {
+    totalRebuttalTime = Math.min(
+      totalRebuttalTimeBeforeMax,
+      setupMaxRebuttalTime!,
+    ); // TODO: UGH the bangs.
+  } else {
+    totalRebuttalTime = totalRebuttalTimeBeforeMax;
+  }
+
+  // Subtract the current rebuttal time from the total rebuttal time to get the remaining rebuttal time
+  return totalRebuttalTime - currentRebuttalTime;
+};
+
 export function calculateNewTrialTime(
   trial: Trial,
   newTime: number,
-  stage: string,
+  stage: TrialStage,
 ): Trial {
   const change = getTrialTimeChangeObject(newTime, stage);
   const newTrial = merge(trial, { times: change }) as Trial;

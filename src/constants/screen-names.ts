@@ -12,6 +12,7 @@ export enum ScreenName {
 
   // About
   ABOUT = 'about',
+  VERSION = 'version',
   DISCLAIMER = 'disclaimer',
   AMTA_POLICY = 'amta-policy',
   TEAM_ACCOUNT_POPUP = 'team-account-popup',
