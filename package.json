@@ -26,6 +26,7 @@
     "expo": "~54.0.25",
     "expo-clipboard": "^8.0.7",
     "expo-constants": "~18.0.10",
+    "expo-device": "^8.0.10",
     "expo-image": "~3.0.10",
     "expo-keep-awake": "~15.0.7",
     "expo-linking": "~8.0.9",

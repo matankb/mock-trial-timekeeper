@@ -10,6 +10,7 @@ import Button from './Button';
 import { openBugReportEmail } from '../utils/bug-report';
 
 const ErrorFallback = ({ error }: FallbackProps) => {
+  console.log('error', error);
   return (
     <View style={styles.container}>
       <MaterialIcons
@@ -26,7 +27,7 @@ const ErrorFallback = ({ error }: FallbackProps) => {
       </Text>
       <Button
         title="Submit Bug Report"
-        onPress={() => openBugReportEmail(error)}
+        onPress={() => openBugReportEmail(error as Error)}
       />
     </View>
   );

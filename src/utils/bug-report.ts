@@ -1,4 +1,7 @@
-import { Alert, Linking } from 'react-native';
+import { Alert, Linking, Platform } from 'react-native';
+import * as Updates from 'expo-updates';
+import * as Device from 'expo-device';
+import Constants from 'expo-constants';
 
 export function showBugReportAlert(
   title: string,
@@ -23,12 +26,16 @@ export function openBugReportEmail(error: Error) {
       'Mock Trial Timer - Bug Report',
     )}&body=${encodeURIComponent(`Please describe the bug:
 
-
+    
     ------- Do not edit below this line -------
     ${error.name}
     ${error.cause}
     ${error.message}
     ${error.stack}
+    Device: ${Device.modelId} - ${Device.osBuildId} - ${Device.osVersion}
+    Platform: ${Platform.OS}
+    Native Version: ${Constants.expoConfig?.version}
+    Update ID: ${Updates.updateId ?? 'unknown'}
   `)}`,
   );
 }
