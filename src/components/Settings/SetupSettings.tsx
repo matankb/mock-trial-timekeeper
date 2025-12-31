@@ -5,6 +5,7 @@ import Option from './Option';
 import colors from '../../constants/colors';
 import {
   getSettings,
+  setLeague,
   setSettings,
   SettingsAdditionalSetup,
   SettingsSetup,
@@ -15,6 +16,10 @@ import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
 import { ScreenName } from '../../constants/screen-names';
 import Text from '../Text';
 import Link from '../Link';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSettingsLeague } from '../../hooks/useSettings';
+import { leagueNames } from '../../constants/leagues';
+import Button from '../Button';
 
 export const setupSettingsScreenOptions: ScreenNavigationOptions<ScreenName.SETUP_SETTINGS> =
   {
@@ -28,6 +33,8 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = ({
   const [additionalSetupState, setAdditionalSetupState] =
     useState<SettingsAdditionalSetup | null>(null);
 
+  const league = useSettingsLeague();
+
   useEffect(() => {
     getSettings().then((settings) => {
       setSetupState(settings.setup);
@@ -35,7 +42,7 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = ({
     });
   }, []);
 
-  if (!setupState || !additionalSetupState) {
+  if (!setupState || !additionalSetupState || !league) {
     return null;
   }
 
@@ -50,7 +57,6 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = ({
     newAdditionalSetup: SettingsAdditionalSetup,
   ) => {
     setAdditionalSetupState(newAdditionalSetup);
-    console.log('newAdditionalSetup', newAdditionalSetup);
     setSettings({
       additionalSetup: newAdditionalSetup,
     });
@@ -89,6 +95,13 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = ({
     </Option>
   );
 
+  // Reset the settings to the league's default settings
+  const handleReset = async () => {
+    const newSettings = await setLeague(league);
+    setSetupState(newSettings.setup);
+    setAdditionalSetupState(newSettings.additionalSetup);
+  };
+
   const createAdditionalSetupTimeOption = (
     name: string,
     property: keyof PickByValue<SettingsAdditionalSetup, number>,
@@ -115,14 +128,11 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = ({
       <Text style={styles.description}>
         Changes will only apply to new trials.
       </Text>
-      <Text style={styles.description}>
-        To reset to your league&apos;s default settings, re-select your league
-        on the league settings screen:
-      </Text>
-      <Link
-        border
-        title="League Settings"
-        onPress={() => navigation.navigate(ScreenName.LEAGUE_SELECTION)}
+      <View style={styles.divider} />
+      <Button
+        title={`Reset to ${leagueNames[league]} Settings`}
+        onPress={handleReset}
+        style={styles.resetButton}
       />
       <View style={styles.divider} />
       {createSetupToggleOption('Enable Pretrial Timer', 'pretrialEnabled')}
@@ -188,6 +198,10 @@ const styles = StyleSheet.create({
   warningDescription: {
     color: colors.WARNING_RED,
     fontWeight: 500,
+  },
+  resetButton: {
+    backgroundColor: colors.DARK_GREEN,
+    marginTop: 0,
   },
 });
 

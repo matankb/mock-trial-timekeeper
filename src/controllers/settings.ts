@@ -82,7 +82,7 @@ export const defaultSettings: Settings = {
   },
 };
 
-export const leagueSetupOverrides: Record<League, Partial<SettingsSetup>> = {
+export const leagueSetupOverrides: Record<League, SettingsSetup> = {
   [League.AMTA]: defaultSettings.setup, // TODO: document why this needs to be contained here - it's so that it gets overridden when they switch leagues.
   [League.Minnesota]: {
     allLossEnabled: false,
@@ -97,6 +97,9 @@ export const leagueSetupOverrides: Record<League, Partial<SettingsSetup>> = {
     closeTime: duration.minutes(7),
     directTime: duration.minutes(25),
     crossTime: duration.minutes(18),
+    pretrialEnabled: false,
+    pretrialTime: defaultSettings.setup.pretrialTime,
+    statementTime: defaultSettings.setup.statementTime,
   },
 };
 
@@ -122,6 +125,8 @@ export async function setSettings(newSettings: Partial<Settings>) {
     SETTINGS_SCHEMA_VERSION,
   );
   await AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(updatedSettings));
+
+  return updatedSettings;
 }
 
 export async function setLeague(league: League) {
