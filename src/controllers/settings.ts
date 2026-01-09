@@ -101,6 +101,23 @@ export const leagueSetupOverrides: Record<League, SettingsSetup> = {
     pretrialTime: defaultSettings.setup.pretrialTime,
     statementTime: defaultSettings.setup.statementTime,
   },
+  [League.Florida]: {
+    allLossEnabled: false,
+    jointPrepClosingsEnabled: false,
+    jointPrepClosingsTime: duration.minutes(0),
+    jointConferenceEnabled: false,
+    jointConferenceTime: duration.minutes(0),
+    rebuttalMaxEnabled: false,
+    rebuttalMaxTime: duration.minutes(3),
+    statementsSeparate: true,
+    openTime: duration.minutes(5),
+    closeTime: duration.minutes(5),
+    directTime: duration.minutes(25),
+    crossTime: duration.minutes(20),
+    pretrialEnabled: false,
+    pretrialTime: defaultSettings.setup.pretrialTime,
+    statementTime: defaultSettings.setup.statementTime,
+  },
 };
 
 const SETTINGS_KEY = 'settings';

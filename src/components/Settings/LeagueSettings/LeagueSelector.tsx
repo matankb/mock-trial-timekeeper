@@ -69,6 +69,12 @@ const LeagueSelector: FC = () => {
           name="High School Mock Trial in Minnesota"
           image={require('../../../../assets/leagues/minnesota.jpg')}
         />
+        <LeagueCard
+          selected={selected === League.Florida}
+          onSelect={() => setSelected(League.Florida)}
+          name="High School Mock Trial in Florida"
+          image={require('../../../../assets/leagues/florida.png')}
+        />
       </View>
 
       <View style={styles.buttonsContainer}>

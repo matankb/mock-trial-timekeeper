@@ -174,7 +174,8 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = ({
         createSetupTimeOption('Team Conference', 'jointConferenceTime')}
       {setupState.rebuttalMaxEnabled &&
         createSetupTimeOption('Rebuttal Maximum Time', 'rebuttalMaxTime')}
-      {createAdditionalSetupTimeOption('All-Loss Duration', 'allLossDuration')}
+      {setupState.allLossEnabled &&
+        createAdditionalSetupTimeOption('All-Loss Duration', 'allLossDuration')}
     </ScrollView>
   );
 };
