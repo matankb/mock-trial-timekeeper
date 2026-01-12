@@ -153,6 +153,10 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = ({
         'Separate Statement Times',
         'statementsSeparate',
       )}
+      {createSetupToggleOption(
+        'Enable Reexaminations',
+        'reexaminationsEnabled',
+      )}
       <View style={styles.divider} />
       {setupState.pretrialEnabled &&
         createSetupTimeOption('Pretrial', 'pretrialTime')}

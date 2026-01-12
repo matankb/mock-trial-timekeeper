@@ -2,6 +2,7 @@ export default {
   BLUE: '#4472ff',
   HEADER_BLUE: '#007AFF',
   GREEN: '#159e71',
+  DARK_GREEN: '#0d6145',
   BRIGHT_GREEN: '#1bd195',
   RED: '#ff4444',
   WARNING_RED: '#ac3636',

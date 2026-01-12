@@ -1,7 +1,8 @@
 import { Mutable } from 'utility-types';
 import { Trial } from '../controllers/trial';
 import { Side } from '../types/side';
-import { getSideName } from '../utils';
+import { Prefixes } from '../utils';
+import { getSideName } from '../hooks/useLeagueFeatureFlag';
 
 export const stages = [
   'pretrial.pros',
@@ -10,16 +11,28 @@ export const stages = [
   'open.def',
   'cic.pros.one.direct',
   'cic.pros.one.cross',
+  'cic.pros.one.redirect',
+  'cic.pros.one.recross',
   'cic.pros.two.direct',
   'cic.pros.two.cross',
+  'cic.pros.two.redirect',
+  'cic.pros.two.recross',
   'cic.pros.three.direct',
   'cic.pros.three.cross',
+  'cic.pros.three.redirect',
+  'cic.pros.three.recross',
   'cic.def.one.direct',
   'cic.def.one.cross',
+  'cic.def.one.redirect',
+  'cic.def.one.recross',
   'cic.def.two.direct',
   'cic.def.two.cross',
+  'cic.def.two.redirect',
+  'cic.def.two.recross',
   'cic.def.three.direct',
   'cic.def.three.cross',
+  'cic.def.three.redirect',
+  'cic.def.three.recross',
   'joint.prep.closings',
   'close.pros',
   'close.def',
@@ -53,6 +66,12 @@ export function getTrialStages(trial: Trial): readonly Partial<TrialStage>[] {
     trialStages = trialStages.filter((stage) => stage !== 'joint.conference');
   }
 
+  if (!trial.setup.reexaminationsEnabled) {
+    trialStages = trialStages.filter(
+      (stage) => !stage.includes('redirect') && !stage.includes('recross'),
+    );
+  }
+
   return trialStages;
 }
 
@@ -76,28 +95,23 @@ export const getPrevStage = (trial: Trial) => {
 
 const getWitnessName = (trial: Trial, stage: TrialStage, side: Side) => {
   const { witnesses } = trial;
-  const sideName = getSideName(side);
+  console.log('trial', trial);
+  const sideName = getSideName(side, trial.league, new Date(trial.date));
 
-  const witnessNameMap: Partial<Record<TrialStage, string | null>> = {
-    'cic.pros.one.direct': witnesses.p[0],
-    'cic.pros.one.cross': witnesses.p[0],
-    'cic.pros.two.direct': witnesses.p[1],
-    'cic.pros.two.cross': witnesses.p[1],
-    'cic.pros.three.direct': witnesses.p[2],
-    'cic.pros.three.cross': witnesses.p[2],
-    'cic.def.one.direct': witnesses.d[0],
-    'cic.def.one.cross': witnesses.d[0],
-    'cic.def.two.direct': witnesses.d[1],
-    'cic.def.two.cross': witnesses.d[1],
-    'cic.def.three.direct': witnesses.d[2],
-    'cic.def.three.cross': witnesses.d[2],
+  const witnessNameMap: Partial<Record<Prefixes<TrialStage>, string | null>> = {
+    'cic.pros.one': witnesses.p[0],
+    'cic.pros.two': witnesses.p[1],
+    'cic.pros.three': witnesses.p[2],
+    'cic.def.one': witnesses.d[0],
+    'cic.def.two': witnesses.d[1],
+    'cic.def.three': witnesses.d[2],
   };
 
-  const detailedWitnessName = witnessNameMap[stage];
-
   // If the witness name has been set, use it
-  if (detailedWitnessName) {
-    return detailedWitnessName;
+  for (const [prefix, name] of Object.entries(witnessNameMap)) {
+    if (stage.startsWith(prefix) && name !== null) {
+      return name;
+    }
   }
 
   // If the witness name has not been set, use the default witness name
@@ -127,12 +141,18 @@ export const getStageName = (
   minimal: boolean = false,
 ) => {
   const side: Side = stage.includes('pros') ? 'p' : 'd';
-  const sideName = getSideName(side);
+  const sideName = getSideName(side, trial.league, new Date(trial.date));
 
   if (stage.startsWith('pretrial')) {
     return minimal ? 'Pretrial' : `${sideName} Pretrial`;
   } else if (stage.startsWith('cic')) {
-    const examination = stage.includes('direct') ? 'Direct' : 'Cross';
+    const examination = stage.includes('.direct') // testing for . is important, because .redirect also exists
+      ? 'Direct'
+      : stage.includes('.cross')
+      ? 'Cross'
+      : stage.includes('.redirect')
+      ? 'Re-direct'
+      : 'Re-cross';
     const name = getWitnessName(trial, stage, side);
     return minimal ? name : `${name} - ${examination}`;
   } else if (stage.startsWith('open')) {

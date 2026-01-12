@@ -37,6 +37,7 @@ export interface TrialSetup {
   jointConferenceEnabled: boolean;
   statementsSeparate: boolean;
   allLossEnabled: boolean;
+  reexaminationsEnabled: boolean;
 
   // see createNewTrial for more information
   flexEnabled: boolean;
@@ -77,6 +78,8 @@ export interface StatementTimeSet {
 export interface WitnessTimeSet {
   direct: number;
   cross: number;
+  redirect: number;
+  recross: number;
 }
 
 export interface CaseInChief {
@@ -146,6 +149,8 @@ function generateEmptyWitnessTimeSet(): WitnessTimeSet {
   return {
     direct: 0,
     cross: 0,
+    redirect: 0,
+    recross: 0,
   };
 }
 
@@ -238,18 +243,42 @@ const getTrialTimeChangeObject = (
     'open.def': { open: { def: newValue } },
     'cic.pros.one.direct': { prosCic: { witnessOne: { direct: newValue } } },
     'cic.pros.one.cross': { prosCic: { witnessOne: { cross: newValue } } },
+    'cic.pros.one.redirect': {
+      prosCic: { witnessOne: { redirect: newValue } },
+    },
+    'cic.pros.one.recross': { prosCic: { witnessOne: { recross: newValue } } },
     'cic.pros.two.direct': { prosCic: { witnessTwo: { direct: newValue } } },
     'cic.pros.two.cross': { prosCic: { witnessTwo: { cross: newValue } } },
+    'cic.pros.two.redirect': {
+      prosCic: { witnessTwo: { redirect: newValue } },
+    },
+    'cic.pros.two.recross': { prosCic: { witnessTwo: { recross: newValue } } },
     'cic.pros.three.direct': {
       prosCic: { witnessThree: { direct: newValue } },
     },
     'cic.pros.three.cross': { prosCic: { witnessThree: { cross: newValue } } },
+    'cic.pros.three.redirect': {
+      prosCic: { witnessThree: { redirect: newValue } },
+    },
+    'cic.pros.three.recross': {
+      prosCic: { witnessThree: { recross: newValue } },
+    },
     'cic.def.one.direct': { defCic: { witnessOne: { direct: newValue } } },
     'cic.def.one.cross': { defCic: { witnessOne: { cross: newValue } } },
+    'cic.def.one.redirect': { defCic: { witnessOne: { redirect: newValue } } },
+    'cic.def.one.recross': { defCic: { witnessOne: { recross: newValue } } },
     'cic.def.two.direct': { defCic: { witnessTwo: { direct: newValue } } },
     'cic.def.two.cross': { defCic: { witnessTwo: { cross: newValue } } },
+    'cic.def.two.redirect': { defCic: { witnessTwo: { redirect: newValue } } },
+    'cic.def.two.recross': { defCic: { witnessTwo: { recross: newValue } } },
     'cic.def.three.direct': { defCic: { witnessThree: { direct: newValue } } },
     'cic.def.three.cross': { defCic: { witnessThree: { cross: newValue } } },
+    'cic.def.three.redirect': {
+      defCic: { witnessThree: { redirect: newValue } },
+    },
+    'cic.def.three.recross': {
+      defCic: { witnessThree: { recross: newValue } },
+    },
     'close.pros': { close: { pros: newValue } },
     'close.def': { close: { def: newValue } },
     rebuttal: { rebuttal: newValue },
@@ -274,16 +303,28 @@ export const getStageTime = (trial: Trial, stage: TrialStage): number => {
     'open.def': times.open.def,
     'cic.pros.one.direct': times.prosCic.witnessOne.direct,
     'cic.pros.one.cross': times.prosCic.witnessOne.cross,
+    'cic.pros.one.redirect': times.prosCic.witnessOne.redirect,
+    'cic.def.one.recross': times.defCic.witnessOne.recross,
     'cic.pros.two.direct': times.prosCic.witnessTwo.direct,
     'cic.pros.two.cross': times.prosCic.witnessTwo.cross,
+    'cic.pros.two.redirect': times.prosCic.witnessTwo.redirect,
+    'cic.def.two.recross': times.defCic.witnessTwo.recross,
     'cic.pros.three.direct': times.prosCic.witnessThree.direct,
     'cic.pros.three.cross': times.prosCic.witnessThree.cross,
+    'cic.pros.three.redirect': times.prosCic.witnessThree.redirect,
+    'cic.def.three.recross': times.defCic.witnessThree.recross,
     'cic.def.one.direct': times.defCic.witnessOne.direct,
     'cic.def.one.cross': times.defCic.witnessOne.cross,
+    'cic.def.one.redirect': times.defCic.witnessOne.redirect,
+    'cic.pros.one.recross': times.prosCic.witnessOne.recross,
     'cic.def.two.direct': times.defCic.witnessTwo.direct,
     'cic.def.two.cross': times.defCic.witnessTwo.cross,
+    'cic.def.two.redirect': times.defCic.witnessTwo.redirect,
+    'cic.pros.two.recross': times.prosCic.witnessTwo.recross,
     'cic.def.three.direct': times.defCic.witnessThree.direct,
     'cic.def.three.cross': times.defCic.witnessThree.cross,
+    'cic.def.three.redirect': times.defCic.witnessThree.redirect,
+    'cic.pros.three.recross': times.prosCic.witnessThree.recross,
     'close.pros': times.close.pros,
     'close.def': times.close.def,
     rebuttal: times.rebuttal,
@@ -327,11 +368,21 @@ export const getTotalTimes = (trial: Trial): Record<Side, TotalTimeSide> => {
     direct:
       times.prosCic.witnessOne.direct +
       times.prosCic.witnessTwo.direct +
-      times.prosCic.witnessThree.direct,
+      times.prosCic.witnessThree.direct +
+      (setup.reexaminationsEnabled
+        ? times.prosCic.witnessOne.redirect +
+          times.prosCic.witnessTwo.redirect +
+          times.prosCic.witnessThree.redirect
+        : 0),
     cross:
       times.defCic.witnessOne.cross +
       times.defCic.witnessTwo.cross +
-      times.defCic.witnessThree.cross,
+      times.defCic.witnessThree.cross +
+      (setup.reexaminationsEnabled
+        ? times.defCic.witnessOne.recross +
+          times.defCic.witnessTwo.recross +
+          times.defCic.witnessThree.recross
+        : 0),
   };
 
   const defenseTimeUsed = {
@@ -342,11 +393,21 @@ export const getTotalTimes = (trial: Trial): Record<Side, TotalTimeSide> => {
     direct:
       times.defCic.witnessOne.direct +
       times.defCic.witnessTwo.direct +
-      times.defCic.witnessThree.direct,
+      times.defCic.witnessThree.direct +
+      (setup.reexaminationsEnabled
+        ? times.defCic.witnessOne.redirect +
+          times.defCic.witnessTwo.redirect +
+          times.defCic.witnessThree.redirect
+        : 0),
     cross:
       times.prosCic.witnessOne.cross +
       times.prosCic.witnessTwo.cross +
-      times.prosCic.witnessThree.cross,
+      times.prosCic.witnessThree.cross +
+      (setup.reexaminationsEnabled
+        ? times.prosCic.witnessOne.recross +
+          times.prosCic.witnessTwo.recross +
+          times.prosCic.witnessThree.recross
+        : 0),
   };
 
   const setupPretrialTime = setup.pretrialEnabled

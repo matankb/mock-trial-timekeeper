@@ -42,6 +42,10 @@ export function isValidJson(data: string) {
   }
 }
 
+export type Prefixes<T extends string> = T extends `${infer First}${infer Rest}`
+  ? First | `${First}${Prefixes<Rest>}`
+  : never;
+
 export type KeysWithTrue<
   Obj extends Record<PropertyKey, Record<PropertyKey, boolean>>,
   Flag extends PropertyKey,

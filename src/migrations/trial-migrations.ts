@@ -123,8 +123,64 @@ interface TrialSchema_2_2_0 {
   };
 }
 
+interface TrialSchema_2_3_0 {
+  id: string;
+  name: string;
+  date: number;
+  stage: string;
+  loss: number;
+  league: League;
+  times: {
+    pretrial: { pros: number; def: number };
+    open: { pros: number; def: number };
+    close: { pros: number; def: number };
+    rebuttal: number;
+    prosCic: {
+      witnessOne: { direct: number; cross: number };
+      witnessTwo: { direct: number; cross: number };
+      witnessThree: { direct: number; cross: number };
+    };
+    defCic: {
+      witnessOne: { direct: number; cross: number };
+      witnessTwo: { direct: number; cross: number };
+      witnessThree: { direct: number; cross: number };
+    };
+    joint: {
+      prepClosings: number;
+      conference: number;
+    };
+  };
+  setup: {
+    pretrialEnabled: boolean;
+    statementsSeparate: boolean;
+    allLossEnabled: boolean;
+    flexEnabled: boolean;
+    pretrialTime?: number;
+    statementTime?: number;
+    openTime?: number;
+    closeTime?: number;
+    directTime: number;
+    crossTime: number;
+    rebuttalMaxEnabled: boolean;
+    jointPrepClosingsEnabled: boolean;
+    jointConferenceEnabled: boolean;
+    rebuttalMaxTime: number;
+    jointPrepClosingsTime: number;
+    jointConferenceTime: number;
+  };
+  witnesses: {
+    p: [string | null, string | null, string | null];
+    d: [string | null, string | null, string | null];
+  };
+  details?: {
+    tournamentId: string;
+    round: RoundNumber | null;
+    side: 'p' | 'd';
+  };
+}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- This is the current schema
-interface TrialSchema_2_3_0 extends Trial {}
+interface TrialSchema_2_4_0 extends Trial {}
 
 export const trialMigrations = [
   // 1.0.0 -> 2.1.0: Add pretrial and loss fields
@@ -238,6 +294,65 @@ export const trialMigrations = [
           rebuttalMaxTime: defaultSettings.setup.rebuttalMaxTime,
           jointPrepClosingsTime: 0,
           jointConferenceTime: 0,
+        },
+      };
+    },
+  }),
+
+  // 2.3.0 -> 2.4.0: Added reexamination stages, setup option, and witness times
+  createArrayMigration<TrialSchema_2_3_0, TrialSchema_2_4_0>({
+    from: '2.3.0',
+    to: '2.4.0',
+    migrate: (trial) => {
+      // TODO: add some commentary here.
+      const isFlorida = trial.league === League.Florida;
+
+      return {
+        ...trial,
+        // See above comment about this cast
+        stage: trial.stage as TrialStage,
+        times: {
+          ...trial.times,
+          prosCic: {
+            ...trial.times.prosCic,
+            witnessOne: {
+              ...trial.times.prosCic.witnessOne,
+              redirect: 0,
+              recross: 0,
+            },
+            witnessTwo: {
+              ...trial.times.prosCic.witnessTwo,
+              redirect: 0,
+              recross: 0,
+            },
+            witnessThree: {
+              ...trial.times.prosCic.witnessThree,
+              redirect: 0,
+              recross: 0,
+            },
+          },
+          defCic: {
+            ...trial.times.defCic,
+            witnessOne: {
+              ...trial.times.defCic.witnessOne,
+              redirect: 0,
+              recross: 0,
+            },
+            witnessTwo: {
+              ...trial.times.defCic.witnessTwo,
+              redirect: 0,
+              recross: 0,
+            },
+            witnessThree: {
+              ...trial.times.defCic.witnessThree,
+              redirect: 0,
+              recross: 0,
+            },
+          },
+        },
+        setup: {
+          ...trial.setup,
+          reexaminationsEnabled: isFlorida,
         },
       };
     },
