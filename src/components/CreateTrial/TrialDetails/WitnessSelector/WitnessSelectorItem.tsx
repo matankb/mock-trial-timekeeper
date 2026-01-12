@@ -9,19 +9,16 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import {
-  DEFENSE_WITNESSES,
-  PLAINTIFF_WITNESSES,
-  SWING_WITNESSES,
-} from '../../../../constants/witnesses';
 import { Theme } from '../../../../types/theme';
 import useTheme from '../../../../hooks/useTheme';
 import { Side } from '../../../../types/side';
-import { getSideName } from '../../../../utils';
 import Text from '../../../Text';
 import { useProvidedContext } from '../../../../context/ContextProvider';
+import { LeagueWitnessSet } from '../../../../constants/leagues';
+import { useLeagueSideName } from '../../../../hooks/useLeagueFeatureFlag';
 
 interface WitnessSelectorItemProps {
+  leagueWitnesses: LeagueWitnessSet;
   side: Side;
   position: number;
   witness: string | null;
@@ -32,16 +29,22 @@ interface WitnessSelectorItemProps {
 /**
  * Given the side and the list of already selected witnesses, return the list of available witnesses
  */
-function getAvailableWitnesses(side: Side, selected: string[]) {
-  const sideConstrainedWitnesses =
-    side === 'p' ? PLAINTIFF_WITNESSES : DEFENSE_WITNESSES;
+function getAvailableWitnesses(
+  leagueWitnesses: LeagueWitnessSet,
+  side: Side,
+  selected: string[],
+) {
+  console.log('leagueWitnesses', leagueWitnesses);
+  const sideWitnesses = leagueWitnesses[side];
+  const swingWitnesses = leagueWitnesses.swing;
 
-  return [...sideConstrainedWitnesses, ...SWING_WITNESSES].filter(
+  return [...sideWitnesses, ...swingWitnesses].filter(
     (witness) => !selected.includes(witness),
   );
 }
 
 const WitnessSelectorItem: FC<WitnessSelectorItemProps> = ({
+  leagueWitnesses,
   side,
   position,
   witness,
@@ -49,22 +52,23 @@ const WitnessSelectorItem: FC<WitnessSelectorItemProps> = ({
   inline,
 }) => {
   const theme = useTheme();
-
+  const sideName = useLeagueSideName(side);
   const {
     createTrial: {
       createTrialState: { pWitnessCall, dWitnessCall },
     },
   } = useProvidedContext();
+
   const selected = [...pWitnessCall, ...dWitnessCall].filter((w) => w !== null);
 
   const label = witness
     ? `${position + 1}. ${witness}`
-    : `${getSideName(side)} Witness #${position + 1}`;
+    : `${sideName} Witness #${position + 1}`;
 
   // On iOS, show a modal with the list of available witnesses
   const showWitnessOptions = () => {
-    const witnesses = getAvailableWitnesses(side, selected);
-    const name = `${getSideName(side)} Witness #${position + 1}`;
+    const witnesses = getAvailableWitnesses(leagueWitnesses, side, selected);
+    const name = `${sideName} Witness #${position + 1}`;
 
     const options: AlertButton[] = [
       ...witnesses.map((w) => ({
@@ -93,7 +97,7 @@ const WitnessSelectorItem: FC<WitnessSelectorItemProps> = ({
     return (
       <NativePicker selectedValue={witness} onValueChange={onSelect}>
         <NativePicker.Item label={witness || label} value={witness} />
-        {getAvailableWitnesses(side, selected).map((w) => (
+        {getAvailableWitnesses(leagueWitnesses, side, selected).map((w) => (
           <NativePicker.Item key={w} label={w} value={w} />
         ))}
       </NativePicker>

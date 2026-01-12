@@ -2,8 +2,9 @@ import { useState } from 'react';
 
 import TrialDetailsItem from './TrialDetailsItem';
 import { Side } from '../../../types/side';
-import { getSideName, piSideName } from '../../../utils';
 import Picker from '../../Picker';
+import { getSideName } from '../../../hooks/useLeagueFeatureFlag';
+import { useSettingsLeague } from '../../../hooks/useSettings';
 
 interface SideSelectorProps {
   side: Side | null;
@@ -17,14 +18,19 @@ interface SideOption {
 }
 
 const SideSelector = ({ side, onSelect, warning }: SideSelectorProps) => {
+  const league = useSettingsLeague();
   const [open, setOpen] = useState(false);
 
+  if (!league) {
+    return null;
+  }
+
   const sideOptions: SideOption[] = [
-    { label: piSideName, value: 'p' },
+    { label: getSideName('p', league), value: 'p' },
     { label: 'Defense', value: 'd' },
   ];
 
-  const sideLabel = side ? getSideName(side) : null;
+  const sideLabel = side ? getSideName(side, league) : null;
   const label = sideLabel ?? 'Not Set';
 
   return [

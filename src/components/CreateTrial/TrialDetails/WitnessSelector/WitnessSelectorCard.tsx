@@ -3,13 +3,15 @@ import { StyleSheet, Text } from 'react-native';
 
 import WitnessSelectorItem from './WitnessSelectorItem';
 import { Side } from '../../../../types/side';
-import { getSideName } from '../../../../utils';
 import Card from '../../../Card';
 import { TrialWitnessCall } from '../../../../controllers/trial';
+import { LeagueWitnessSet } from '../../../../constants/leagues';
+import { useLeagueSideName } from '../../../../hooks/useLeagueFeatureFlag';
 
 interface WitnessSelectorCardProps {
   side: Side;
   color: string;
+  leagueWitnesses: LeagueWitnessSet;
   witnesses: TrialWitnessCall;
   onWitnessSelect: (
     side: Side,
@@ -20,13 +22,15 @@ interface WitnessSelectorCardProps {
 }
 
 const WitnessSelectorCard: FC<WitnessSelectorCardProps> = ({
+  leagueWitnesses,
   side,
   color,
   witnesses,
   onWitnessSelect,
   inline,
 }) => {
-  const title = `${getSideName(side)} Witnesses`;
+  const sideName = useLeagueSideName(side);
+  const title = `${sideName} Witnesses`;
 
   return (
     <Card style={inline ? styles.inline : undefined}>
@@ -36,6 +40,7 @@ const WitnessSelectorCard: FC<WitnessSelectorCardProps> = ({
       {witnesses.map((witness, position) => (
         <WitnessSelectorItem
           key={`${side}-${position}`}
+          leagueWitnesses={leagueWitnesses}
           side={side}
           position={position}
           witness={witness}

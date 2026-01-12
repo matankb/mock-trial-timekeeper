@@ -6,6 +6,11 @@ import colors from '../../../../constants/colors';
 import { TrialWitnessCall } from '../../../../controllers/trial';
 import { Side } from '../../../../types/side';
 import { useProvidedContext } from '../../../../context/ContextProvider';
+import { useSettingsLeague } from '../../../../hooks/useSettings';
+import {
+  isLeagueWithWitnessSelection,
+  leagueWitnesses,
+} from '../../../../constants/leagues';
 
 interface WitnessSelectorProps {
   inline?: boolean;
@@ -15,8 +20,20 @@ const WitnessSelector: FC<WitnessSelectorProps> = ({ inline }) => {
   const {
     createTrial: { createTrialState, setCreateTrialState },
   } = useProvidedContext();
+  const league = useSettingsLeague();
+
+  // Loading state
+  if (!league) {
+    return null;
+  }
 
   const { pWitnessCall, dWitnessCall } = createTrialState;
+
+  // This should never happen, but fall back just in case.
+  // TODO: maybe throw an error in dev?
+  if (!isLeagueWithWitnessSelection(league)) {
+    return null;
+  }
 
   // Given an existing witness call, generate a new witness call with the new witness
   const generateWitnessCall = (
@@ -62,6 +79,7 @@ const WitnessSelector: FC<WitnessSelectorProps> = ({ inline }) => {
       <WitnessSelectorCard
         side="p"
         color={colors.RED}
+        leagueWitnesses={leagueWitnesses[league]}
         witnesses={pWitnessCall}
         onWitnessSelect={handleWitnessSelect}
         inline={inline}
@@ -69,6 +87,7 @@ const WitnessSelector: FC<WitnessSelectorProps> = ({ inline }) => {
       <WitnessSelectorCard
         side="d"
         color={colors.BLUE}
+        leagueWitnesses={leagueWitnesses[league]}
         witnesses={dWitnessCall}
         onWitnessSelect={handleWitnessSelect}
         inline={inline}

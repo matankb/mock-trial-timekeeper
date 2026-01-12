@@ -1,3 +1,11 @@
+import { Side } from '../types/side';
+import { KeysWithTrue } from '../utils';
+import { CaseType, createAlternatingCaseTypeResolver } from './case-type';
+
+/**
+ * League constants and features
+ */
+
 export enum League {
   AMTA = 'amta',
   Minnesota = 'minnesota',
@@ -16,7 +24,7 @@ export enum LeagueFeature {
   WITNESS_SELECTION = 'witness-selection',
 }
 
-export const leagueFeatures: Record<League, Record<LeagueFeature, boolean>> = {
+export const leagueFeatures = {
   [League.AMTA]: {
     [LeagueFeature.TIMES_BREAKDOWN]: true,
     [LeagueFeature.TEAM_ACCOUNTS]: true,
@@ -30,6 +38,48 @@ export const leagueFeatures: Record<League, Record<LeagueFeature, boolean>> = {
   [League.Florida]: {
     [LeagueFeature.TIMES_BREAKDOWN]: true,
     [LeagueFeature.TEAM_ACCOUNTS]: false,
-    [LeagueFeature.WITNESS_SELECTION]: false,
+    [LeagueFeature.WITNESS_SELECTION]: true,
+  },
+} as const satisfies Record<League, Record<LeagueFeature, boolean>>;
+
+export const leagueWitnesses: Record<
+  LeaguesWithWitnessSelection,
+  LeagueWitnessSet
+> = {
+  [League.AMTA]: {
+    p: ['Riley Kaye', 'Atlas Hartley', 'Taren Rivera', 'Rowan Patel'],
+    d: ['Charlie Martin', 'Grey Marlowe', 'Micah Lin'],
+    swing: ['Nel Doos', 'Indigo Quade', 'Taylor Jha', 'Lennox Reynolds'],
+  },
+  [League.Florida]: {
+    p: ['Cheyenne Overstone', 'Cal Herron', 'Bobbie Chaney'],
+    d: ['Ray Addison', 'Brit Tomlinson', 'Tate Eastbrook'],
+    swing: [], // no swing witnesses in FL
   },
 };
+
+export const leagueCaseType: Record<League, (date: Date) => CaseType> = {
+  [League.AMTA]: createAlternatingCaseTypeResolver(2023, CaseType.Civil),
+  [League.Minnesota]: () => CaseType.Criminal, // obviously need to check this
+  [League.Florida]: createAlternatingCaseTypeResolver(2025, CaseType.Civil), // TODO: check this too
+};
+
+/**
+ * Type helpers
+ */
+
+type LeaguesWithWitnessSelection = KeysWithTrue<
+  typeof leagueFeatures,
+  LeagueFeature.WITNESS_SELECTION
+>;
+
+export const isLeagueWithWitnessSelection = (
+  league: League,
+): league is LeaguesWithWitnessSelection => {
+  return (
+    league in leagueFeatures &&
+    leagueFeatures[league][LeagueFeature.WITNESS_SELECTION]
+  );
+};
+
+export type LeagueWitnessSet = Record<Side | 'swing', string[]>;

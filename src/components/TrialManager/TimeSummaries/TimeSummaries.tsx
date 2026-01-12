@@ -11,6 +11,7 @@ interface TimeSummariesProps {
 const TimeSummaries: FC<TimeSummariesProps> = ({ trial }) => {
   const { setup } = trial;
   const totalTimes = getTotalTimes(trial);
+  const trialDate = new Date(trial.date);
 
   const getHighlightedRow = (side: string) => {
     const isPretrial =
@@ -51,12 +52,14 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial }) => {
     <View style={styles.container}>
       <TimeSummary
         side="p"
+        trialDate={trialDate}
         highlightRow={getHighlightedRow('pros')}
         timeRemaining={totalTimes.p.remaining}
         setup={setup}
       />
       <TimeSummary
         side="d"
+        trialDate={trialDate}
         highlightRow={getHighlightedRow('def')}
         timeRemaining={totalTimes.d.remaining}
         setup={setup}

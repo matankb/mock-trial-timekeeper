@@ -5,12 +5,13 @@ import TimeSummaryRow from './TimeSummaryRow';
 import colors from '../../../constants/colors';
 import { TotalTimeSet, TrialSetup } from '../../../controllers/trial';
 import { Side } from '../../../types/side';
-import { getSideName } from '../../../utils';
 import Card from '../../Card';
+import { useLeagueSideName } from '../../../hooks/useLeagueFeatureFlag';
 
 interface TimeSummaryProps {
   side: Side;
   setup: TrialSetup;
+  trialDate?: Date;
   timeRemaining: TotalTimeSet;
   highlightRow?: TimeSummaryRowType;
 }
@@ -26,12 +27,13 @@ export enum TimeSummaryRowType {
 
 const TimeSummary: FC<TimeSummaryProps> = ({
   side,
+  trialDate,
   timeRemaining,
   highlightRow,
   setup,
 }) => {
+  const title = useLeagueSideName(side, trialDate);
   const color = side === 'p' ? colors.RED : colors.BLUE;
-  const title = getSideName(side);
 
   return (
     <Card>

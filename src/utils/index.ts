@@ -1,4 +1,5 @@
 import { Side } from '../types/side';
+import { League } from '../types/league';
 
 export const pad = (s: number) => s.toString().padStart(2, '0');
 
@@ -27,31 +28,6 @@ export function formatTimeWords(seconds: number) {
   return `${hours}h ${minutes}m`;
 }
 
-export function getPiSideName(date: Date) {
-  // 2023-2024 season P = Prosecution, 2024-2025 season P = Plaintiff, etc.
-  const year = date.getFullYear();
-  const yearFromStart = year - 2023;
-  const isEven = yearFromStart % 2 === 0;
-  const isFirstHalfOfSeason = date.getMonth() >= 5; // Season starts in August
-  if ((isEven && isFirstHalfOfSeason) || (!isEven && !isFirstHalfOfSeason)) {
-    return 'Prosecution';
-  }
-  return 'Plaintiff';
-}
-
-// TODO: technically... old trials should have the side name from when they were created
-// presumably, this will stay the same for the entire session
-export const piSideName = getPiSideName(new Date());
-
-export function getSideName(side: Side) {
-  if (side === 'p') {
-    return piSideName;
-  } else if (side === 'd') {
-    return 'Defense';
-  }
-  return 'Unknown Side';
-}
-
 export const duration = {
   minutes: (n: number) => n * 60,
   hours: (n: number) => n * 60 * 60,
@@ -65,3 +41,10 @@ export function isValidJson(data: string) {
     return false;
   }
 }
+
+export type KeysWithTrue<
+  Obj extends Record<PropertyKey, Record<PropertyKey, boolean>>,
+  Flag extends PropertyKey,
+> = {
+  [K in keyof Obj]: Obj[K][Flag] extends true ? K : never;
+}[keyof Obj];

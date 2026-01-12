@@ -5,10 +5,10 @@ import TimesBreakdownSection, { TimeSection } from './TimesBreakdownSection';
 import { ScreenName } from '../../constants/screen-names';
 import { calculateNewTrialTime } from '../../controllers/trial';
 import useTrial from '../../hooks/useTrial';
-import { piSideName } from '../../utils';
 import LinkButton from '../LinkButton';
 import { TrialStage } from '../../constants/trial-stages';
 import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
+import { useLeagueSideName } from '../../hooks/useLeagueFeatureFlag';
 
 export interface TimeBreakdownRouteProps {
   trialId: string;
@@ -32,6 +32,9 @@ const TimeBreakdown: React.FC<ScreenProps<ScreenName.TIMES_BREAKDOWN>> = ({
 }) => {
   const [trial, setTrial] = useTrial(route.params.trialId);
   const [editing, setEditing] = React.useState(false);
+
+  const trialDate = trial ? new Date(trial.date) : undefined;
+  const piSideName = useLeagueSideName('p', trialDate);
 
   useEffect(() => {
     navigation.setOptions({
