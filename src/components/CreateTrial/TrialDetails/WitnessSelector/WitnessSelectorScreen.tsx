@@ -7,6 +7,7 @@ import { ScreenName } from '../../../../constants/screen-names';
 import WitnessSelector from './WitnessSelector';
 import { FC } from 'react';
 import LinkButton from '../../../LinkButton';
+import { useSettingsLeague } from '../../../../hooks/useSettings';
 
 export const witnessSelectorScreenOptions: ScreenNavigationOptions<
   ScreenName.WITNESS_SELECTOR
@@ -23,9 +24,13 @@ export const witnessSelectorScreenOptions: ScreenNavigationOptions<
 const WitnessSelectorScreen: FC<
   ScreenProps<ScreenName.WITNESS_SELECTOR>
 > = () => {
-  // This component is needed to wrap the WitnessSelector component in a screen,
-  // since the WitnessSelector component takes non-screen props.
-  return <WitnessSelector inline={false} />;
+  const league = useSettingsLeague();
+
+  if (!league) {
+    return;
+  }
+
+  return <WitnessSelector inline={false} league={league} />;
 };
 
 export default WitnessSelectorScreen;
