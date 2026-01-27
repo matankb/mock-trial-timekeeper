@@ -10,6 +10,7 @@ import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
 import { useProvidedContext } from '../../context/ContextProvider';
 import HomeTrialsList from './TrialsList/HomeTrialsList';
 import { useSettings } from '../../hooks/useSettings';
+import UpdateAlert from "../UpdateAlert/UpdateAlert";
 
 export const homeScreenOptions: ScreenNavigationOptions<ScreenName.HOME> = {
   title: 'Mock Trial Timer',
@@ -53,6 +54,7 @@ const Home: FC<ScreenProps<ScreenName.HOME>> = ({ navigation, route }) => {
       onLayout={() => setHeaderButtons()}
     >
       <View>
+        <UpdateAlert />
         <HomeTrialsList trials={trials} navigation={navigation} />
         <Button
           title="New Trial"
