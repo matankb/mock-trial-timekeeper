@@ -26,7 +26,7 @@ import { WitnessSelectorInline } from './TrialDetails/WitnessSelector/WitnessSel
 import { RoundNumber } from '../../types/round-number';
 import AllLossSelector from './AllLossSelector';
 import { useProvidedContext } from '../../context/ContextProvider';
-import { useSettings } from '../../hooks/useSettings';
+import { useSettings, useSettingsLeague } from '../../hooks/useSettings';
 import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
 import { useLeagueFeatureFlag } from '../../hooks/useLeagueFeatureFlag';
 import { LeagueFeature } from '../../constants/leagues';
@@ -289,7 +289,7 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
           setAllLossTime={setAllLossTime}
         />
       )}
-      {showWitnessSelector && <WitnessSelectorInline />}
+      {showWitnessSelector && <WitnessSelectorInline league={trial.league} />}
       {isBeforeUpload && !uploading && (
         <Button
           title={route.params?.isBeforeUpload ? 'Save and Upload' : 'Save'}
