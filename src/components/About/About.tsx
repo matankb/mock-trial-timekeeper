@@ -9,6 +9,7 @@ import useTheme from '../../hooks/useTheme';
 import Card from '../Card';
 import Link from '../Link';
 import { openSupportEmail } from '../../utils/bug-report';
+import { Image } from 'expo-image';
 
 type AboutProps = NativeStackScreenProps<RouteProps, ScreenName.ABOUT>;
 
@@ -29,12 +30,16 @@ const About: FC<AboutProps> = ({ navigation }) => {
     <ScrollView contentContainerStyle={styles.container}>
       <View>
         <Card style={{ marginBottom: 10 }}>
+          <Image
+            source={require('../../../assets/icon.png')}
+            style={styles.icon}
+          />
           <Text style={textStyle}>
             Mock Trial Timer helps you timekeep for mock trial competitions!
           </Text>
           <Text style={textStyle}>
             This app is permitted at all AMTA-sanctioned tournaments (see AMTA
-            Policy for more). Not affiliated with or endorsed by AMTA.
+            Policy for more).
           </Text>
           <Text style={textStyle}>
             If you like Mock Trial Timer, please leave a review!
@@ -72,11 +77,18 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
   },
+  icon: {
+    width: 100,
+    height: 100,
+    alignSelf: 'center',
+    marginBottom: 10,
+  },
   text: {
     lineHeight: 25,
     // paddingRight: "6%",
     // paddingLeft: "6%",
     marginTop: 10,
+    paddingHorizontal: 10,
   },
   footer: {
     marginBottom: 20,
