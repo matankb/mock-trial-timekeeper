@@ -1,31 +1,31 @@
-import React, { FC } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { FC } from "react";
+import { StyleSheet, View } from "react-native";
 
-import TimeSummary, { TimeSummaryRowType } from './TimeSummary';
-import { getTotalTimes, Trial } from '../../../controllers/trial';
+import SideTimeSummary, { TimeSummaryRowType } from "./SideTimeSummary";
+import { getTotalTimes, Trial } from "../../../controllers/trial";
+import JointTimeSummary from "./JointTimeSummary";
 
 interface TimeSummariesProps {
   trial: Trial;
+  editingTimes: boolean;
 }
-
-const TimeSummaries: FC<TimeSummariesProps> = ({ trial }) => {
-  const { setup } = trial;
+const TimeSummaries: FC<TimeSummariesProps> = ({ trial, editingTimes }) => {
+  const { setup, stage } = trial;
   const totalTimes = getTotalTimes(trial);
-  const trialDate = new Date(trial.date);
 
   const getHighlightedRow = (side: string) => {
-    const isPretrial =
-      trial.stage.includes('pretrial') && trial.stage.includes(side);
-    const isOpen = trial.stage.includes('open') && trial.stage.includes(side);
-    const isClose = trial.stage.includes('close') && trial.stage.includes(side);
-    const isRebuttal = trial.stage === 'rebuttal' && side === 'pros';
+    const isPretrial = trial.stage.includes("pretrial") &&
+      trial.stage.includes(side);
+    const isOpen = trial.stage.includes("open") && trial.stage.includes(side);
+    const isClose = trial.stage.includes("close") && trial.stage.includes(side);
+    const isRebuttal = trial.stage === "rebuttal" && side === "pros";
 
     const statementsHighlighted = isOpen || isClose || isRebuttal;
-    const directHighlighted =
-      trial.stage.includes(side) && trial.stage.includes('direct');
+    const directHighlighted = trial.stage.includes(side) &&
+      trial.stage.includes("direct");
 
-    const crossHighlighted =
-      !trial.stage.includes(side) && trial.stage.includes('cross');
+    const crossHighlighted = !trial.stage.includes(side) &&
+      trial.stage.includes("cross");
 
     if (isPretrial) {
       return TimeSummaryRowType.Pretrial;
@@ -48,31 +48,41 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial }) => {
     return undefined;
   };
 
+  const jointTimeVisible = stage.includes("joint");
+
   return (
     <View style={styles.container}>
-      <TimeSummary
-        side="p"
-        trialDate={trialDate}
-        highlightRow={getHighlightedRow('pros')}
-        timeRemaining={totalTimes.p.remaining}
-        setup={setup}
-      />
-      <TimeSummary
-        side="d"
-        trialDate={trialDate}
-        highlightRow={getHighlightedRow('def')}
-        timeRemaining={totalTimes.d.remaining}
-        setup={setup}
-      />
+      {!jointTimeVisible && (
+        <>
+          <SideTimeSummary
+            side="p"
+            trial={trial}
+            highlightRow={getHighlightedRow("pros")}
+            timeRemaining={totalTimes.p.remaining}
+            editingTimes={editingTimes}
+          />
+          <SideTimeSummary
+            side="d"
+            trial={trial}
+            highlightRow={getHighlightedRow("def")}
+            timeRemaining={totalTimes.d.remaining}
+            editingTimes={editingTimes}
+          />
+        </>
+      )}
+
+      {jointTimeVisible && (
+        <JointTimeSummary trial={trial} editingTimes={editingTimes} />
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%',
+    display: "flex",
+    alignItems: "center",
+    width: "100%",
   },
 });
 
