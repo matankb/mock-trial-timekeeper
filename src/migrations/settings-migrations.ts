@@ -41,8 +41,41 @@ interface SettingsSchema_1_1_0 {
   };
 }
 
+interface SettingsSchema_1_2_0 {
+  theme: SettingsTheme;
+  setup: {
+    statementTime: number;
+    directTime: number;
+    crossTime: number;
+    allLoss: number;
+    pretrialEnabled: boolean;
+    statementsCombined: boolean;
+    pretrialTime: number;
+    openTime: number | null;
+    closeTime: number | null;
+    statementsSeparate: boolean;
+    allLossEnabled: boolean;
+    rebuttalMaxEnabled: boolean;
+    rebuttalMaxTime: number;
+    jointPrepClosingsEnabled: boolean;
+    jointConferenceEnabled: boolean;
+    jointPrepClosingsTime: number;
+    jointConferenceTime: number | null;
+  };
+  additionalSetup: {
+    allLossDuration: number;
+  };
+  schoolAccount: {
+    connected: boolean;
+    teamId: string | null;
+  };
+  league: {
+    league: League;
+  };
+}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- This is the current schema
-interface SettingsSchema_1_2_0 extends Settings {}
+interface SettingsSchema_1_3_0 extends Settings {}
 
 export const settingsMigrations = [
   createMigration<SettingsSchema_1_0_0, SettingsSchema_1_1_0>({
@@ -86,6 +119,19 @@ export const settingsMigrations = [
           // set the league to AMTA, since that was the default/only league at the time,
           // so that users don't have to select the league again
           league: League.AMTA,
+        },
+      };
+    },
+  }),
+  createMigration<SettingsSchema_1_2_0, SettingsSchema_1_3_0>({
+    from: '1.2.0',
+    to: '1.3.0',
+    migrate: (settings) => {
+      return {
+        ...settings,
+        setup: {
+          ...settings.setup,
+          reexaminationsEnabled: false,
         },
       };
     },
