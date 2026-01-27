@@ -35,6 +35,7 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
   navigation,
 }) => {
   const theme = useTheme();
+  const league = useSettingsLeague();
 
   // Create Trial State
   const settings = useSettings();
@@ -115,7 +116,7 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
     });
   };
 
-  if (!settings) {
+  if (!settings || !league) {
     return null;
   }
 
@@ -150,7 +151,7 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
           setAllLossTime={setAllLossTime}
         />
       )}
-      {showWitnessSelector && <WitnessSelectorInline />}
+      {showWitnessSelector && <WitnessSelectorInline league={league} />}
 
       <Button title="Create Trial" onPress={handleCreatePress} />
     </ScrollView>
