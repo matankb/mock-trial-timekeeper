@@ -50,8 +50,9 @@ export const LeagueSelectorHelp: FC = () => {
           <Text style={styles.title}>Current high school students</Text>
         </View>
         <HelpText>
-          If you are a high school student in Minnesota, select &quot;High
-          School Mock Trial in Minnesota&quot;.
+          If you are a high school student in one of the supported states
+          (Minnesota, Florida, or Idaho), select &quot;High School Mock
+          Trial&quot; in your state.
         </HelpText>
         <HelpText>
           If you are a high school student in another state, Mock Trial Timer
