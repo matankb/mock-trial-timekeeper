@@ -6,6 +6,7 @@ import { CaseType, createAlternatingCaseTypeResolver } from './case-type';
  * League constants and features
  */
 
+
 export enum League {
   AMTA = 'amta',
   Minnesota = 'minnesota',
@@ -22,18 +23,21 @@ export enum LeagueFeature {
   TIMES_BREAKDOWN = 'times-breakdown',
   TEAM_ACCOUNTS = 'team-accounts',
   WITNESS_SELECTION = 'witness-selection',
+  SHOW_OVERTIME = 'overtime',
 }
 
-export const leagueFeatures = {
+export const leagueFeatures: Record<League, Record<LeagueFeature, boolean>> = {
   [League.AMTA]: {
     [LeagueFeature.TIMES_BREAKDOWN]: true,
     [LeagueFeature.TEAM_ACCOUNTS]: true,
     [LeagueFeature.WITNESS_SELECTION]: true,
-  },
+    [LeagueFeature.SHOW_OVERTIME]: false,
+  },  
   [League.Minnesota]: {
     [LeagueFeature.TIMES_BREAKDOWN]: false,
     [LeagueFeature.TEAM_ACCOUNTS]: false,
     [LeagueFeature.WITNESS_SELECTION]: false,
+    [LeagueFeature.SHOW_OVERTIME]: false,
   },
   [League.Florida]: {
     [LeagueFeature.TIMES_BREAKDOWN]: true,
