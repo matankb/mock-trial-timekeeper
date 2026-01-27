@@ -195,16 +195,16 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
   ]);
 
   const handleSavePress = useCallback(async () => {
-    // This should not happen, since save button is disabled if trial details are not valid
-    if (!validateTrialDetails(mergedTrial)) {
-      Alert.alert('Please fill out all trial details before uploading');
-      return;
-    }
-
     setTrial(mergedTrial);
 
     if (!isBeforeUpload) {
       navigation.goBack(); // close modal
+      return;
+    }
+
+    // This should not happen, since save button is disabled if trial details are not valid
+    if (!validateTrialDetails(mergedTrial)) {
+      Alert.alert('Please fill out all trial details before uploading');
       return;
     }
 
