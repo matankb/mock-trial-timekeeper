@@ -1,9 +1,9 @@
-import React, { FC } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { FC } from 'react';
+import { StyleSheet, View } from 'react-native';
 
-import SideTimeSummary, { TimeSummaryRowType } from "./SideTimeSummary";
-import { getTotalTimes, Trial } from "../../../controllers/trial";
-import JointTimeSummary from "./JointTimeSummary";
+import SideTimeSummary, { TimeSummaryRowType } from './SideTimeSummary';
+import { getTotalTimes, Trial } from '../../../controllers/trial';
+import JointTimeSummary from './JointTimeSummary';
 
 interface TimeSummariesProps {
   trial: Trial;
@@ -14,18 +14,18 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial, editingTimes }) => {
   const totalTimes = getTotalTimes(trial);
 
   const getHighlightedRow = (side: string) => {
-    const isPretrial = trial.stage.includes("pretrial") &&
-      trial.stage.includes(side);
-    const isOpen = trial.stage.includes("open") && trial.stage.includes(side);
-    const isClose = trial.stage.includes("close") && trial.stage.includes(side);
-    const isRebuttal = trial.stage === "rebuttal" && side === "pros";
+    const isPretrial =
+      trial.stage.includes('pretrial') && trial.stage.includes(side);
+    const isOpen = trial.stage.includes('open') && trial.stage.includes(side);
+    const isClose = trial.stage.includes('close') && trial.stage.includes(side);
+    const isRebuttal = trial.stage === 'rebuttal' && side === 'pros';
 
     const statementsHighlighted = isOpen || isClose || isRebuttal;
-    const directHighlighted = trial.stage.includes(side) &&
-      trial.stage.includes("direct");
+    const directHighlighted =
+      trial.stage.includes(side) && trial.stage.includes('direct');
 
-    const crossHighlighted = !trial.stage.includes(side) &&
-      trial.stage.includes("cross");
+    const crossHighlighted =
+      !trial.stage.includes(side) && trial.stage.includes('cross');
 
     if (isPretrial) {
       return TimeSummaryRowType.Pretrial;
@@ -48,7 +48,7 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial, editingTimes }) => {
     return undefined;
   };
 
-  const jointTimeVisible = stage.includes("joint");
+  const jointTimeVisible = stage.includes('joint');
 
   return (
     <View style={styles.container}>
@@ -57,15 +57,17 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial, editingTimes }) => {
           <SideTimeSummary
             side="p"
             trial={trial}
-            highlightRow={getHighlightedRow("pros")}
+            highlightRow={getHighlightedRow('pros')}
             timeRemaining={totalTimes.p.remaining}
+            overtime={totalTimes.p.overtime}
             editingTimes={editingTimes}
           />
           <SideTimeSummary
             side="d"
             trial={trial}
-            highlightRow={getHighlightedRow("def")}
+            highlightRow={getHighlightedRow('def')}
             timeRemaining={totalTimes.d.remaining}
+            overtime={totalTimes.d.overtime}
             editingTimes={editingTimes}
           />
         </>
@@ -80,9 +82,9 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial, editingTimes }) => {
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    alignItems: "center",
-    width: "100%",
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
   },
 });
 

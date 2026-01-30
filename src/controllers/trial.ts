@@ -354,6 +354,7 @@ export interface TotalTimeSet {
 interface TotalTimeSide {
   remaining: TotalTimeSet;
   used: NonNullable<TotalTimeSet>;
+  overtime: number;
 }
 
 // TODO: HEAVILY test this!
@@ -364,7 +365,7 @@ export const getTotalTimes = (trial: Trial): Record<Side, TotalTimeSide> => {
     pretrial: times.pretrial.pros,
     statements: times.open.pros + times.close.pros + times.rebuttal,
     open: times.open.pros,
-    close: times.close.pros,
+    close: times.close.pros + times.rebuttal,
     direct:
       times.prosCic.witnessOne.direct +
       times.prosCic.witnessTwo.direct +
@@ -438,7 +439,7 @@ export const getTotalTimes = (trial: Trial): Record<Side, TotalTimeSide> => {
         : null,
     direct: setup.directTime - prosecutionTimeUsed.direct,
     cross: setup.crossTime - prosecutionTimeUsed.cross,
-    rebuttal: getRebuttalTimeRemaining(trial),
+    rebuttal: getRebuttalTimeRemaining(trial), // only used when rebuttal max is enabled
   };
 
   const defenseTimeRemaining = {
@@ -461,10 +462,38 @@ export const getTotalTimes = (trial: Trial): Record<Side, TotalTimeSide> => {
   };
 
   return {
-    p: { remaining: prosecutionTimeRemaining, used: prosecutionTimeUsed },
-    d: { remaining: defenseTimeRemaining, used: defenseTimeUsed },
+    p: {
+      remaining: prosecutionTimeRemaining,
+      used: prosecutionTimeUsed,
+      overtime: getOvertime(prosecutionTimeRemaining),
+    },
+    d: {
+      remaining: defenseTimeRemaining,
+      used: defenseTimeUsed,
+      overtime: getOvertime(defenseTimeRemaining),
+    },
   };
 };
+
+// TODO: right now, this only works with Idaho's setup. Not sure if it is generalizable at the moment.
+function getOvertime(timeRemaining: TotalTimeSet): number {
+  let overtime = 0;
+
+  const remaining = [
+    timeRemaining.direct,
+    timeRemaining.cross,
+    timeRemaining.open,
+    timeRemaining.close,
+  ];
+
+  for (const time of remaining) {
+    if (time !== null && time < 0) {
+      overtime += Math.abs(time);
+    }
+  }
+
+  return overtime;
+}
 
 const getRebuttalTimeRemaining = (trial: Trial): number => {
   const { setup, times } = trial;
@@ -512,7 +541,10 @@ export function calculateNewTrialTime(
 /**
  * Validates that the trial details are present and complete
  */
-export function validateTrialDetails(trial: Trial): trial is UploadableTrial {
+export function validateTrialDetails(
+  trial: Trial,
+  checkWitnesses: boolean = true,
+): trial is UploadableTrial {
   const { details } = trial;
 
   if (!details) {
@@ -524,7 +556,10 @@ export function validateTrialDetails(trial: Trial): trial is UploadableTrial {
     trial.witnesses.d.every((w) => w !== null);
 
   return Boolean(
-    details.round && details.side && details.tournamentId && allWitnessesSet,
+    details.round &&
+    details.side &&
+    details.tournamentId &&
+    (checkWitnesses ? allWitnessesSet : true),
   );
 }
 

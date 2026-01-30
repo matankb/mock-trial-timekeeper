@@ -39,7 +39,9 @@ const LeagueSelector: FC = () => {
       return;
     }
 
-    const confirmationText = `Please confirm that you are competing in ${leagueNames[selected]}.`;
+    const confirmationText = `Please confirm that you are competing in ${
+      leagueNames[selected]
+    }.`;
 
     const buttonText = `Confirm ${leagueNames[selected]}`;
 
@@ -74,6 +76,12 @@ const LeagueSelector: FC = () => {
           onSelect={() => setSelected(League.Florida)}
           name="High School Mock Trial in Florida"
           image={require('../../../../assets/leagues/florida.png')}
+        />
+        <LeagueCard
+          selected={selected === League.Idaho}
+          onSelect={() => setSelected(League.Idaho)}
+          name="High School Mock Trial in Idaho"
+          image={require('../../../../assets/leagues/idaho.jpg')}
         />
       </View>
 

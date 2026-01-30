@@ -66,6 +66,7 @@ export const defaultSettings: Settings = {
     jointConferenceEnabled: false,
     jointPrepClosingsTime: duration.minutes(2),
     jointConferenceTime: duration.minutes(2),
+    reexaminationsEnabled: false,
   },
 
   additionalSetup: {
@@ -100,6 +101,7 @@ export const leagueSetupOverrides: Record<League, SettingsSetup> = {
     pretrialEnabled: false,
     pretrialTime: defaultSettings.setup.pretrialTime,
     statementTime: defaultSettings.setup.statementTime,
+    reexaminationsEnabled: false,
   },
   [League.Florida]: {
     allLossEnabled: false,
@@ -117,6 +119,25 @@ export const leagueSetupOverrides: Record<League, SettingsSetup> = {
     pretrialEnabled: false,
     pretrialTime: defaultSettings.setup.pretrialTime,
     statementTime: defaultSettings.setup.statementTime,
+    reexaminationsEnabled: true,
+  },
+  [League.Idaho]: {
+    allLossEnabled: false,
+    jointPrepClosingsEnabled: true,
+    jointPrepClosingsTime: duration.minutes(3),
+    jointConferenceEnabled: true,
+    jointConferenceTime: duration.minutes(10),
+    rebuttalMaxEnabled: false,
+    rebuttalMaxTime: duration.minutes(0),
+    statementsSeparate: true,
+    openTime: duration.minutes(5),
+    closeTime: duration.minutes(5),
+    directTime: duration.minutes(20),
+    crossTime: duration.minutes(20),
+    pretrialEnabled: false,
+    pretrialTime: duration.minutes(0),
+    statementTime: duration.minutes(0), // statements are separated
+    reexaminationsEnabled: false,
   },
 };
 

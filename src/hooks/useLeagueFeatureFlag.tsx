@@ -3,10 +3,10 @@ import {
   leagueCaseType,
   LeagueFeature,
   leagueFeatures,
-} from '../constants/leagues';
-import { useSettingsLeague } from './useSettings';
-import { CaseType } from '../constants/case-type';
-import { Side } from '../types/side';
+} from "../constants/leagues";
+import { useSettingsLeague } from "./useSettings";
+import { CaseType } from "../constants/case-type";
+import { Side } from "../types/side";
 
 /**
  * Returns a boolean indicating whether the feature is enabled for the current league.
@@ -21,16 +21,17 @@ export const useLeagueFeatureFlag = (feature: LeagueFeature) => {
 
 export function getSideName(side: Side, league: League, trialDate?: Date) {
   const date = trialDate ?? new Date();
-  const caseType = leagueCaseType[league](date);
-  const piSideName =
-    caseType === CaseType.Criminal ? 'Prosecution' : 'Plaintiff';
+  const caseType = leagueCaseType[league]?.(date) ?? CaseType.Civil; // TODO: revert this!
+  const piSideName = caseType === CaseType.Criminal
+    ? "Prosecution"
+    : "Plaintiff";
 
-  if (side === 'p') {
+  if (side === "p") {
     return piSideName;
-  } else if (side === 'd') {
-    return 'Defense';
+  } else if (side === "d") {
+    return "Defense";
   }
-  return 'Unknown Side';
+  return "Unknown Side";
 }
 
 export const useLeagueSideName = (side: Side, trialDate?: Date) => {
@@ -38,9 +39,9 @@ export const useLeagueSideName = (side: Side, trialDate?: Date) => {
 
   // TODO: ugh figure this out
   if (!league) {
-    return '';
+    return "";
   }
 
   const piSideName = getSideName(side, league, trialDate);
-  return side === 'p' ? piSideName : 'Defense';
+  return side === "p" ? piSideName : "Defense";
 };

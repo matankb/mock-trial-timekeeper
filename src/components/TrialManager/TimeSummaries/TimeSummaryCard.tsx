@@ -1,9 +1,9 @@
-import React, { FC } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { FC } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
-import Card from "../../Card";
-import { formatTime } from "../../../utils";
-import colors from "../../../constants/colors";
+import Card from '../../Card';
+import { formatTime } from '../../../utils';
+import colors from '../../../constants/colors';
 
 export interface TimeSummaryRowData {
   name: string;
@@ -37,8 +37,7 @@ const TimeSummaryCard: FC<TimeSummaryCardProps> = ({
         </Text>
         {overtime !== undefined && overtime > 0 && (
           <Text style={styles.warning}>
-            {formatTime(overtime)} over time
-          </Text>
+          <Text style={styles.warning}>{formatTime(overtime)} over time</Text>
         )}
       </View>
 
@@ -49,10 +48,10 @@ const TimeSummaryCard: FC<TimeSummaryCardProps> = ({
 
 const styles = StyleSheet.create({
   titleContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingTop: 7,
     paddingBottom: 12,
     paddingLeft: 10,
@@ -60,12 +59,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   warning: {
-    color: "white",
+    color: 'white',
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     backgroundColor: colors.WARNING_RED,
     paddingHorizontal: 5,
     paddingVertical: 1,

@@ -3,6 +3,7 @@ import { Trial } from '../controllers/trial';
 import { Side } from '../types/side';
 import { Prefixes } from '../utils';
 import { getSideName } from '../hooks/useLeagueFeatureFlag';
+import { League } from './leagues';
 
 export const stages = [
   'pretrial.pros',
@@ -95,7 +96,6 @@ export const getPrevStage = (trial: Trial) => {
 
 const getWitnessName = (trial: Trial, stage: TrialStage, side: Side) => {
   const { witnesses } = trial;
-  console.log('trial', trial);
   const sideName = getSideName(side, trial.league, new Date(trial.date));
 
   const witnessNameMap: Partial<Record<Prefixes<TrialStage>, string | null>> = {
@@ -149,10 +149,10 @@ export const getStageName = (
     const examination = stage.includes('.direct') // testing for . is important, because .redirect also exists
       ? 'Direct'
       : stage.includes('.cross')
-      ? 'Cross'
-      : stage.includes('.redirect')
-      ? 'Re-direct'
-      : 'Re-cross';
+        ? 'Cross'
+        : stage.includes('.redirect')
+          ? 'Re-direct'
+          : 'Re-cross';
     const name = getWitnessName(trial, stage, side);
     return minimal ? name : `${name} - ${examination}`;
   } else if (stage.startsWith('open')) {
@@ -163,7 +163,11 @@ export const getStageName = (
     return 'Rebuttal';
   } else if (stage === 'joint.prep.closings') {
     return 'Preparation for Closings';
+    // TODO: maybe rename this to "posttrial or something, to make it generic"
   } else if (stage === 'joint.conference') {
+    if (trial.league === League.Idaho) {
+      return 'Judge Comments (Regionals Only)';
+    }
     return 'Team Conference';
   }
 
