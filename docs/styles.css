@@ -5,6 +5,7 @@
   --slate-400: #64748b;
   --slate-700: #475871;
   --white: #ffffff;
+  --modal-transition-speed: 0.2s;
 }
 
 * {
@@ -33,8 +34,6 @@ h1 {
 
 .hero-title-highlight {
   color: #435db1;
-  /* color: #6ca8e4; */
-  /* color: #0d6145; */
 }
 
 .logo {
@@ -59,11 +58,12 @@ h1 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   min-height: calc(100vh - 4rem);
+  gap: 5rem;
 }
 
 .hero-content {
   z-index: 2;
-  padding-top: 15vh;
+  padding-top: 12vh;
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 4rem);
@@ -95,17 +95,24 @@ h1 {
   margin-bottom: 1rem;
 }
 
+.hero-download {
+  display: inline-flex;
+  flex-direction: column;
+  padding-right: 2rem;
+  gap: 1rem;
+}
+
 .hero-buttons {
   display: flex;
-  gap: 1rem;
   flex-direction: row;
+  justify-content: space-between;
 }
 
 .btn {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-right: 30px;
+  margin-right: 13px;
   font-weight: 600;
   font-size: 1rem;
   text-decoration: none;
@@ -115,6 +122,8 @@ h1 {
   border-bottom-width: 2px;
   border-color: transparent;
   border-style: solid;
+  background: transparent;
+  font-family: inherit;
 }
 
 .btn-primary {
@@ -123,7 +132,6 @@ h1 {
 }
 
 .btn-primary:hover {
-  /* border-bottom-color: var(--navy-700); */
   color: var(--navy-900);
 }
 
@@ -132,7 +140,6 @@ h1 {
 }
 
 .btn-secondary:hover {
-  /* border-bottom-color: var(--slate-400); */
   color: var(--slate-700);
 }
 
@@ -146,20 +153,41 @@ h1 {
     hue-rotate(180deg) brightness(95%) contrast(85%);
 }
 
+.btn-show-main {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  justify-content: space-between;
+  cursor: pointer;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #435db1;
+  font-family: inherit;
+  color: var(--white);
+  width: 100%;
+}
+
+.btn-show-main:hover {
+  background: var(--navy-900);
+}
+
+.btn-show-main svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
 .btn svg,
 .btn img {
   width: 20px;
   height: 20px;
   flex-shrink: 0;
-}
-
-.footer svg {
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-  vertical-align: middle;
-  /* slight visual adjustment */
-  margin-bottom: 1.5px;
 }
 
 /* Phone Mockups */
@@ -168,7 +196,6 @@ h1 {
   z-index: 2;
   display: flex;
   flex-direction: column;
-  /* justify-content: flex-end; */
   justify-content: center;
   align-items: center;
   min-height: 600px;
@@ -217,82 +244,6 @@ h1 {
 .phone-mockup[data-position='right'] {
   transform: translateX(140px) translateY(40px) rotate(8deg) scale(0.9);
   z-index: 1;
-}
-
-/* Navigation controls */
-.phone-nav {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  align-items: center;
-}
-
-.phone-nav-arrow {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    background-color 0.2s ease,
-    transform 0.2s ease;
-  background-color: transparent;
-  color: var(--navy-600);
-}
-
-.phone-controls {
-  display: flex;
-  flex-direction: column;
-  align-self: flex-end;
-  align-items: center;
-  gap: 0px;
-  margin-top: 40px;
-  width: 100%;
-}
-
-.phone-description {
-  color: var(--navy-600);
-  font-size: 0.8rem;
-  transition: opacity 0.15s ease-in-out;
-  opacity: 1;
-}
-
-.phone-nav-arrow:hover {
-  color: var(--navy-900);
-}
-
-.phone-nav-arrow svg,
-.phone-nav-arrow img {
-  width: 18px;
-  height: 18px;
-}
-
-.phone-nav-dots {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-.phone-nav-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--slate-400);
-  border: none;
-  padding: 0;
-  transition:
-    background-color 0.2s ease,
-    transform 0.2s ease;
-  opacity: 0.4;
-}
-
-.phone-nav-dot.active {
-  background: var(--navy-700);
-  opacity: 1;
-  transform: scale(1.2);
 }
 
 /* Footer styles */
@@ -373,6 +324,70 @@ h1 {
   font-size: 0.75rem;
 }
 
+/* Video Modal */
+.video-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility var(--modal-transition-speed) ease;
+}
+
+.video-modal.is-open {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.video-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(165, 177, 201, 0.509);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity var(--modal-transition-speed) ease;
+}
+
+.video-modal.is-open .video-modal-backdrop {
+  opacity: 1;
+}
+
+.video-modal-container {
+  position: relative;
+  z-index: 1;
+  width: 90%;
+  max-width: 900px;
+  opacity: 0;
+  transform: scale(0.98);
+  transition:
+    opacity var(--modal-transition-speed) ease,
+    transform var(--modal-transition-speed) ease;
+}
+
+.video-modal.is-open .video-modal-container {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.video-modal-content {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+}
+
+.video-modal-content video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  background: #000;
+}
+
 /* Responsive */
 @media (max-width: 1270px) {
   .phone-mockup img {
@@ -392,7 +407,7 @@ h1 {
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1226px) {
   .hero {
     padding: 2rem 3rem;
     min-height: auto;
@@ -423,6 +438,10 @@ h1 {
   .hero-description {
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .hero-download {
+    align-self: center;
   }
 
   .hero-buttons {
@@ -477,12 +496,17 @@ h1 {
   }
 
   .hero h1 {
-    font-size: 2rem;
+    font-size: 3rem;
     text-align: center;
   }
 
   .hero-description {
     text-align: center;
+  }
+
+  .hero-download {
+    width: 100%;
+    max-width: 500px;
   }
 
   .hero-buttons {
@@ -512,6 +536,14 @@ h1 {
   .phone-mockup[data-position='right'] {
     transform: translateX(100px) translateY(25px) rotate(8deg) scale(0.8);
   }
+
+  .video-modal-container {
+    width: 95%;
+  }
+
+  .video-modal-content {
+    border-radius: 12px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -520,15 +552,29 @@ h1 {
   }
 
   .hero h1 {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
 
   .hero-description {
     font-size: 1rem;
   }
 
+  .hero-download .btn-show-main {
+    margin: 0 1.3rem;
+    margin-top: 5px;
+    width: unset;
+  }
+
   .footer--page {
     font-size: 0.7rem;
+  }
+
+  .footer-text {
+    font-size: 0.8rem;
+  }
+
+  .footer--page .footer-supported {
+    font-size: 1rem;
   }
 
   .hero-phones {

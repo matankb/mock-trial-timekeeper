@@ -31,37 +31,55 @@
             Used by thousands of competitors across the country, Mock Trial
             Timer is the best way to timekeep for mock trial tournaments.
           </p>
-
-          <div class="hero-buttons">
-            <a
-              href="https://apps.apple.com/us/app/mock-trial-timer/id6466220185"
-              class="btn btn-primary"
-              target="_blank"
-              rel="noopener"
-            >
-              <img src="assets/svgs/apple-logo.svg" alt="Apple Logo" />
-              On iPhone
-              <img src="assets/svgs/arrow-right.svg" alt="Arrow Right" />
-            </a>
-            <a
-              href="https://play.google.com/store/apps/details?id=com.matankb.mocktrialtimekeeper&hl=en_US"
-              class="btn btn-primary"
-              target="_blank"
-              rel="noopener"
-            >
-              <img src="assets/svgs/android-logo.svg" alt="Android Logo" />
-              On Android
-              <img src="assets/svgs/arrow-right.svg" alt="Arrow Right" />
-            </a>
-            <a
-              href="https://app.mocktrialtimer.com"
-              class="btn btn-secondary"
-              rel="noopener"
-            >
-              <img src="assets/svgs/globe.svg" alt="Globe Icon" />
-              Online
-              <img src="assets/svgs/arrow-right.svg" alt="Arrow Right" />
-            </a>
+          <div class="hero-download">
+            <button id="show-carousel-btn-main" class="btn-show-main">
+              See how it works
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </button>
+            <div class="hero-buttons">
+              <a
+                href="https://apps.apple.com/us/app/mock-trial-timer/id6466220185"
+                class="btn btn-primary"
+                target="_blank"
+                rel="noopener"
+              >
+                <img src="assets/svgs/apple-logo.svg" alt="Apple Logo" />
+                On iPhone
+                <img src="assets/svgs/arrow-right.svg" alt="Arrow Right" />
+              </a>
+              <a
+                href="https://play.google.com/store/apps/details?id=com.matankb.mocktrialtimekeeper&hl=en_US"
+                class="btn btn-primary"
+                target="_blank"
+                rel="noopener"
+              >
+                <img src="assets/svgs/android-logo.svg" alt="Android Logo" />
+                On Android
+                <img src="assets/svgs/arrow-right.svg" alt="Arrow Right" />
+              </a>
+              <a
+                href="https://app.mocktrialtimer.com"
+                class="btn btn-secondary"
+                rel="noopener"
+              >
+                <img src="assets/svgs/globe.svg" alt="Globe Icon" />
+                Online
+                <img src="assets/svgs/arrow-right.svg" alt="Arrow Right" />
+              </a>
+            </div>
           </div>
 
           <div class="footer footer--desktop">
@@ -79,7 +97,7 @@
                 src="assets/icon-transparent.png"
                 alt="Mock Trial Timer Logo"
                 class="logo"
-              />Created by Matan Kotler-Berkowitz</span
+              />Built by Matan Kotler-Berkowitz</span
             >
             <span class="footer-separator"> · </span>
             <div class="footer-links">
@@ -112,31 +130,6 @@
               />
             </div>
           </div>
-          <!-- <div class="phone-controls">
-            <div class="phone-description">See how it works</div>
-            <nav class="phone-nav">
-              <button
-                class="phone-nav-arrow"
-                id="nav-prev"
-                aria-label="Previous screenshot"
-              >
-                <img src="assets/svgs/arrow-plain-left.svg" alt="Arrow Left" />
-              </button>
-
-              <div class="phone-nav-dots" id="phone-nav-dots"></div>
-
-              <button
-                class="phone-nav-arrow"
-                id="nav-next"
-                aria-label="Next screenshot"
-              >
-                <img
-                  src="assets/svgs/arrow-plain-right.svg"
-                  alt="Arrow Right"
-                />
-              </button>
-            </nav>
-          </div> -->
         </div>
       </div>
     </section>
@@ -165,6 +158,48 @@
       </div>
     </footer>
 
-    <!-- <script src="script.js"></script> -->
+    <!-- Video Modal Overlay -->
+    <div class="video-modal" id="video-modal">
+      <div class="video-modal-backdrop"></div>
+      <div class="video-modal-container">
+        <div class="video-modal-content">
+          <video id="demo-video" controls playsinline>
+            <source src="assets/demo.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const modal = document.getElementById('video-modal');
+        const video = document.getElementById('demo-video');
+        const openBtn = document.getElementById('show-carousel-btn-main');
+        const backdrop = modal.querySelector('.video-modal-backdrop');
+
+        function openModal() {
+          modal.classList.add('is-open');
+          document.body.style.overflow = 'hidden';
+          video.play();
+        }
+
+        function closeModal() {
+          modal.classList.remove('is-open');
+          document.body.style.overflow = '';
+          video.pause();
+          video.currentTime = 0;
+        }
+
+        openBtn.addEventListener('click', openModal);
+        backdrop.addEventListener('click', closeModal);
+
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+            closeModal();
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
