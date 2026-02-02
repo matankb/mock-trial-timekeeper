@@ -1,5 +1,5 @@
+# everything from gitignore, plus the website, scripts, and promotional materials
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
-# When modifying, must also modify .easignore
 
 # dependencies
 node_modules/
@@ -38,3 +38,7 @@ yarn-error.*
 
 .keys
 .vercel
+
+docs/
+scripts/
+promotional/
