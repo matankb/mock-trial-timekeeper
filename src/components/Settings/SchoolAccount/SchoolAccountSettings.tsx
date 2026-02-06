@@ -28,6 +28,14 @@ const SchoolAccountSettings: FC<AppearenceSettingsProps> = ({
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
+        if (!session.user.id) {
+          posthog.capture('error', {
+            message: 'User signed in but no user ID',
+            error: JSON.stringify(session),
+          });
+          return;
+        }
+
         handleSchoolAccountSettingsChange({
           connected: true,
           teamId: session.user.id,
