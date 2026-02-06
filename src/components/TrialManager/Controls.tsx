@@ -1,6 +1,6 @@
 import { Entypo } from '@expo/vector-icons';
 import React from 'react';
-import { Text, View, StyleSheet, Pressable } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import colors from '../../constants/colors';
 import { Theme } from '../../types/theme';
@@ -95,6 +95,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
+    ...Platform.select({
+      web: {
+        justifyContent: 'center',
+        gap: 20,
+      },
+    }),
   },
   button: {
     width: 90,

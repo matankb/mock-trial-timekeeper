@@ -1,19 +1,14 @@
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import React, { FC, useState } from 'react';
-import { Alert, ActivityIndicator, View } from 'react-native';
+import React, { FC } from 'react';
+import { ActivityIndicator, Alert, Platform, View } from 'react-native';
 import { HeaderButton } from '@react-navigation/elements';
 
 import colors from '../../constants/colors';
 import { ScreenName } from '../../constants/screen-names';
-import {
-  Trial,
-  uploadTrialToSchoolAccount,
-  validateTrialDetails,
-} from '../../controllers/trial';
+import { Trial } from '../../controllers/trial';
 import { useSettings } from '../../hooks/useSettings';
-import { showBugReportAlert } from '../../utils/bug-report';
-import { supabaseDbErrorToReportableError } from '../../utils/supabase';
+import { useUploadTrial } from '../../hooks/useUploadTrial';
 
 import { NavigationProp } from '../../types/navigation';
 import { LeagueFeature } from '../../constants/leagues';
@@ -59,7 +54,7 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
     LeagueFeature.TIMES_BREAKDOWN,
   );
 
-  const [uploading, setUploading] = useState(false);
+  const { handleUpload, uploading } = useUploadTrial({ trial });
 
   // ==================
   // Action Sheet Items
@@ -75,7 +70,7 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
     { name: editTrialLabel, onPress: () => handleEditTrialPress() },
     settings?.schoolAccount?.connected && {
       name: 'Upload to Team Account',
-      onPress: () => handleUploadPress(),
+      onPress: () => handleUpload(),
     },
     !timesBreakdownEnabled && {
       name: 'Edit Times',
@@ -129,46 +124,29 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
   };
 
   const handleDeletePress = () => {
-    Alert.alert(
-      'Delete Trial',
-      `Are you sure you want to delete ${trial.name}?`,
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Delete',
-          onPress: handleDelete,
-          style: 'destructive',
-        },
-      ],
-    );
-  };
-
-  const handleUploadPress = async () => {
-    if (!validateTrialDetails(trial)) {
-      navigation.navigate(ScreenName.UPDATE_TRIAL, {
-        trialId: trial.id,
-        isBeforeUpload: true,
-      });
-      return;
-    }
-
-    setUploading(true);
-
-    const { error } = await uploadTrialToSchoolAccount(trial);
-    setUploading(false);
-
-    if (error) {
-      const reportableError = supabaseDbErrorToReportableError(error);
-      showBugReportAlert(
-        'There was a problem uploading your trial',
-        'Make sure you are connected to the internet and try again, or contact support.',
-        reportableError,
+    if (Platform.OS === 'web') {
+      const confirmDelete = confirm(
+        `Are you sure you want to delete ${trial.name}?`,
       );
+      if (confirmDelete) {
+        handleDelete();
+      }
     } else {
-      Alert.alert('Trial uploaded!');
+      Alert.alert(
+        'Delete Trial',
+        `Are you sure you want to delete ${trial.name}?`,
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Delete',
+            onPress: handleDelete,
+            style: 'destructive',
+          },
+        ],
+      );
     }
   };
 
