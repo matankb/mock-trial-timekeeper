@@ -145,6 +145,21 @@ const Navigation = () => {
     { name: ScreenName.TOURNAMENT_SELECTOR, component: TournamentSelector, options: tournamentSelectorScreenOptions },
   ];
 
+  // Format title for web
+  const pageTitleFormatter: DocumentTitleOptions['formatter'] = (options) => {
+    const pageTitle = options?.title;
+
+    if (
+      !pageTitle ||
+      typeof pageTitle !== 'string' ||
+      pageTitle === 'Mock Trial Timer'
+    ) {
+      return 'Mock Trial Timer';
+    }
+
+    return `${options?.title} - Mock Trial Timer`;
+  };
+
   return (
     <NavigationContainer theme={navigationTheme}>
       <StatusBar style={statusBarTheme} />
