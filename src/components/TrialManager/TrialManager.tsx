@@ -1,24 +1,25 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useKeepAwake } from 'expo-keep-awake';
 import React, { FC, useCallback, useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 
 import AirplaneModeBlocker from './AirplaneModeBlocker/AirplaneModeBlocker';
 import AllLoss from './AllLoss';
 import Controls from './Controls';
 import OptionsMenu from './OptionsMenu';
 import TimeSummaries from './TimeSummaries/TimeSummaries';
+import UploadLink from './UploadLink';
 import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
 import {
+  getCurrentStageName,
   getNextStage,
   getPrevStage,
-  getCurrentStageName,
 } from '../../constants/trial-stages';
 import {
+  calculateNewTrialTime,
   deleteTrial,
   getStageTime,
-  calculateNewTrialTime,
 } from '../../controllers/trial';
 import useTrial from '../../hooks/useTrial';
 import { useProvidedContext } from '../../context/ContextProvider';
@@ -26,6 +27,7 @@ import { ScreenNavigationOptions } from '../../types/navigation';
 import { LeagueFeature } from '../../constants/leagues';
 import { useLeagueFeatureFlag } from '../../hooks/useLeagueFeatureFlag';
 import Link from '../Link';
+import { useSettings } from '../../hooks/useSettings';
 
 type TrialManagerProps = NativeStackScreenProps<
   RouteProps,
@@ -45,6 +47,7 @@ export const trialManagerScreenOptions: ScreenNavigationOptions<
 });
 
 const TrialManager: FC<TrialManagerProps> = (props) => {
+  const settings = useSettings();
   const [trial, setTrial] = useTrial(props.route.params.trialId);
   const timeBreakdownEnabled = useLeagueFeatureFlag(
     LeagueFeature.TIMES_BREAKDOWN,
@@ -99,6 +102,32 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
       stage: getPrevStage(trial),
     });
   };
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.code === 'ArrowRight') {
+        nextStage();
+      } else if (event.code === 'ArrowLeft') {
+        prevStage();
+      } else if (event.code === 'Space') {
+        if (counting) {
+          pauseTimer();
+        } else {
+          startTimer();
+        }
+      }
+    },
+    [counting, pauseTimer, startTimer, nextStage, prevStage],
+  );
+
+  useEffect(() => {
+    if (Platform.OS === 'web') {
+      document.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [handleKeyDown]);
 
   const incrementCurrentTime = () => {
     if (
@@ -186,6 +215,9 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
               onPress={handleIndividualTimesPress}
             />
           )}
+          {trial.stage === 'rebuttal' && settings?.schoolAccount?.connected && (
+            <UploadLink trial={trial} />
+          )}
         </View>
         <Controls
           currentStageName={getCurrentStageName(trial)}
@@ -209,6 +241,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 35,
     paddingTop: 10,
+    ...Platform.select({
+      web: {
+        width: 800,
+        marginHorizontal: 'auto',
+      },
+    }),
   },
 });
 
