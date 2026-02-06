@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { getNetworkStateAsync, isAirplaneModeEnabledAsync } from 'expo-network';
 import React, { FC, useEffect, useState } from 'react';
-import { View, StyleSheet, Alert, Platform } from 'react-native';
+import { Alert, Platform, StyleSheet, View } from 'react-native';
 
 import overrideWarningText from './override-warning';
 import { useProvidedContext } from '../../../context/ContextProvider';
@@ -27,6 +27,11 @@ const AirplaneModeBlocker: FC<AirplaneModeBlockerProps> = ({ children }) => {
   } = useProvidedContext();
 
   const checkNetworkConnected = async () => {
+    if (Platform.OS === 'web') {
+      setShowWarning(false);
+      return;
+    }
+
     if (Platform.OS === 'android') {
       const airplaneMode = await isAirplaneModeEnabledAsync();
       setShowWarning(!airplaneMode);
@@ -60,7 +65,7 @@ const AirplaneModeBlocker: FC<AirplaneModeBlockerProps> = ({ children }) => {
   }, []);
 
   if (airplaneBlockerState.hide || !showWarning) {
-    return <View>{children}</View>;
+    return children;
   }
 
   return (
