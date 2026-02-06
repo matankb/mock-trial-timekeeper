@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
-import { Platform, SafeAreaView, ScrollView, StyleSheet } from "react-native";
+import { Platform, ScrollView, StyleSheet } from "react-native";
 
 import TimesBreakdownSection, { TimeSection } from "./TimesBreakdownSection";
 import { ScreenName } from "../../constants/screen-names";
 import { calculateNewTrialTime } from "../../controllers/trial";
 import useTrial from "../../hooks/useTrial";
-import LinkButton from "../LinkButton";
 import { TrialStage } from "../../constants/trial-stages";
 import { ScreenNavigationOptions, ScreenProps } from "../../types/navigation";
 import { getSideName } from "../../hooks/useLeagueFeatureFlag";
+import TimesBreakdownHeaderButton from "./TimesBreakdownHeaderButton";
 
 export interface TimeBreakdownRouteProps {
   trialId: string;
@@ -22,7 +22,9 @@ export const timesBreakdownScreenOptions: ScreenNavigationOptions<
     ? `${route.params.trialName} Individual Times`
     : "Individual Times",
   headerBackButtonDisplayMode: "minimal",
-  headerRight: () => <LinkButton title="Edit" onPress={() => {}} />,
+  headerRight: () => (
+    <TimesBreakdownHeaderButton title="Edit" onPress={() => {}} />
+  ),
 });
 
 const TimeBreakdown: React.FC<ScreenProps<ScreenName.TIMES_BREAKDOWN>> = ({
@@ -36,8 +38,18 @@ const TimeBreakdown: React.FC<ScreenProps<ScreenName.TIMES_BREAKDOWN>> = ({
     navigation.setOptions({
       headerRight: () =>
         editing
-          ? <LinkButton title="Done" onPress={() => setEditing(false)} />
-          : <LinkButton title="Edit" onPress={() => setEditing(true)} />,
+          ? (
+            <TimesBreakdownHeaderButton
+              title="Done"
+              onPress={() => setEditing(false)}
+            />
+          )
+          : (
+            <TimesBreakdownHeaderButton
+              title="Edit"
+              onPress={() => setEditing(true)}
+            />
+          ),
     });
   }, [editing]);
 
@@ -69,64 +81,62 @@ const TimeBreakdown: React.FC<ScreenProps<ScreenName.TIMES_BREAKDOWN>> = ({
   const piSideName = getSideName("p", trial.league);
 
   return (
-    <SafeAreaView>
-      <ScrollView contentContainerStyle={styles.container}>
-        {trial.setup.pretrialEnabled &&
-          createTimeBreakdownSection("Pretrial", [
-            ["pretrial.pros", "pretrial.def"],
-          ])}
-        {createTimeBreakdownSection("Opening Statements", [
-          ["open.pros", "open.def"],
+    <ScrollView contentContainerStyle={styles.container}>
+      {trial.setup.pretrialEnabled &&
+        createTimeBreakdownSection("Pretrial", [
+          ["pretrial.pros", "pretrial.def"],
         ])}
-        {createTimeBreakdownSection(`${piSideName} Case in Chief`, [
-          [
-            "cic.pros.one.direct",
-            reexaminationsEnabled && "cic.pros.one.redirect",
-            "cic.pros.one.cross",
-            reexaminationsEnabled && "cic.pros.one.recross",
-          ],
-          [
-            "cic.pros.two.direct",
-            reexaminationsEnabled && "cic.pros.two.redirect",
-            "cic.pros.two.cross",
-            reexaminationsEnabled && "cic.pros.two.recross",
-          ],
-          [
-            "cic.pros.three.direct",
-            "cic.pros.three.cross",
-            ...(trial.setup.reexaminationsEnabled
-              ? ([
-                "cic.pros.three.redirect",
-                "cic.pros.three.recross",
-              ] satisfies TrialStage[])
-              : []),
-          ],
-        ])}
-        {createTimeBreakdownSection("Defense Case in Chief", [
-          [
-            "cic.def.one.direct",
-            reexaminationsEnabled && "cic.def.one.redirect",
-            "cic.def.one.cross",
-            reexaminationsEnabled && "cic.def.one.recross",
-          ],
-          [
-            "cic.def.two.direct",
-            reexaminationsEnabled && "cic.def.two.redirect",
-            "cic.def.two.cross",
-            reexaminationsEnabled && "cic.def.two.recross",
-          ],
-          [
-            "cic.def.three.direct",
-            reexaminationsEnabled && "cic.def.three.redirect",
-            "cic.def.three.cross",
-            reexaminationsEnabled && "cic.def.three.recross",
-          ],
-        ])}
-        {createTimeBreakdownSection("Closing Statements", [
-          ["close.pros", "close.def", "rebuttal"],
-        ])}
-      </ScrollView>
-    </SafeAreaView>
+      {createTimeBreakdownSection("Opening Statements", [
+        ["open.pros", "open.def"],
+      ])}
+      {createTimeBreakdownSection(`${piSideName} Case in Chief`, [
+        [
+          "cic.pros.one.direct",
+          reexaminationsEnabled && "cic.pros.one.redirect",
+          "cic.pros.one.cross",
+          reexaminationsEnabled && "cic.pros.one.recross",
+        ],
+        [
+          "cic.pros.two.direct",
+          reexaminationsEnabled && "cic.pros.two.redirect",
+          "cic.pros.two.cross",
+          reexaminationsEnabled && "cic.pros.two.recross",
+        ],
+        [
+          "cic.pros.three.direct",
+          "cic.pros.three.cross",
+          ...(trial.setup.reexaminationsEnabled
+            ? ([
+              "cic.pros.three.redirect",
+              "cic.pros.three.recross",
+            ] satisfies TrialStage[])
+            : []),
+        ],
+      ])}
+      {createTimeBreakdownSection("Defense Case in Chief", [
+        [
+          "cic.def.one.direct",
+          reexaminationsEnabled && "cic.def.one.redirect",
+          "cic.def.one.cross",
+          reexaminationsEnabled && "cic.def.one.recross",
+        ],
+        [
+          "cic.def.two.direct",
+          reexaminationsEnabled && "cic.def.two.redirect",
+          "cic.def.two.cross",
+          reexaminationsEnabled && "cic.def.two.recross",
+        ],
+        [
+          "cic.def.three.direct",
+          reexaminationsEnabled && "cic.def.three.redirect",
+          "cic.def.three.cross",
+          reexaminationsEnabled && "cic.def.three.recross",
+        ],
+      ])}
+      {createTimeBreakdownSection("Closing Statements", [
+        ["close.pros", "close.def", "rebuttal"],
+      ])}
+    </ScrollView>
   );
 };
 
@@ -135,7 +145,13 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    paddingBottom: 10,
+    paddingBottom: 20,
+    ...Platform.select({
+      web: {
+        width: 600,
+        marginHorizontal: "auto",
+      },
+    }),
   },
 });
 
