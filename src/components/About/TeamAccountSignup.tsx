@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -7,28 +7,30 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import TextInput from "../TextInput";
-import { validate } from "email-validator";
+} from 'react-native';
 
-import { ScreenProps, useNavigation } from "../../types/navigation";
-import { ScreenName } from "../../constants/screen-names";
-import Button from "../Button";
-import Text from "../Text";
-import Card from "../Card";
-import useTheme from "../../hooks/useTheme";
-import { Theme } from "../../types/theme";
-import colors from "../../constants/colors";
-import { openSupportEmail, showBugReportAlert } from "../../utils/bug-report";
-import Link from "../Link";
-import { supabase } from "../../utils/supabase";
+import { MaterialIcons } from '@expo/vector-icons';
+import TextInput from '../TextInput';
+import { validate } from 'email-validator';
+
+import { ScreenProps, useNavigation } from '../../types/navigation';
+import { ScreenName } from '../../constants/screen-names';
+import Button from '../Button';
+import Text from '../Text';
+import useTheme from '../../hooks/useTheme';
+import { Theme } from '../../types/theme';
+import colors from '../../constants/colors';
+import { openSupportEmail, showBugReportAlert } from '../../utils/bug-report';
+import Link from '../Link';
+import { supabase } from '../../utils/supabase';
+import { setSettings } from '../../controllers/settings';
+import AddTeam from './AddTeam';
 
 type TeamAccountSignupProps = ScreenProps<ScreenName.TEAM_ACCOUNT_SIGNUP>;
 
 export const teamAccountSignupScreenOptions = {
-  title: "Create School Account",
-  headerBackTitle: "Back",
+  title: 'Create School Account',
+  headerBackTitle: 'Back',
 };
 
 const TeamAccountSignup: FC<TeamAccountSignupProps> = () => {
@@ -36,29 +38,11 @@ const TeamAccountSignup: FC<TeamAccountSignupProps> = () => {
   const navigation = useNavigation();
   const isDark = theme === Theme.DARK;
 
-  const [schoolName, setSchoolName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [teams, setTeams] = useState<string[]>([""]);
-
-  const addTeam = () => {
-    Alert.prompt(
-      "New Team Name",
-      "Enter the name of the new team, such as 'A Team', 'B Team', etc.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Add",
-          onPress: (teamName: string | undefined) => {
-            if (teamName?.trim()) {
-              setTeams([...teams, teamName]);
-            }
-          },
-        },
-      ],
-    );
-  };
+  const [schoolName, setSchoolName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [teams, setTeams] = useState<string[]>(['']);
 
   const removeTeam = (index: number) => {
     if (teams.length > 1) {
@@ -75,31 +59,31 @@ const TeamAccountSignup: FC<TeamAccountSignupProps> = () => {
   const handleSubmit = async () => {
     // Validation
     if (!schoolName.trim()) {
-      Alert.alert("Error", "Please enter your school name");
+      Alert.alert('Error', 'Please enter your school name');
       return;
     }
     if (!validate(email)) {
-      Alert.alert("Error", "Please enter a valid email");
+      Alert.alert('Error', 'Please enter a valid email');
       return;
     }
     if (!email.trim()) {
-      Alert.alert("Error", "Please enter an email");
+      Alert.alert('Error', 'Please enter an email');
       return;
     }
     if (!password) {
-      Alert.alert("Error", "Please enter a password");
+      Alert.alert('Error', 'Please enter a password');
       return;
     }
     if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
+      Alert.alert('Error', 'Passwords do not match');
       return;
     }
     if (password.length < 6) {
-      Alert.alert("Error", "Password must be at least 6 characters");
+      Alert.alert('Error', 'Password must be at least 6 characters');
       return;
     }
     if (teams.some((t) => !t.trim())) {
-      Alert.alert("Error", "Please fill in all team names");
+      Alert.alert('Error', 'Please fill in all team names');
       return;
     }
 
@@ -110,34 +94,34 @@ const TeamAccountSignup: FC<TeamAccountSignupProps> = () => {
 
     if (signUpError) {
       showBugReportAlert(
-        "Error",
-        "There was a problem creating your account",
+        'Error',
+        'There was a problem creating your account',
         signUpError,
       );
       return;
     }
 
     const { error: schoolError, data: school } = await supabase
-      .from("schools")
+      .from('schools')
       .insert({
         name: schoolName,
-        user_id: user?.user?.id ?? "",
+        user_id: user?.user?.id ?? '',
       })
-      .select("id")
+      .select('id')
       .single();
 
     if (schoolError) {
       showBugReportAlert(
-        "Error",
-        "There was a problem creating your school account",
+        'Error',
+        'There was a problem creating your school account',
         schoolError,
       );
     }
 
     if (!school?.id) {
       showBugReportAlert(
-        "Error",
-        "There was a problem creating your school account",
+        'Error',
+        'There was a problem creating your school account',
         new Error(
           `School ID not returned from insertion ${JSON.stringify(school)}`,
         ),
@@ -145,17 +129,20 @@ const TeamAccountSignup: FC<TeamAccountSignupProps> = () => {
       return;
     }
 
-    const { error: teamsError } = await supabase.from("teams").insert(
-      teams.map((team) => ({
-        name: team,
-        school_id: school.id,
-      })),
-    );
+    const { error: teamsError, data: createdTeams } = await supabase
+      .from('teams')
+      .insert(
+        teams.map((team) => ({
+          name: team,
+          school_id: school.id,
+        })),
+      )
+      .select('id, name');
 
     if (teamsError) {
       showBugReportAlert(
-        "Error",
-        "There was a problem creating your teams",
+        'Error',
+        'There was a problem creating your teams',
         teamsError,
       );
     }
@@ -167,24 +154,41 @@ const TeamAccountSignup: FC<TeamAccountSignupProps> = () => {
 
     if (signInError) {
       showBugReportAlert(
-        "Error",
-        "There was a problem signing in",
+        'Error',
+        'Your team account was created, but there was a problem signing in. Please try to sign in to the account, or contact support.',
         signInError,
       );
       return;
     }
 
-    // This is a hack because the settings screen will not refresh with the team ID
-    navigation.reset({
-      index: 0,
-      routes: [{ name: ScreenName.HOME }],
-    });
+    Alert.alert(
+      `Successfully created school account for ${schoolName}!`,
+      'Please select your team. If you are a coach, you can select any team, then select Coach Mode in settings.',
+      createdTeams?.map((team) => ({
+        text: team.name,
+        onPress: async () => {
+          await setSettings({
+            schoolAccount: {
+              connected: true,
+              teamId: team.id,
+              coachMode: false,
+            },
+          });
+
+          // This is a hack because the settings screen will not refresh with the team ID
+          navigation.reset({
+            index: 0,
+            routes: [{ name: ScreenName.HOME }],
+          });
+        },
+      })),
+    );
   };
 
   return (
     <KeyboardAvoidingView
       style={styles.keyboardView}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView
         contentContainerStyle={styles.container}
@@ -281,10 +285,7 @@ const TeamAccountSignup: FC<TeamAccountSignupProps> = () => {
             </View>
           ))}
 
-          <TouchableOpacity onPress={addTeam} style={styles.addTeamButton}>
-            <MaterialIcons name="add" size={20} color={colors.BLUE} />
-            <Text style={styles.addTeamText}>Add another team</Text>
-          </TouchableOpacity>
+          <AddTeam onAdd={(teamName) => setTeams([...teams, teamName])} />
         </View>
 
         {/* Submit Button */}
@@ -302,23 +303,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollView: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
   },
   scrollViewDark: {
-    backgroundColor: "#000",
+    backgroundColor: '#000',
   },
   container: {
-    paddingBottom: 40,
+    paddingBottom: 50,
     paddingTop: 20,
   },
   section: {
-    display: "flex",
+    display: 'flex',
     marginBottom: 24,
     paddingHorizontal: 20,
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: "600",
+    fontWeight: '600',
     marginBottom: 8,
   },
   sectionDescription: {
@@ -331,46 +332,35 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   card: {
-    width: "100%",
+    width: '100%',
     padding: 16,
   },
   label: {
     fontSize: 13,
-    fontWeight: "500",
+    fontWeight: '500',
     marginBottom: 6,
   },
   labelSpacing: {
     marginTop: 16,
   },
   input: {
-    backgroundColor: "#f5f5f5",
+    backgroundColor: '#f5f5f5',
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    color: "#000",
+    color: '#000',
   },
   inputDark: {
-    backgroundColor: "#333",
-    color: "#fff",
+    backgroundColor: '#333',
+    color: '#fff',
   },
   teamRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 10,
   },
   removeButton: {
     top: 8,
-  },
-  addTeamButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 12,
-    marginTop: 4,
-  },
-  addTeamText: {
-    color: colors.BLUE,
-    fontSize: 16,
-    marginLeft: 8,
   },
   footer: {
     marginTop: 10,
