@@ -8,6 +8,7 @@ import { ScreenName } from '../../../constants/screen-names';
 import { SettingsSchoolAccount } from '../../../controllers/settings';
 import { supabase } from '../../../utils/supabase';
 import { NavigationProp } from '../../../types/navigation';
+import { posthog } from '../../../utils/posthog';
 
 interface AppearenceSettingsProps {
   schoolAccountSettings: SettingsSchoolAccount;
@@ -26,11 +27,11 @@ const SchoolAccountSettings: FC<AppearenceSettingsProps> = ({
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      // TODO (error): if got signed_in but no session, log an error
       if (event === 'SIGNED_IN' && session) {
         handleSchoolAccountSettingsChange({
           connected: true,
           teamId: session.user.id,
+          coachMode: false,
         });
       }
     });
