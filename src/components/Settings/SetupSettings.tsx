@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { StyleSheet, Switch, View, ScrollView } from 'react-native';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 import Option from './Option';
 import colors from '../../constants/colors';
@@ -15,8 +15,6 @@ import { PickByValue } from 'utility-types';
 import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
 import { ScreenName } from '../../constants/screen-names';
 import Text from '../Text';
-import Link from '../Link';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSettingsLeague } from '../../hooks/useSettings';
 import { leagueNames } from '../../constants/leagues';
 import Button from '../Button';
@@ -26,9 +24,7 @@ export const setupSettingsScreenOptions: ScreenNavigationOptions<ScreenName.SETU
     headerTitle: 'Advanced Trial Setup',
   };
 
-const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = ({
-  navigation,
-}) => {
+const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = () => {
   const [setupState, setSetupState] = useState<SettingsSetup | null>(null);
   const [additionalSetupState, setAdditionalSetupState] =
     useState<SettingsAdditionalSetup | null>(null);
