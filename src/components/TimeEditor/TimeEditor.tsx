@@ -1,15 +1,16 @@
 import React, { FC, useState } from 'react';
 import {
-  View,
+  Alert,
+  Platform,
+  Pressable,
   StyleSheet,
   Text,
-  Alert,
-  Pressable,
-  Platform,
+  View,
 } from 'react-native';
 
 import TimeEditorAndroidDialog from './TimeEditorAndroidDialog';
 import { pad } from '../../utils';
+import TimeEditorInput from './TimeEditorInput';
 
 interface TimeEditorProps {
   value: number; // time in seconds
@@ -47,19 +48,20 @@ const TimeEditor: FC<TimeEditorProps> = ({
   const displayHours = value >= 3600;
 
   const validateInput = (input: string, allowOver59 = false) => {
-    const number = Number(input);
+    const number = input.length > 0 ? Number(input) : 0;
+    let error = null;
     if (isNaN(number)) {
-      return 'Please enter a number';
+      error = 'Please enter a number';
     } else if (!allowOver59 && number > 59) {
-      return 'Please enter a number less than 60';
+      error = 'Please enter a number less than 60';
     } else if (number < 0) {
-      return 'Please enter a positive number';
+      error = 'Please enter a positive number';
     } else if (Math.floor(number) !== number) {
-      return 'Please enter a whole number';
+      error = 'Please enter a whole number';
     } else if (input.length === 0) {
-      return 'Please enter a number';
+      error = 'Please enter a number';
     }
-    return null;
+    return { error, newValue: number };
   };
 
   const handleIOSInputPress = (
@@ -102,27 +104,27 @@ const TimeEditor: FC<TimeEditorProps> = ({
   };
 
   const handleHoursSave = (newHours: string) => {
-    const error = validateInput(newHours, true);
+    const { error, newValue } = validateInput(newHours, true);
     if (error) {
       return Alert.alert(error);
     }
-    onChange(Number(newHours) * 3600 + minutes * 60 + seconds);
+    onChange(newValue * 3600 + minutes * 60 + seconds);
   };
 
   const handleMinutesSave = (newMinutes: string) => {
-    const error = validateInput(newMinutes);
+    const { error, newValue } = validateInput(newMinutes);
     if (error) {
       return Alert.alert(error);
     }
-    onChange(hours * 3600 + Number(newMinutes) * 60 + seconds);
+    onChange(hours * 3600 + newValue * 60 + seconds);
   };
 
   const handleSecondsSave = (newSeconds: string) => {
-    const error = validateInput(newSeconds);
+    const { error, newValue } = validateInput(newSeconds);
     if (error) {
       return Alert.alert(error);
     }
-    onChange(hours * 3600 + minutes * 60 + Number(newSeconds));
+    onChange(hours * 3600 + minutes * 60 + newValue);
   };
 
   const androidHoursDialog = (
@@ -210,28 +212,28 @@ const TimeEditor: FC<TimeEditorProps> = ({
     <View style={[styles.container, inline && styles.containerInline]}>
       {displayHours && (
         <>
-          <Pressable
-            style={[styles.input, inline && styles.inputInline]}
+          <TimeEditorInput
+            value={hours}
             onPress={handleHoursPress}
-          >
-            <Text>{pad(hours)}</Text>
-          </Pressable>
+            onChange={handleHoursSave}
+            inline={inline}
+          />
           <Text style={highlighted && styles.highlightedText}>:</Text>
         </>
       )}
-      <Pressable
-        style={[styles.input, inline && styles.inputInline]}
+      <TimeEditorInput
+        value={minutes}
         onPress={handleMinutesPress}
-      >
-        <Text>{pad(minutes)}</Text>
-      </Pressable>
+        onChange={handleMinutesSave}
+        inline={inline}
+      />
       <Text style={highlighted && styles.highlightedText}>:</Text>
-      <Pressable
-        style={[styles.input, inline && styles.inputInline]}
+      <TimeEditorInput
+        value={seconds}
         onPress={handleSecondsPress}
-      >
-        <Text>{pad(seconds)}</Text>
-      </Pressable>
+        onChange={handleSecondsSave}
+        inline={inline}
+      />
       {Platform.OS === 'android' && (
         <>
           {displayHours && androidHoursDialog}

@@ -26,8 +26,8 @@ const TimeEditorAndroidDialog: FC<TimeEditorAndroidDialogProps> = (props) => {
     props.field === 'hours'
       ? props.hoursLabel
       : props.field === 'minutes'
-      ? props.minutesLabel
-      : props.secondsLabel;
+        ? props.minutesLabel
+        : props.secondsLabel;
 
   return (
     <Dialog.Container visible={props.visible}>
