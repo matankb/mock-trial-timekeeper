@@ -22,8 +22,8 @@ const TournamentSelectorOffline: FC = () => {
         Please connect to the internet to choose your tournament.
       </Text>
       <Text style={styles.warning}>
-        Remember: You must turn on Airplane Mode back on and turn off Wi-Fi to
-        use the timer during sanctioned tournaments.
+        You must turn on Airplane Mode back on and turn off Wi-Fi to use the
+        timer during sanctioned tournaments.
       </Text>
     </View>
   );
