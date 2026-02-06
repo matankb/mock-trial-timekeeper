@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 
 import Card from '../../Card';
 import { formatTime } from '../../../utils';
@@ -16,6 +16,7 @@ interface TimeSummaryCardProps {
   overtime?: number;
   color: string;
   children: React.ReactNode;
+  fullWidth?: boolean;
 }
 
 const TimeSummaryCard: FC<TimeSummaryCardProps> = ({
@@ -23,9 +24,10 @@ const TimeSummaryCard: FC<TimeSummaryCardProps> = ({
   overtime,
   color,
   children,
+  fullWidth = false,
 }) => {
   return (
-    <Card>
+    <Card style={{ ...styles.container, ...(fullWidth && styles.fullWidth) }}>
       <View style={styles.titleContainer}>
         <Text
           style={{
@@ -36,7 +38,6 @@ const TimeSummaryCard: FC<TimeSummaryCardProps> = ({
           {title}
         </Text>
         {overtime !== undefined && overtime > 0 && (
-          <Text style={styles.warning}>
           <Text style={styles.warning}>{formatTime(overtime)} over time</Text>
         )}
       </View>
@@ -47,6 +48,22 @@ const TimeSummaryCard: FC<TimeSummaryCardProps> = ({
 };
 
 const styles = StyleSheet.create({
+  container: {
+    ...Platform.select({
+      web: {
+        flex: 1,
+        width: 'auto',
+        marginHorizontal: 'auto',
+      },
+    }),
+  },
+  fullWidth: {
+    ...Platform.select({
+      web: {
+        width: '90%',
+      },
+    }),
+  },
   titleContainer: {
     display: 'flex',
     flexDirection: 'row',

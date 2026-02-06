@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import SideTimeSummary, { TimeSummaryRowType } from './SideTimeSummary';
 import { getTotalTimes, Trial } from '../../../controllers/trial';
 import JointTimeSummary from './JointTimeSummary';
+import { Platform } from 'react-native';
 
 interface TimeSummariesProps {
   trial: Trial;
@@ -53,7 +54,7 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial, editingTimes }) => {
   return (
     <View style={styles.container}>
       {!jointTimeVisible && (
-        <>
+        <View style={styles.sideSummariesContainer}>
           <SideTimeSummary
             side="p"
             trial={trial}
@@ -70,7 +71,7 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial, editingTimes }) => {
             overtime={totalTimes.d.overtime}
             editingTimes={editingTimes}
           />
-        </>
+        </View>
       )}
 
       {jointTimeVisible && (
@@ -81,6 +82,18 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial, editingTimes }) => {
 };
 
 const styles = StyleSheet.create({
+  sideSummariesContainer: {
+    width: '100%',
+    alignItems: 'center',
+    ...Platform.select({
+      web: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '90%',
+        gap: 20,
+      },
+    }),
+  },
   container: {
     display: 'flex',
     alignItems: 'center',

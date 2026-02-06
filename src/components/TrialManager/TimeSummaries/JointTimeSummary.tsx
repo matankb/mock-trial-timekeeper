@@ -48,7 +48,11 @@ const JointTimeSummary: FC<JointTimeSummaryProps> = ({
 
   return (
     <View style={styles.container}>
-      <TimeSummaryCard title={stageName} color={colors.PLACEHOLDER_GRAY}>
+      <TimeSummaryCard
+        title={stageName}
+        color={colors.PLACEHOLDER_GRAY}
+        fullWidth={true} // since these are displayed by themselves
+      >
         {jointPrepClosingsEnabled && stage === 'joint.prep.closings' && (
           <TimeSummaryRow
             side="joint"
