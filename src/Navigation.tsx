@@ -186,8 +186,17 @@ const Navigation = () => {
   };
 
   return (
-    <NavigationContainer theme={navigationTheme}>
-      <StatusBar style={statusBarTheme} />
+    <NavigationContainer
+      theme={navigationTheme}
+      documentTitle={{
+        formatter: pageTitleFormatter,
+      }}
+    >
+      <StatusBar
+        style={statusBarTheme}
+        translucent={false}
+        backgroundColor={statusBarBackgroundColor}
+      />
       <Stack.Navigator id={undefined} initialRouteName={ScreenName.HOME}>
         {screens.map(({ name, component, options }) => (
           <Stack.Screen
