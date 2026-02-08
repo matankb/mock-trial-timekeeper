@@ -1,10 +1,11 @@
 import {
   DarkTheme,
   DefaultTheme,
+  DocumentTitleOptions,
   NavigationContainer,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StatusBar } from 'expo-status-bar';
+import { setStatusBarStyle, StatusBar } from 'expo-status-bar';
 import React, { FC } from 'react';
 
 import { ScreenName } from './constants/screen-names';
@@ -44,11 +45,6 @@ import TrialManager, {
   TrialManagerRouteProps,
   trialManagerScreenOptions,
 } from './components/TrialManager/TrialManager';
-import {
-  TeamAccountPopup,
-  teamAccountPopupScreenOptions,
-} from './components/Home/Promos/TeamAccountPopup';
-
 import TeamTimesBreakdown, {
   TeamTimesBreakdownRouteProps,
   teamTimesBreakdownScreenOptions,
@@ -64,7 +60,25 @@ import LeagueSelectionScreen, {
 import SetupSettings, {
   setupSettingsScreenOptions,
 } from './components/Settings/SetupSettings';
-import Version, { versionScreenOptions } from './components/About/Version';
+import { Version, versionScreenOptions } from './components/About/Version';
+import TeamAccountExplainer, {
+  teamAccountExplainerScreenOptions,
+} from './components/About/TeamAccountExplainer';
+import TeamAccountHowItWorks, {
+  TeamAccountHowItWorksRouteProps,
+  teamAccountHowItWorksScreenOptions,
+} from './components/About/TeamAccountHowItWorks';
+import TeamAccountSignup, {
+  teamAccountSignupScreenOptions,
+} from './components/About/TeamAccountSignup';
+import {
+  TeamTrials,
+  teamTrialsScreenOptions,
+} from './components/Home/TeamTrials';
+import SchoolAccountManager, {
+  schoolAccountManagerScreenOptions,
+} from './components/Settings/SchoolAccount/SchoolAccountManager';
+import { Platform } from 'react-native';
 
 const Stack = createNativeStackNavigator<RouteProps>();
 
@@ -73,6 +87,7 @@ export type RouteProps = {
   [ScreenName.HOME]: undefined;
   [ScreenName.ALL_TRIALS]: undefined;
   [ScreenName.WELCOME]: undefined;
+  [ScreenName.TEAM_TRIALS]: undefined;
 
   // Trial Manager
   [ScreenName.TRIAL_MANAGER]: TrialManagerRouteProps;
@@ -83,7 +98,9 @@ export type RouteProps = {
   [ScreenName.ABOUT]: undefined;
   [ScreenName.DISCLAIMER]: undefined;
   [ScreenName.AMTA_POLICY]: undefined;
-  [ScreenName.TEAM_ACCOUNT_POPUP]: undefined;
+  [ScreenName.TEAM_ACCOUNT_EXPLAINER]: undefined;
+  [ScreenName.TEAM_ACCOUNT_HOW_IT_WORKS]: TeamAccountHowItWorksRouteProps;
+  [ScreenName.TEAM_ACCOUNT_SIGNUP]: undefined;
   [ScreenName.VERSION]: undefined;
 
   // Settings
@@ -91,6 +108,7 @@ export type RouteProps = {
   [ScreenName.SETUP_SETTINGS]: undefined;
   [ScreenName.SCHOOL_ACCOUNT_LOGIN]: undefined;
   [ScreenName.LEAGUE_SELECTION]: undefined;
+  [ScreenName.SCHOOL_ACCOUNT_MANAGER]: undefined;
 
   // Create Trial
   [ScreenName.CREATE_TRIAL]: undefined;
@@ -111,6 +129,7 @@ const Navigation = () => {
   const theme = useTheme();
   const navigationTheme = theme === Theme.DARK ? DarkTheme : DefaultTheme;
   const statusBarTheme = theme === Theme.DARK ? 'light' : 'dark';
+  const statusBarBackgroundColor = theme === Theme.DARK ? 'black' : 'white'; // android-only
 
   /* prettier-ignore */
 
@@ -118,7 +137,8 @@ const Navigation = () => {
     // Home
     { name: ScreenName.HOME, component: Home, options: homeScreenOptions },
     { name: ScreenName.ALL_TRIALS, component: AllTrials, options: allTrialsScreenOptions },
-    { name: ScreenName.WELCOME, component: Welcome, options: welcomeScreenOptions},
+    { name: ScreenName.WELCOME, component: Welcome, options: welcomeScreenOptions },
+    { name: ScreenName.TEAM_TRIALS, component: TeamTrials, options: teamTrialsScreenOptions },
 
     // Trial Manager
     { name: ScreenName.TRIAL_MANAGER, component: TrialManager, options: trialManagerScreenOptions },
@@ -130,13 +150,18 @@ const Navigation = () => {
     { name: ScreenName.SCHOOL_ACCOUNT_LOGIN, component: SchoolAccountLogin, options: schoolAccountLoginScreenOptions },
     { name: ScreenName.LEAGUE_SELECTION, component: LeagueSelectionScreen, options: leagueSelectionScreenOptions },
     { name: ScreenName.SETUP_SETTINGS, component: SetupSettings, options: setupSettingsScreenOptions },
+    { name: ScreenName.SCHOOL_ACCOUNT_MANAGER, component: SchoolAccountManager, options: schoolAccountManagerScreenOptions }, 
 
     // About
     { name: ScreenName.ABOUT, component: About, options: aboutScreenOptions },
     { name: ScreenName.DISCLAIMER, component: Disclaimer, options: disclaimerScreenOptions },
     { name: ScreenName.AMTA_POLICY, component: AMTAPolicy, options: amtaPolicyScreenOptions },
-    { name: ScreenName.TEAM_ACCOUNT_POPUP, component: TeamAccountPopup, options: teamAccountPopupScreenOptions },
     { name: ScreenName.VERSION, component: Version, options: versionScreenOptions },
+
+    // Team Accounts
+    { name: ScreenName.TEAM_ACCOUNT_EXPLAINER, component: TeamAccountExplainer, options: teamAccountExplainerScreenOptions },
+    { name: ScreenName.TEAM_ACCOUNT_HOW_IT_WORKS, component: TeamAccountHowItWorks, options: teamAccountHowItWorksScreenOptions },
+    { name: ScreenName.TEAM_ACCOUNT_SIGNUP, component: TeamAccountSignup, options: teamAccountSignupScreenOptions },
 
     // Create Trial
     { name: ScreenName.CREATE_TRIAL, component: CreateTrial, options: createTrialScreenOptions },
