@@ -3,11 +3,18 @@ import * as Updates from 'expo-updates';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 
+import { posthog } from './posthog';
+
 export function showBugReportAlert(
   title: string,
   subtitle: string,
   error: Error,
 ) {
+  posthog.capture('error', {
+    message: title,
+    error: JSON.stringify(error),
+  });
+
   Alert.alert(title, subtitle, [
     {
       text: 'Contact Support',
