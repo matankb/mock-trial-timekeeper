@@ -25,11 +25,13 @@ const UpdateAlert = () => {
     try {
       await reloadAsync();
     } catch (error) {
+      const e =
+        error instanceof Error ? error : new Error(JSON.stringify(error));
       setLoading(false);
       showBugReportAlert(
         'There was a problem updating Mock Trial Timer',
         'Please try closing and reoping the app',
-        error as Error, // TODO: type this better
+        e,
       );
     }
   };
