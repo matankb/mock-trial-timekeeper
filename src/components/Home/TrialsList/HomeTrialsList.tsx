@@ -17,7 +17,7 @@ interface HomeTrialsListProps {
   navigation: NavigationProp<RouteProps>;
 }
 
-const MAX_DISPLAYED_TRIALS = 9;
+const MAX_DISPLAYED_TRIALS = 6;
 
 const HomeTrialsList: FC<HomeTrialsListProps> = ({ trials, navigation }) => {
   const { settings } = useSettings();
