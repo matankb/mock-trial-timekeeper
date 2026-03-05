@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Switch, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import Option from './Option';
 import colors from '../../constants/colors';
@@ -15,7 +15,7 @@ import { PickByValue } from 'utility-types';
 import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
 import { ScreenName } from '../../constants/screen-names';
 import Text from '../Text';
-import { useSettingsLeague } from '../../hooks/useSettings';
+import { useSettingsLeague } from '../../hooks/useLeague';
 import { leagueNames } from '../../constants/leagues';
 import Button from '../Button';
 
@@ -57,24 +57,6 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = () => {
       additionalSetup: newAdditionalSetup,
     });
   };
-
-  const createSetupToggleOption = (
-    name: string,
-    property: keyof PickByValue<SettingsSetup, boolean>,
-  ) => (
-    <Option name={name}>
-      <Switch
-        value={setupState[property]}
-        onValueChange={() => {
-          handleSetupChange({
-            ...setupState,
-            [property]: !setupState[property],
-          });
-        }}
-        trackColor={{ true: colors.HEADER_BLUE }}
-      />
-    </Option>
-  );
 
   const createSetupTimeOption = (
     name: string,
@@ -131,51 +113,10 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = () => {
         style={styles.resetButton}
       />
       <View style={styles.divider} />
-      {createSetupToggleOption('Enable Pretrial Timer', 'pretrialEnabled')}
-      {createSetupToggleOption(
-        'Enable Closings Preperation Timer',
-        'jointPrepClosingsEnabled',
-      )}
-      {createSetupToggleOption(
-        'Enable Team Conference Timer',
-        'jointConferenceEnabled',
-      )}
-      {createSetupToggleOption(
-        'Enable Rebuttal Maximum Time',
-        'rebuttalMaxEnabled',
-      )}
-      {createSetupToggleOption('Enable All-Loss Timer', 'allLossEnabled')}
-      {createSetupToggleOption(
-        'Separate Statement Times',
-        'statementsSeparate',
-      )}
-      {createSetupToggleOption(
-        'Enable Reexaminations',
-        'reexaminationsEnabled',
-      )}
-      <View style={styles.divider} />
-      {setupState.pretrialEnabled &&
-        createSetupTimeOption('Pretrial', 'pretrialTime')}
-
-      {setupState.statementsSeparate ? (
-        <>
-          {createSetupTimeOption('Opening Statements', 'openTime')}
-          {createSetupTimeOption('Closing Statements', 'closeTime')}
-        </>
-      ) : (
-        createSetupTimeOption('Statements', 'statementTime')
-      )}
-
+      {createSetupTimeOption('Statements', 'statementTime')}
       {createSetupTimeOption('Direct Examinations', 'directTime')}
       {createSetupTimeOption('Cross Examinations', 'crossTime')}
-      {setupState.jointPrepClosingsEnabled &&
-        createSetupTimeOption('Closings Preperation', 'jointPrepClosingsTime')}
-      {setupState.jointConferenceEnabled &&
-        createSetupTimeOption('Team Conference', 'jointConferenceTime')}
-      {setupState.rebuttalMaxEnabled &&
-        createSetupTimeOption('Rebuttal Maximum Time', 'rebuttalMaxTime')}
-      {setupState.allLossEnabled &&
-        createAdditionalSetupTimeOption('All-Loss Duration', 'allLossDuration')}
+      {createAdditionalSetupTimeOption('All-Loss Duration', 'allLossDuration')}
     </ScrollView>
   );
 };
