@@ -9,21 +9,6 @@ import colors from '../../../constants/colors';
 import { Theme } from '../../../types/theme';
 import useTheme from '../../../hooks/useTheme';
 
-const HEADER_COLORS = [
-  '#7EB8DA', // soft blue
-  '#9ED0A6', // soft green
-  '#E8A87C', // soft peach
-  '#C49EC4', // soft lavender
-  '#85C1C1', // soft teal
-  '#E6B89C', // soft coral
-  '#9ABEDC', // sky blue
-  '#B5CA8D', // sage green
-  '#D4A5A5', // dusty rose
-  '#A8D0DB', // powder blue
-  '#C9B1D4', // soft purple
-  '#9DC3C1', // seafoam
-];
-
 interface TrialsListProps {
   title?: string;
   orderedTrials: Trial[];
@@ -40,24 +25,14 @@ interface TrialsListProps {
 
 const TrialsList: FC<TrialsListProps> = ({
   title,
-  orderedTrials: trials,
+  orderedTrials,
   getTrialTitle,
   getTrialSubtitle,
   handleSelect,
   additionalTrialItems = [],
 }) => {
   const theme = useTheme();
-  const orderedTrials = trials.sort((a, b) => b.date - a.date);
   const hasAdditionalTrialItems = additionalTrialItems.some(Boolean);
-
-  // Pick a consistent random color based on the title
-  const headerColor = useMemo(() => {
-    if (!title) return HEADER_COLORS[0];
-    const hash = title
-      .split('')
-      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return HEADER_COLORS[hash % HEADER_COLORS.length];
-  }, [title]);
 
   const createTrialListItem = (trial: Trial, i: number) => {
     const title = getTrialTitle?.(trial) ?? trial.name;
@@ -88,7 +63,7 @@ const TrialsList: FC<TrialsListProps> = ({
     <View>
       {title ? (
         <View style={styles.cardWrapper}>
-          <View style={[styles.header, { backgroundColor: headerColor }]}>
+          <View style={styles.header}>
             <Text style={styles.headerText}>{title}</Text>
           </View>
           <View style={contentStyle}>
@@ -127,8 +102,9 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingVertical: 10,
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     borderTopLeftRadius: 10,
+    backgroundColor: colors.GREEN,
     borderTopRightRadius: 10,
   },
   headerText: {
