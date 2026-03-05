@@ -34,7 +34,6 @@ function getAvailableWitnesses(
   side: Side,
   selected: string[],
 ) {
-  console.log('leagueWitnesses', leagueWitnesses);
   const sideWitnesses = leagueWitnesses[side];
   const swingWitnesses = leagueWitnesses.swing;
 
@@ -61,9 +60,8 @@ const WitnessSelectorItem: FC<WitnessSelectorItemProps> = ({
 
   const selected = [...pWitnessCall, ...dWitnessCall].filter((w) => w !== null);
 
-  const label = witness
-    ? `${position + 1}. ${witness}`
-    : `${sideName} Witness #${position + 1}`;
+  const unselectedLabel = `${sideName} Witness #${position + 1}`;
+  const label = witness ? `${position + 1}. ${witness}` : unselectedLabel;
 
   // On iOS, show a modal with the list of available witnesses
   const showWitnessOptions = () => {
@@ -104,6 +102,31 @@ const WitnessSelectorItem: FC<WitnessSelectorItemProps> = ({
     );
   }
 
+  if (Platform.OS === 'web') {
+    return (
+      <select
+        value={witness || 'unselected'}
+        onChange={(e) => {
+          const value = e.target.value;
+          onSelect(value === 'unselected' ? null : value);
+        }}
+        style={styles.webSelect}
+      >
+        <option value="unselected">{unselectedLabel}</option>
+        {witness && (
+          <option key={witness} value={witness}>
+            {witness}
+          </option>
+        )}
+        {getAvailableWitnesses(leagueWitnesses, side, selected).map((w) => (
+          <option key={w} value={w}>
+            {w}
+          </option>
+        ))}
+      </select>
+    );
+  }
+
   return (
     <TouchableOpacity
       style={[styles.container, inline && styles.inlineContainer]}
@@ -139,6 +162,14 @@ const styles = StyleSheet.create({
   },
   unselectedName: {
     color: '#878787',
+  },
+  webSelect: {
+    padding: 10,
+    marginLeft: -3,
+    paddingLeft: 0,
+    paddingRight: 0,
+    borderWidth: 0,
+    fontSize: 16,
   },
 });
 

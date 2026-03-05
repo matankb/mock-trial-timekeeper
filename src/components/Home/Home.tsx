@@ -76,6 +76,12 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 40,
     height: '100%',
+    ...Platform.select({
+      web: {
+        width: 600,
+        marginHorizontal: 'auto',
+      },
+    }),
   },
 });
 

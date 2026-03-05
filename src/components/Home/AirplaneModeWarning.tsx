@@ -1,7 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 
 const AirplaneModeWarning = () => {
+  if (Platform.OS === 'web') {
+    return null;
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>

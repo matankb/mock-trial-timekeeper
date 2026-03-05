@@ -308,6 +308,12 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 30,
+    ...Platform.select({
+      web: {
+        width: 800,
+        marginHorizontal: 'auto',
+      },
+    }),
   },
   unfinishedDetailsWarning: {
     backgroundColor: '#fff7c2',
