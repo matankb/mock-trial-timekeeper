@@ -66,7 +66,7 @@ export function getTrialStages(trial: Trial): readonly Partial<TrialStage>[] {
     );
   }
 
-  if (!trial.setup.jointConferenceEnabled) {
+  if (!trial.setup.jointConferenceEnabled || trial.league === League.Idaho) {
     trialStages = trialStages.filter((stage) => stage !== 'joint.conference');
   }
 
@@ -178,6 +178,12 @@ export const getStageName = (
       return 'Judge Comments (Regionals Only)';
     }
     return 'Team Conference';
+  } else if (stage === 'joint.cnmi.dispute.determine') {
+    return 'Determine whether to file dispute';
+  } else if (stage === 'joint.cnmi.dispute.file') {
+    return 'File dispute';
+  } else if (stage === 'joint.cnmi.dispute.respond') {
+    return 'Respond to dispute';
   }
 
   return stage;
