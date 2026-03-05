@@ -65,6 +65,7 @@ const UpdateAlert = () => {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: -10, // slight hack to offset the usual padding top
     paddingVertical: 12,
     marginBottom: 10,
     paddingHorizontal: 25,
