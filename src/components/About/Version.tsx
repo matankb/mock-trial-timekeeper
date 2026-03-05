@@ -3,7 +3,7 @@ import { ScreenNavigationOptions } from '../../types/navigation';
 import { ScreenName } from '../../constants/screen-names';
 import { FC, useState } from 'react';
 import Constants from 'expo-constants';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -72,6 +72,11 @@ export const Version: FC = () => {
         <View style={styles.detailRow}>
           <Text style={labelStyle}>Available Update</Text>
           <Text style={styles.text}>{availableUpdate}</Text>
+        </View>
+        <View style={styles.divider} />
+        <View style={styles.detailRow}>
+          <Text style={labelStyle}>Platform</Text>
+          <Text style={styles.text}>{Platform.OS}</Text>
         </View>
       </Card>
 
