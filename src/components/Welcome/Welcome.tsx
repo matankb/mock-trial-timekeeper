@@ -8,6 +8,7 @@ import Text from '../Text';
 
 export const welcomeScreenOptions: ScreenNavigationOptions<ScreenName.WELCOME> =
   {
+    title: 'Mock Trial Timer', // for web
     headerTitle: () => <WelcomeHeader />,
   };
 
