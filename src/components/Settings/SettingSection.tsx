@@ -6,7 +6,6 @@ import Text from '../Text';
 
 interface SettingSectionProps {
   title: string;
-  description?: string;
   headerRight?: React.ReactNode;
   children: React.ReactNode;
 }
@@ -14,18 +13,12 @@ interface SettingSectionProps {
 const SettingSection: FC<SettingSectionProps> = ({
   children,
   title,
-  description,
   headerRight,
 }) => {
   return (
     <Card>
       <View style={styles.sectionHeader}>
-        <View>
-          <Text style={styles.sectionName}>{title}</Text>
-          {description && (
-            <Text style={styles.sectionDescription}>{description}</Text>
-          )}
-        </View>
+        <Text style={styles.sectionName}>{title}</Text>
 
         {headerRight}
       </View>
@@ -50,6 +43,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });
 
