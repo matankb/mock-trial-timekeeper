@@ -10,6 +10,8 @@ import Text from '../Text';
 
 interface OptionProps {
   name: string;
+  description?: string;
+  color?: string;
   loading?: boolean;
   handlePress?: () => void;
   children: React.ReactNode;
@@ -17,6 +19,8 @@ interface OptionProps {
 
 const Option: React.FC<OptionProps> = ({
   name,
+  description,
+  color,
   loading,
   handlePress,
   children,
@@ -24,8 +28,13 @@ const Option: React.FC<OptionProps> = ({
   const loadingIndicator = <ActivityIndicator size="small" color="gray" />;
   const components = (
     <>
-      <Text style={styles.name}>{name}</Text>
-      {loading ? loadingIndicator : children}
+      <View style={styles.nameContainer}>
+        <Text style={[styles.name, color && { color }]}>{name}</Text>
+        {description && <Text style={styles.description}>{description}</Text>}
+      </View>
+      <View style={styles.childrenContainer}>
+        {loading ? loadingIndicator : children}
+      </View>
     </>
   );
 
@@ -54,6 +63,17 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
   },
+  nameContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 8,
+    alignItems: 'flex-start',
+    flex: 1,
+  },
+  description: {
+    color: 'gray',
+  },
+  childrenContainer: { marginLeft: 20 },
 });
 
 export default Option;

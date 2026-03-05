@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 
 import AirplaneModeWarning from './AirplaneModeWarning';
 import { HomeHeaderIconLeft, HomeHeaderIconRight } from './HomeHeaderIcons';
