@@ -3,11 +3,13 @@ import React, { FC } from 'react';
 import TimeSummaryCard from './TimeSummaryCard';
 import TimeSummaryRow from './TimeSummaryRow';
 import colors from '../../../constants/colors';
-import { getStageName } from '../../../constants/trial-stages';
+import { getStageName, TrialStage } from '../../../constants/trial-stages';
 import { getStageTime, Trial } from '../../../controllers/trial';
 import { defaultSettings } from '../../../controllers/settings';
 import { StyleSheet, View } from 'react-native';
 import { TimeSummaryRowType } from './SideTimeSummary';
+import { duration } from '../../../utils';
+import { League } from '../../../constants/leagues';
 
 interface JointTimeSummaryProps {
   trial: Trial;
@@ -27,9 +29,11 @@ const JointTimeSummary: FC<JointTimeSummaryProps> = ({
     jointConferenceTime,
   } = setup;
 
-  const isEnabled = jointPrepClosingsEnabled || jointConferenceEnabled;
-  const isCurrentStage =
-    stage === 'joint.prep.closings' || stage === 'joint.conference';
+  const isEnabled =
+    jointPrepClosingsEnabled ||
+    jointConferenceEnabled ||
+    trial.league === League.CNMI;
+  const isCurrentStage = stage.startsWith('joint');
 
   if (!isEnabled || !isCurrentStage) {
     return null;
@@ -45,6 +49,39 @@ const JointTimeSummary: FC<JointTimeSummaryProps> = ({
     getStageTime(trial, 'joint.conference');
 
   const stageName = getStageName(stage, trial);
+
+  // Special handling for the CNMI dispute stages
+  if (stage.startsWith('joint.cnmi.dispute')) {
+    const createDisputeRow = (disputeStage: TrialStage, totalTime: number) => (
+      <TimeSummaryRow
+        side="joint"
+        name={getStageName(disputeStage, trial)}
+        timeRemaining={totalTime - getStageTime(trial, disputeStage)}
+        highlighted={stage === disputeStage}
+        highlightColor={colors.PLACEHOLDER_GRAY}
+        editingTimes={editingTimes}
+        rowType={TimeSummaryRowType.JointConference} // this is a whole deal lol
+        league={trial.league}
+      />
+    );
+
+    return (
+      <View style={styles.container}>
+        <TimeSummaryCard
+          title={'Dispute Resolution'}
+          color={colors.PLACEHOLDER_GRAY}
+          fullWidth={true}
+        >
+          {createDisputeRow(
+            'joint.cnmi.dispute.determine',
+            duration.minutes(2),
+          )}
+          {createDisputeRow('joint.cnmi.dispute.file', duration.minutes(3))}
+          {createDisputeRow('joint.cnmi.dispute.respond', duration.minutes(5))}
+        </TimeSummaryCard>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
