@@ -8,18 +8,33 @@ interface ButtonProps {
   style?: ViewStyle;
   onPress: () => void;
   disabled?: boolean;
+  textColor?: string;
+  fullWidth?: boolean;
 }
 
-const Button: FC<ButtonProps> = ({ title, style, disabled, onPress }) => {
+const Button: FC<ButtonProps> = ({
+  title,
+  style,
+  disabled,
+  onPress,
+  textColor,
+  fullWidth,
+}) => {
   const containerStyle = {
     ...styles.container,
     ...(disabled && styles.disabled),
     ...style,
+    ...(fullWidth && styles.fullWidth),
+  };
+
+  const textStyle = {
+    ...styles.text,
+    ...(textColor && { color: textColor }),
   };
 
   return (
     <TouchableOpacity onPress={onPress} style={containerStyle}>
-      <Text style={styles.text}>{title}</Text>
+      <Text style={textStyle}>{title}</Text>
     </TouchableOpacity>
   );
 };
@@ -32,6 +47,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 20,
     borderRadius: 10,
+  },
+  fullWidth: {
+    width: '100%',
   },
   disabled: {
     backgroundColor: 'lightgray',
