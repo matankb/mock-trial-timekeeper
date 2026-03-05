@@ -50,13 +50,14 @@ export const LeagueSelectorHelp: FC = () => {
           <Text style={styles.title}>Current high school students</Text>
         </View>
         <HelpText>
-          If you are a high school student in one of the supported states
-          (Minnesota, Florida, or Idaho), select &quot;High School Mock
-          Trial&quot; in your state.
+          If you are a high school student in one of the supported states or
+          territories, select &quot;High School Mock Trial&quot; in your state
+          or territory.
         </HelpText>
         <HelpText>
-          If you are a high school student in another state, Mock Trial Timer
-          does not currently support your league.
+          If you are a high school student or coach in another state, Mock Trial
+          Timer does not currently support your league. Contact support to bring
+          Mock Trial Timer to your state, for free.
         </HelpText>
 
         <View style={styles.titleContainer}>

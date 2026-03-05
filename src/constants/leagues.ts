@@ -11,6 +11,8 @@ export enum League {
   Minnesota = 'minnesota',
   Florida = 'florida',
   Idaho = 'idaho',
+  Missouri = 'missouri',
+  CNMI = 'cnmi',
 }
 
 export const leagueNames: Record<League, string> = {
@@ -18,6 +20,8 @@ export const leagueNames: Record<League, string> = {
   [League.Minnesota]: 'Minnesota High School Mock Trial',
   [League.Florida]: 'Florida High School Mock Trial',
   [League.Idaho]: 'Idaho High School Mock Trial',
+  [League.Missouri]: 'Missouri High School Mock Trial',
+  [League.CNMI]: 'CNMI High School Mock Trial',
 };
 
 export enum LeagueFeature {
@@ -48,12 +52,28 @@ export const leagueFeatures: Record<League, Record<LeagueFeature, boolean>> = {
   },
   [League.Idaho]: {
     [LeagueFeature.TIMES_BREAKDOWN]: true,
-    [LeagueFeature.TEAM_ACCOUNTS]: false, // TODO: enable team accounts for Idaho
+    [LeagueFeature.TEAM_ACCOUNTS]: false, // disabled for the first year
     [LeagueFeature.WITNESS_SELECTION]: true,
+    [LeagueFeature.CUSTOM_TRIAL_NAME_INPUT]: true,
     [LeagueFeature.SHOW_OVERTIME]: true,
+  },
+  [League.Missouri]: {
+    [LeagueFeature.TIMES_BREAKDOWN]: true,
+    [LeagueFeature.TEAM_ACCOUNTS]: false, // TODO: maybe enable?
+    [LeagueFeature.WITNESS_SELECTION]: true,
+    [LeagueFeature.CUSTOM_TRIAL_NAME_INPUT]: false,
+    [LeagueFeature.SHOW_OVERTIME]: false,
+  },
+  [League.CNMI]: {
+    [LeagueFeature.TIMES_BREAKDOWN]: true,
+    [LeagueFeature.TEAM_ACCOUNTS]: false,
+    [LeagueFeature.WITNESS_SELECTION]: true,
+    [LeagueFeature.CUSTOM_TRIAL_NAME_INPUT]: false,
+    [LeagueFeature.SHOW_OVERTIME]: false,
   },
 } as const satisfies Record<League, Record<LeagueFeature, boolean>>;
 
+// TODO: this needs to be typed so that not having p, d, or swing is an error
 export const leagueWitnesses: Record<
   LeaguesWithWitnessSelection,
   LeagueWitnessSet
@@ -71,7 +91,17 @@ export const leagueWitnesses: Record<
   [League.Idaho]: {
     p: ['Sloane Wilder', 'Brussell McKay', 'Alva Snorkelsson'],
     d: ['Rudy Carnap', 'Casey Kowalski', 'Jordan Ellis'],
-    swing: [], // no swing witnesses in Idaho // TODO: this needs to be typed so that not having p, d, or swing is an error
+    swing: [], // no swing witnesses in Idaho
+  },
+  [League.Missouri]: {
+    p: ['Alex Hudson', 'Taylor Brown', "Kennedy O'Neill"],
+    d: ['JW Willis', 'Raven Jones', 'Parker Gillam'],
+    swing: [], // no swing witnesses in Missouri
+  },
+  [League.CNMI]: {
+    p: ['Alex Cruz', 'Jess/Jessie Andrews', 'Dr. Bill/Billie Robinson, MD'],
+    d: ['Vic Vâvrick', 'Kennedy Torres', 'Joseph/Josephine Winston'],
+    swing: [], // no swing witnesses in CNMI
   },
 };
 
@@ -80,6 +110,8 @@ export const leagueCaseType: Record<League, (date: Date) => CaseType> = {
   [League.Minnesota]: () => CaseType.Criminal, // obviously need to check this
   [League.Florida]: createAlternatingCaseTypeResolver(2025, CaseType.Civil), // TODO: check this too
   [League.Idaho]: () => CaseType.Civil, // TODO: get the update schedule - I know it's civil this year
+  [League.Missouri]: () => CaseType.Civil, // TODO: get the update schedule - I know it's civil this year
+  [League.CNMI]: () => CaseType.Civil, // TODO: get the update schedule - I know it's civil this year
 };
 
 /**

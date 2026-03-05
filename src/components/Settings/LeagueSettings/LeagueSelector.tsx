@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, Platform, StyleSheet, View } from 'react-native';
 import LeagueCard from './LeagueCard';
 import Button from '../../Button';
 import colors from '../../../constants/colors';
@@ -13,13 +13,13 @@ import Link from '../../Link';
 
 const LeagueSelector: FC = () => {
   const navigation = useNavigation();
-  const settings = useSettings();
+  const { settings } = useSettings();
 
   const [selected, setSelected] = useState<League | null>(null);
   const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
-    if (settings && selected === null) {
+    if (selected === null) {
       setSelected(settings.league.league);
     }
   }, [settings, selected]);
@@ -44,6 +44,11 @@ const LeagueSelector: FC = () => {
     }.`;
 
     const buttonText = `Confirm ${leagueNames[selected]}`;
+
+    if (Platform.OS === 'web') {
+      handleConfirm();
+      return;
+    }
 
     Alert.alert(
       'Confirm League',
@@ -83,6 +88,19 @@ const LeagueSelector: FC = () => {
           name="High School Mock Trial in Idaho"
           image={require('../../../../assets/leagues/idaho.jpg')}
         />
+        <LeagueCard
+          selected={selected === League.Missouri}
+          onSelect={() => setSelected(League.Missouri)}
+          name="High School Mock Trial in Missouri"
+          image={require('../../../../assets/leagues/missouri.png')}
+        />
+        <LeagueCard
+          selected={selected === League.CNMI}
+          onSelect={() => setSelected(League.CNMI)}
+          name="High School Mock Trial in CNMI"
+          description="Commonwealth of the Northern Mariana Islands"
+          image={require('../../../../assets/leagues/cnmi.jpg')}
+        />
       </View>
 
       <View style={styles.buttonsContainer}>
@@ -107,8 +125,13 @@ const LeagueSelector: FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     paddingBottom: 50,
+    ...Platform.select({
+      web: {
+        width: 800,
+        marginHorizontal: 'auto',
+      },
+    }),
   },
   description: {
     textAlign: 'center',
