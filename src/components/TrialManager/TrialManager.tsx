@@ -28,6 +28,7 @@ import { LeagueFeature } from '../../constants/leagues';
 import { useLeagueFeatureFlag } from '../../hooks/useLeague';
 import Link from '../Link';
 import { useSettings } from '../../hooks/useSettings';
+import TimeSummaryExplanation from './TimeSummaries/TimeSummaryExplanation';
 
 type TrialManagerProps = NativeStackScreenProps<
   RouteProps,
@@ -215,6 +216,7 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
               onPress={handleIndividualTimesPress}
             />
           )}
+          <TimeSummaryExplanation trial={trial} />
           {trial.stage === 'rebuttal' && settings.schoolAccount.connected && (
             <UploadLink trial={trial} />
           )}
