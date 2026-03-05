@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FC } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
@@ -31,7 +31,7 @@ const About: FC<AboutProps> = ({ navigation }) => {
       <View>
         <Card style={{ marginBottom: 10 }}>
           <Image
-            source={require('../../../assets/icon.png')}
+            source={require('../../../assets/icon-transparent.png')}
             style={styles.icon}
           />
           <Text style={textStyle}>
@@ -76,6 +76,12 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    ...Platform.select({
+      web: {
+        width: 800,
+        marginHorizontal: 'auto',
+      },
+    }),
   },
   icon: {
     width: 100,
