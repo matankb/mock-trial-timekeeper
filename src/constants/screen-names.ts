@@ -15,11 +15,14 @@ export enum ScreenName {
   VERSION = 'version',
   DISCLAIMER = 'disclaimer',
   AMTA_POLICY = 'amta-policy',
-  TEAM_ACCOUNT_POPUP = 'team-account-popup',
+  TEAM_ACCOUNT_EXPLAINER = 'team-account-explainer',
+  TEAM_ACCOUNT_HOW_IT_WORKS = 'team-account-how-it-works',
+  TEAM_ACCOUNT_SIGNUP = 'team-account-signup',
 
   // Settings
   SETTINGS = 'settings',
   SCHOOL_ACCOUNT_LOGIN = 'school-account-login',
+  SCHOOL_ACCOUNT_MANAGER = 'school-account-manager',
   LEAGUE_SELECTION = 'league-selection',
   SETUP_SETTINGS = 'setup-settings',
 
