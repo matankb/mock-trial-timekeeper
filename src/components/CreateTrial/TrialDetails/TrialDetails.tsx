@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import RoundSelector from './RoundSelector';
 import SideSelector from './SideSelector';
@@ -37,6 +37,10 @@ const TrialDetails = <Screen extends ScreenName>({
   showWarnings,
   tournamentLoading,
 }: TrialDetailsProps<Screen>) => {
+  const [expandedSelector, setExpandedSelector] = useState<
+    'round' | 'side' | null
+  >(null);
+
   // State shared between screens, see CreateTrialContext.tsx for more information
   const {
     createTrial: { createTrialState },
@@ -55,8 +59,7 @@ const TrialDetails = <Screen extends ScreenName>({
     if (witnessSelectedCount === 6) {
       return 'All Witnesses Selected';
     } else if (witnessSelectedCount > 0) {
-      const nounLabel = witnessSelectedCount > 1 ? 'Witnesses' : 'Witness';
-      return `${witnessSelectedCount} ${nounLabel} Selected`;
+      return `${witnessSelectedCount} of 6 Selected`;
     } else {
       return 'Not Set';
     }
@@ -77,19 +80,29 @@ const TrialDetails = <Screen extends ScreenName>({
         round={round}
         onSelect={setRound}
         warning={showWarnings && !round}
+        expanded={expandedSelector === 'round'}
+        onExpandChange={(expanded) =>
+          setExpandedSelector(expanded ? 'round' : null)
+        }
       />
       <SideSelector
         side={side}
         onSelect={setSide}
         warning={showWarnings && !side}
+        expanded={expandedSelector === 'side'}
+        onExpandChange={(expanded) =>
+          setExpandedSelector(expanded ? 'side' : null)
+        }
       />
       <TrialDetailsItem
         title="Witness Call"
+        badge={
+          showWarnings && witnessSelectedCount !== 6 ? 'Optional' : undefined
+        }
         value={witnessSelectorLabel}
         onPress={() => {
           navigation.navigate(ScreenName.WITNESS_SELECTOR);
         }}
-        warning={showWarnings && witnessSelectedCount !== 6}
       />
     </CreateTrialSection>
   );
