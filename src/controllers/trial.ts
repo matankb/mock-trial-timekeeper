@@ -39,6 +39,10 @@ export interface TrialSetup {
   allLossEnabled: boolean;
   reexaminationsEnabled: boolean;
 
+  // TODO: explain how this works
+  reexaminationsIndependent: boolean;
+  reexaminationIndependentTime: number;
+
   // see createNewTrial for more information
   flexEnabled: boolean;
 
@@ -88,6 +92,11 @@ export interface CaseInChief {
   witnessThree: WitnessTimeSet;
 }
 
+export interface CNMITimes {
+  disputeDetermine: number;
+  disputeFile: number;
+  disputeRespond: number;
+}
 export interface TrialTimes {
   pretrial: StatementTimeSet;
   open: StatementTimeSet;
@@ -97,12 +106,17 @@ export interface TrialTimes {
   joint: {
     prepClosings: number;
     conference: number;
+    cnmi: {
+      disputeDetermine: number;
+      disputeFile: number;
+      disputeRespond: number;
+    };
   };
   rebuttal: number;
 }
 
 const TRIALS_KEY = 'trials';
-const TRIALS_SCHEMA_VERSION = '2.3.0';
+const TRIALS_SCHEMA_VERSION = '2.5.0';
 const TRIAL_SCHEMA_VERSION_KEY = 'trials_schema_version';
 
 export async function getTrialsFromStorage(): Promise<Trial[]> {
@@ -174,6 +188,11 @@ function generateEmptyTrialTimes(): TrialTimes {
     joint: {
       prepClosings: 0,
       conference: 0,
+      cnmi: {
+        disputeDetermine: 0,
+        disputeFile: 0,
+        disputeRespond: 0,
+      },
     },
   };
 }
@@ -284,6 +303,13 @@ const getTrialTimeChangeObject = (
     rebuttal: { rebuttal: newValue },
     'joint.prep.closings': { joint: { prepClosings: newValue } },
     'joint.conference': { joint: { conference: newValue } },
+    'joint.cnmi.dispute.determine': {
+      joint: { cnmi: { disputeDetermine: newValue } },
+    },
+    'joint.cnmi.dispute.file': { joint: { cnmi: { disputeFile: newValue } } },
+    'joint.cnmi.dispute.respond': {
+      joint: { cnmi: { disputeRespond: newValue } },
+    },
   };
 
   if (!stageMap[stage]) {
@@ -330,6 +356,9 @@ export const getStageTime = (trial: Trial, stage: TrialStage): number => {
     rebuttal: times.rebuttal,
     'joint.prep.closings': times.joint.prepClosings,
     'joint.conference': times.joint.conference,
+    'joint.cnmi.dispute.determine': times.joint.cnmi.disputeDetermine,
+    'joint.cnmi.dispute.file': times.joint.cnmi.disputeFile,
+    'joint.cnmi.dispute.respond': times.joint.cnmi.disputeRespond,
   };
 
   const time = stageTimeMap[stage];
@@ -370,7 +399,7 @@ export const getTotalTimes = (trial: Trial): Record<Side, TotalTimeSide> => {
       times.prosCic.witnessOne.direct +
       times.prosCic.witnessTwo.direct +
       times.prosCic.witnessThree.direct +
-      (setup.reexaminationsEnabled
+      (setup.reexaminationsEnabled && !setup.reexaminationsIndependent
         ? times.prosCic.witnessOne.redirect +
           times.prosCic.witnessTwo.redirect +
           times.prosCic.witnessThree.redirect
@@ -379,7 +408,7 @@ export const getTotalTimes = (trial: Trial): Record<Side, TotalTimeSide> => {
       times.defCic.witnessOne.cross +
       times.defCic.witnessTwo.cross +
       times.defCic.witnessThree.cross +
-      (setup.reexaminationsEnabled
+      (setup.reexaminationsEnabled && !setup.reexaminationsIndependent
         ? times.defCic.witnessOne.recross +
           times.defCic.witnessTwo.recross +
           times.defCic.witnessThree.recross
@@ -395,7 +424,7 @@ export const getTotalTimes = (trial: Trial): Record<Side, TotalTimeSide> => {
       times.defCic.witnessOne.direct +
       times.defCic.witnessTwo.direct +
       times.defCic.witnessThree.direct +
-      (setup.reexaminationsEnabled
+      (setup.reexaminationsEnabled && !setup.reexaminationsIndependent
         ? times.defCic.witnessOne.redirect +
           times.defCic.witnessTwo.redirect +
           times.defCic.witnessThree.redirect
@@ -404,7 +433,7 @@ export const getTotalTimes = (trial: Trial): Record<Side, TotalTimeSide> => {
       times.prosCic.witnessOne.cross +
       times.prosCic.witnessTwo.cross +
       times.prosCic.witnessThree.cross +
-      (setup.reexaminationsEnabled
+      (setup.reexaminationsEnabled && !setup.reexaminationsIndependent
         ? times.prosCic.witnessOne.recross +
           times.prosCic.witnessTwo.recross +
           times.prosCic.witnessThree.recross
@@ -476,6 +505,7 @@ export const getTotalTimes = (trial: Trial): Record<Side, TotalTimeSide> => {
 };
 
 // TODO: right now, this only works with Idaho's setup. Not sure if it is generalizable at the moment.
+// Def doesn't work with independent reexaminations at the moment.
 function getOvertime(timeRemaining: TotalTimeSet): number {
   let overtime = 0;
 

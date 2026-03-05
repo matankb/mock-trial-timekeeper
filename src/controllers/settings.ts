@@ -33,9 +33,11 @@ export interface SettingsAdditionalSetup {
 export type SettingsLeague = {
   league: League | null;
 };
+
 export interface SettingsSchoolAccount {
   connected: boolean;
   teamId: string | null;
+  coachMode: boolean;
 }
 
 export interface Settings {
@@ -67,6 +69,8 @@ export const defaultSettings: Settings = {
     jointPrepClosingsTime: duration.minutes(2),
     jointConferenceTime: duration.minutes(2),
     reexaminationsEnabled: false,
+    reexaminationsIndependent: false,
+    reexaminationIndependentTime: duration.minutes(0),
   },
 
   additionalSetup: {
@@ -76,6 +80,7 @@ export const defaultSettings: Settings = {
   schoolAccount: {
     connected: false,
     teamId: null,
+    coachMode: false,
   },
 
   league: {
@@ -83,8 +88,9 @@ export const defaultSettings: Settings = {
   },
 };
 
+// league setup overrides are applies when the user switches leagues
 export const leagueSetupOverrides: Record<League, SettingsSetup> = {
-  [League.AMTA]: defaultSettings.setup, // TODO: document why this needs to be contained here - it's so that it gets overridden when they switch leagues.
+  [League.AMTA]: defaultSettings.setup,
   [League.Minnesota]: {
     allLossEnabled: false,
     jointPrepClosingsEnabled: true,
@@ -102,6 +108,8 @@ export const leagueSetupOverrides: Record<League, SettingsSetup> = {
     pretrialTime: defaultSettings.setup.pretrialTime,
     statementTime: defaultSettings.setup.statementTime,
     reexaminationsEnabled: false,
+    reexaminationsIndependent: false,
+    reexaminationIndependentTime: duration.minutes(0),
   },
   [League.Florida]: {
     allLossEnabled: false,
@@ -120,6 +128,8 @@ export const leagueSetupOverrides: Record<League, SettingsSetup> = {
     pretrialTime: defaultSettings.setup.pretrialTime,
     statementTime: defaultSettings.setup.statementTime,
     reexaminationsEnabled: true,
+    reexaminationsIndependent: false,
+    reexaminationIndependentTime: duration.minutes(0),
   },
   [League.Idaho]: {
     allLossEnabled: false,
@@ -138,12 +148,54 @@ export const leagueSetupOverrides: Record<League, SettingsSetup> = {
     pretrialTime: duration.minutes(0),
     statementTime: duration.minutes(0), // statements are separated
     reexaminationsEnabled: false,
+    reexaminationsIndependent: false,
+    reexaminationIndependentTime: duration.minutes(0),
+  },
+  [League.Missouri]: {
+    allLossEnabled: false,
+    jointPrepClosingsEnabled: true,
+    jointPrepClosingsTime: duration.minutes(5),
+    jointConferenceEnabled: false,
+    jointConferenceTime: duration.minutes(0),
+    rebuttalMaxEnabled: true,
+    rebuttalMaxTime: duration.minutes(7 / 2), // rules say half of total closing time
+    closeTime: duration.minutes(7),
+    openTime: duration.minutes(5),
+    directTime: duration.minutes(30),
+    crossTime: duration.minutes(20),
+    pretrialEnabled: false,
+    pretrialTime: duration.minutes(0),
+    statementsSeparate: true,
+    statementTime: duration.minutes(0), // statements are not separated
+    reexaminationsEnabled: true,
+    reexaminationsIndependent: true,
+    reexaminationIndependentTime: duration.minutes(1),
+  },
+  [League.CNMI]: {
+    allLossEnabled: false,
+    jointPrepClosingsEnabled: false,
+    jointPrepClosingsTime: duration.minutes(0),
+    jointConferenceEnabled: false,
+    jointConferenceTime: duration.minutes(0),
+    rebuttalMaxEnabled: false,
+    rebuttalMaxTime: duration.minutes(0),
+    closeTime: duration.minutes(5),
+    openTime: duration.minutes(5),
+    directTime: duration.minutes(25),
+    crossTime: duration.minutes(20),
+    pretrialEnabled: false,
+    pretrialTime: duration.minutes(0),
+    statementsSeparate: true,
+    statementTime: duration.minutes(0), // statements are separated
+    reexaminationsEnabled: false,
+    reexaminationsIndependent: false,
+    reexaminationIndependentTime: duration.minutes(0),
   },
 };
 
 const SETTINGS_KEY = 'settings';
 const SETTINGS_SCHEMA_VERSION_KEY = 'settings_schema_version';
-const SETTINGS_SCHEMA_VERSION = '1.2.0';
+const SETTINGS_SCHEMA_VERSION = '1.4.0'; // uh-oh. missed a number of schema migrations. I wonder if I can get type safety here.
 
 export async function getSettings(): Promise<Settings> {
   return getStorageItem({
