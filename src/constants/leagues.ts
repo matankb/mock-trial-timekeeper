@@ -28,6 +28,7 @@ export enum LeagueFeature {
   TIMES_BREAKDOWN = 'times-breakdown',
   TEAM_ACCOUNTS = 'team-accounts',
   WITNESS_SELECTION = 'witness-selection',
+  CUSTOM_TRIAL_NAME_INPUT = 'custom-trial-name-input',
   SHOW_OVERTIME = 'overtime',
 }
 
@@ -36,18 +37,21 @@ export const leagueFeatures: Record<League, Record<LeagueFeature, boolean>> = {
     [LeagueFeature.TIMES_BREAKDOWN]: true,
     [LeagueFeature.TEAM_ACCOUNTS]: true,
     [LeagueFeature.WITNESS_SELECTION]: true,
+    [LeagueFeature.CUSTOM_TRIAL_NAME_INPUT]: false,
     [LeagueFeature.SHOW_OVERTIME]: false,
   },
   [League.Minnesota]: {
     [LeagueFeature.TIMES_BREAKDOWN]: false,
     [LeagueFeature.TEAM_ACCOUNTS]: false,
     [LeagueFeature.WITNESS_SELECTION]: false,
+    [LeagueFeature.CUSTOM_TRIAL_NAME_INPUT]: false,
     [LeagueFeature.SHOW_OVERTIME]: false,
   },
   [League.Florida]: {
     [LeagueFeature.TIMES_BREAKDOWN]: true,
     [LeagueFeature.TEAM_ACCOUNTS]: false,
     [LeagueFeature.WITNESS_SELECTION]: true,
+    [LeagueFeature.CUSTOM_TRIAL_NAME_INPUT]: false,
     [LeagueFeature.SHOW_OVERTIME]: false,
   },
   [League.Idaho]: {
@@ -118,6 +122,7 @@ export const leagueCaseType: Record<League, (date: Date) => CaseType> = {
  * Type helpers
  */
 
+// TODO: this type helper is not working
 type LeaguesWithWitnessSelection = KeysWithTrue<
   typeof leagueFeatures,
   LeagueFeature.WITNESS_SELECTION

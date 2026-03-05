@@ -1,10 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Platform, StyleSheet, Alert, ScrollView } from 'react-native';
+import { Alert, Platform, ScrollView, StyleSheet } from 'react-native';
 
 import AllLossSelector from './AllLossSelector';
 import TrialDetails from './TrialDetails/TrialDetails';
 import { WitnessSelectorInline } from './TrialDetails/WitnessSelector/WitnessSelectorInline';
-import TrialNameInput from './TrialNameInput';
 import colors from '../../constants/colors';
 import { ScreenName } from '../../constants/screen-names';
 import { emptyCreateTrialState } from '../../context/CreateTrialContext';
@@ -19,7 +18,9 @@ import { useSettings } from '../../hooks/useSettings';
 import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
 import { CreateTrialHeaderLeft } from './CreateTrialHeader';
 import { LeagueFeature } from '../../constants/leagues';
-import { useLeagueFeatureFlag } from '../../hooks/useLeagueFeatureFlag';
+import { useLeagueFeatureFlag, useSettingsLeague } from '../../hooks/useLeague';
+import TextInput from '../TextInput';
+import LeagueTrialNameInput from './LeagueTrialNameInput';
 
 export const createTrialScreenOptions: ScreenNavigationOptions<
   ScreenName.CREATE_TRIAL
@@ -42,6 +43,9 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
   const witnessSelectionEnabled = useLeagueFeatureFlag(
     LeagueFeature.WITNESS_SELECTION,
   );
+  const customTrialNameInputEnabled = useLeagueFeatureFlag(
+    LeagueFeature.CUSTOM_TRIAL_NAME_INPUT,
+  );
 
   const {
     trials: { trials, setTrials },
@@ -50,6 +54,7 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
 
   const [name, setName] = useState('');
   const [allLossTime, setAllLossTime] = React.useState(0);
+  const [validateTrialName, setValidateTrialName] = useState(false);
 
   // Trial Details State
   // If school account is not connected, these are not used
@@ -62,10 +67,6 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
   }, []);
 
   useEffect(() => {
-    if (!settings) {
-      return;
-    }
-
     const duration = settings.additionalSetup.allLossDuration; // duration in seconds
     const allLossTime = Date.now() + duration * 1000;
 
@@ -74,6 +75,9 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
 
   const validateInputs = () => {
     if (name === '') {
+      if (customTrialNameInputEnabled) {
+        return 'Please finish entering the trial details';
+      }
       return 'Please enter a name for the trial';
     } else if (allLossTime < Date.now()) {
       return 'Please enter an All-Loss time in the future';
@@ -87,9 +91,14 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
       );
     }
 
-    const error = validateInputs();
-    if (error) {
-      Alert.alert('Error', error);
+    const validationError = validateInputs();
+    if (validationError) {
+      if (Platform.OS === 'web') {
+        alert(validationError);
+      }
+
+      setValidateTrialName(true);
+      Alert.alert('Error', validationError);
       return;
     }
 
@@ -98,7 +107,7 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
       d: createTrialState.dWitnessCall,
     };
 
-    const details = settings?.schoolAccount?.connected
+    const details = settings.schoolAccount.connected
       ? {
           round,
           side,
@@ -115,11 +124,6 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
       trialName: trial.name,
     });
   };
-
-  if (!settings || !league) {
-    return null;
-  }
-
   const showWitnessSelector =
     !settings.schoolAccount.connected && witnessSelectionEnabled;
 
@@ -132,7 +136,16 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
       }}
       contentContainerStyle={styles.container}
     >
-      <TrialNameInput name={name} setName={setName} />
+      {customTrialNameInputEnabled ? (
+        <LeagueTrialNameInput setName={setName} validate={validateTrialName} />
+      ) : (
+        <TextInput
+          placeholder="Trial Name"
+          value={name}
+          onChangeText={setName}
+          error={validateTrialName && name === ''}
+        />
+      )}
 
       {settings.schoolAccount.connected && (
         <TrialDetails
@@ -161,6 +174,12 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 40,
+    ...Platform.select({
+      web: {
+        width: 800,
+        marginHorizontal: 'auto',
+      },
+    }),
   },
 });
 
