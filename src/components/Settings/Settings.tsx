@@ -1,24 +1,23 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useState, FC } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import React, { FC } from 'react';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 
 import AppearenceSettings from './AppearenceSettings';
 import SchoolAccountSettings from './SchoolAccount/SchoolAccountSettings';
 import { RouteProps } from '../../Navigation';
 import { ScreenName } from '../../constants/screen-names';
 import {
-  Settings as SettingsData,
   SettingsSchoolAccount,
   SettingsTheme,
-  getSettings,
-  setSettings,
   settingsThemeToThemeContextTheme,
 } from '../../controllers/settings';
 import { useProvidedContext } from '../../context/ContextProvider';
 import LeagueSettings from './LeagueSettings/LeagueSettings';
 import Link from '../Link';
 import { LeagueFeature } from '../../constants/leagues';
-import { useLeagueFeatureFlag } from '../../hooks/useLeagueFeatureFlag';
+import { useLeagueFeatureFlag } from '../../hooks/useLeague';
+import { openSupportEmail } from '../../utils/bug-report';
+import { useSettings } from '../../hooks/useSettings';
 
 type SettingsProps = NativeStackScreenProps<RouteProps, ScreenName.SETTINGS>;
 
@@ -31,44 +30,17 @@ const Settings: FC<SettingsProps> = ({ navigation }) => {
   const {
     theme: { setTheme },
   } = useProvidedContext();
-  const [settingsState, setSettingsState] = useState<SettingsData | null>(null);
+  const { settings, setSettings } = useSettings();
 
   const teamAccountsEnabled = useLeagueFeatureFlag(LeagueFeature.TEAM_ACCOUNTS);
 
-  useEffect(() => {
-    getSettings().then((settings) => {
-      setSettingsState(settings);
-    });
-  }, []);
-
-  if (!settingsState) {
-    return <View />;
-  }
-
-  // Merge new settings into the state and storage
-  const updateSettings = (newSettings: Partial<SettingsData>) => {
-    setSettings(newSettings);
-    setSettingsState((oldSettings) => {
-      // this will never happen, since the handlers are not
-      // triggerable until the settings state loads
-      if (!oldSettings) {
-        return null;
-      }
-
-      return {
-        ...oldSettings,
-        ...newSettings,
-      };
-    });
-  };
-
   const handleThemeChange = (theme: SettingsTheme) => {
     setTheme(settingsThemeToThemeContextTheme(theme));
-    updateSettings({ theme });
+    setSettings({ theme });
   };
 
   const handleSchoolAccountChange = (schoolAccount: SettingsSchoolAccount) => {
-    updateSettings({ schoolAccount });
+    return setSettings({ schoolAccount });
   };
 
   const handleSetupSettings = () => {
@@ -79,17 +51,19 @@ const Settings: FC<SettingsProps> = ({ navigation }) => {
     <ScrollView contentContainerStyle={styles.container}>
       <LeagueSettings />
       <AppearenceSettings
-        theme={settingsState.theme}
+        theme={settings.theme}
         handleThemeChange={handleThemeChange}
       />
       {teamAccountsEnabled && (
         <SchoolAccountSettings
           navigation={navigation}
-          schoolAccountSettings={settingsState.schoolAccount}
+          schoolAccountSettings={settings.schoolAccount}
           handleSchoolAccountSettingsChange={handleSchoolAccountChange}
         />
       )}
       <Link title="Advanced Trial Setup" onPress={handleSetupSettings} />
+      <Link title="Contact Support" onPress={openSupportEmail} />
+      <View style={{ marginBottom: 50 }} />
     </ScrollView>
   );
 };
@@ -97,6 +71,12 @@ const Settings: FC<SettingsProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 10,
+    ...Platform.select({
+      web: {
+        width: 800,
+        marginHorizontal: 'auto',
+      },
+    }),
   },
   sectionName: {
     fontSize: 16,

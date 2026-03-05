@@ -38,7 +38,7 @@ const CreateTrial: FC<ScreenProps<ScreenName.CREATE_TRIAL>> = ({
   const league = useSettingsLeague();
 
   // Create Trial State
-  const settings = useSettings();
+  const { settings } = useSettings();
   const witnessSelectionEnabled = useLeagueFeatureFlag(
     LeagueFeature.WITNESS_SELECTION,
   );

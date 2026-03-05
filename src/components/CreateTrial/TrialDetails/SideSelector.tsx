@@ -21,7 +21,6 @@ const SideSelector = ({ side, onSelect, warning }: SideSelectorProps) => {
   const league = useSettingsLeague();
   const [open, setOpen] = useState(false);
 
-  if (!league) {
     return null;
   }
 

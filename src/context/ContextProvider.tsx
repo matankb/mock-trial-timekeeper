@@ -5,6 +5,7 @@ import { useAirplaneBlockerContextInitializer } from './AirplaneBlockerContext';
 import { useCreateTrialContextInitializer } from './CreateTrialContext';
 import { useThemeContextInitializer } from './ThemeContext';
 import { useTrialsContextInitializer } from './TrialsContext';
+import { useSettingsContextInitializer } from './SettingsContext';
 
 interface ContextProviderProps {
   children: React.ReactNode;
@@ -15,17 +16,23 @@ const useInitializeContexts = () => {
   const themeContext = useThemeContextInitializer();
   const airplaneBlockerContext = useAirplaneBlockerContextInitializer();
   const createTrialContext = useCreateTrialContextInitializer();
+  const settingsContext = useSettingsContextInitializer();
 
   return {
     trials: trialContext,
     theme: themeContext,
     airplaneBlocker: airplaneBlockerContext,
     createTrial: createTrialContext,
+    settings: settingsContext,
   };
 };
 
 const isContextsReady = (contexts: ContextProviderValue) => {
-  return contexts.theme.theme !== null && contexts.trials.trials !== null;
+  return (
+    contexts.theme.theme !== null &&
+    contexts.trials.trials !== null &&
+    contexts.settings.settings !== null
+  );
 };
 
 type ContextProviderValue = ReturnType<typeof useInitializeContexts>;

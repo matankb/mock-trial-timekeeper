@@ -6,26 +6,21 @@ import colors from '../../../../constants/colors';
 import { TrialWitnessCall } from '../../../../controllers/trial';
 import { Side } from '../../../../types/side';
 import { useProvidedContext } from '../../../../context/ContextProvider';
-import { useSettingsLeague } from '../../../../hooks/useSettings';
 import {
+  League,
   isLeagueWithWitnessSelection,
   leagueWitnesses,
 } from '../../../../constants/leagues';
 
 interface WitnessSelectorProps {
   inline?: boolean;
+  league: League; // league is passed in because in update trial, it can be a different league
 }
 
-const WitnessSelector: FC<WitnessSelectorProps> = ({ inline }) => {
+const WitnessSelector: FC<WitnessSelectorProps> = ({ inline, league }) => {
   const {
     createTrial: { createTrialState, setCreateTrialState },
   } = useProvidedContext();
-  const league = useSettingsLeague();
-
-  // Loading state
-  if (!league) {
-    return null;
-  }
 
   const { pWitnessCall, dWitnessCall } = createTrialState;
 

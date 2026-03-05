@@ -25,7 +25,7 @@ import useTrial from '../../hooks/useTrial';
 import { useProvidedContext } from '../../context/ContextProvider';
 import { ScreenNavigationOptions } from '../../types/navigation';
 import { LeagueFeature } from '../../constants/leagues';
-import { useLeagueFeatureFlag } from '../../hooks/useLeagueFeatureFlag';
+import { useLeagueFeatureFlag } from '../../hooks/useLeague';
 import Link from '../Link';
 import { useSettings } from '../../hooks/useSettings';
 
@@ -47,7 +47,7 @@ export const trialManagerScreenOptions: ScreenNavigationOptions<
 });
 
 const TrialManager: FC<TrialManagerProps> = (props) => {
-  const settings = useSettings();
+  const { settings } = useSettings();
   const [trial, setTrial] = useTrial(props.route.params.trialId);
   const timeBreakdownEnabled = useLeagueFeatureFlag(
     LeagueFeature.TIMES_BREAKDOWN,
@@ -215,7 +215,7 @@ const TrialManager: FC<TrialManagerProps> = (props) => {
               onPress={handleIndividualTimesPress}
             />
           )}
-          {trial.stage === 'rebuttal' && settings?.schoolAccount?.connected && (
+          {trial.stage === 'rebuttal' && settings.schoolAccount.connected && (
             <UploadLink trial={trial} />
           )}
         </View>

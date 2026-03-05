@@ -1,27 +1,21 @@
-import { useEffect, useState } from 'react';
+import {
+  Settings,
+  setSettings as setSettingsToStorage,
+} from '../controllers/settings';
+import { useProvidedContext } from '../context/ContextProvider';
 
-import { getSettings, Settings } from '../controllers/settings';
-import { League } from '../constants/leagues';
+export const useSettings = () => {
+  const { settings: settingsContext } = useProvidedContext();
+  const settings = settingsContext.settings;
 
-export const useSettings = (): Settings | null => {
-  const [settings, setSettings] = useState<Settings | null>(null);
-
-  useEffect(() => {
-    getSettings().then((settings) => setSettings(settings));
-  }, []);
-
-  return settings;
-};
-
-export const useSettingsLeague = (): League | null => {
-  const settings = useSettings();
-
-  // While settings are loading, return null
   if (!settings) {
-    return null;
+    throw new Error('useSettings called without settings in provider context');
   }
 
-  // Once settings are loaded, return the league, defaulting to AMTA if not set
-  // (this should never happen, but fall back just in case)
-  return settings.league.league ?? League.AMTA;
+  const setSettings = async (newSettings: Partial<Settings>) => {
+    settingsContext.setSettings({ ...settings, ...newSettings });
+    return setSettingsToStorage(newSettings);
+  };
+
+  return { settings, setSettings };
 };

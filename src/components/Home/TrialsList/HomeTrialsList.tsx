@@ -9,6 +9,8 @@ import { RouteProps } from '../../../Navigation';
 import { MaterialIcons } from '@expo/vector-icons';
 import colors from '../../../constants/colors';
 import { TEAM_TRIALS_IN_APP_ENABLED } from '../../../constants/feature-flags';
+import useTheme from '../../../hooks/useTheme';
+import { Theme } from '../../../types/theme';
 
 interface HomeTrialsListProps {
   trials: Trial[];
@@ -18,11 +20,8 @@ interface HomeTrialsListProps {
 const MAX_DISPLAYED_TRIALS = 9;
 
 const HomeTrialsList: FC<HomeTrialsListProps> = ({ trials, navigation }) => {
-  // TODO: will this be reactive if the user logs in and then goes back home?
-  // maybe I should make generic useStorage hook that syncs to both settings and AsyncStorage
-  // Although maybe it'll be fine when the user logs in, because then they
-  // auto-navigate to home - but what if they log out? Hmm...
-  const settings = useSettings();
+  const { settings } = useSettings();
+  const theme = useTheme();
 
   const orderedTrials = trials
     .sort((a, b) => b.date - a.date)
@@ -40,14 +39,14 @@ const HomeTrialsList: FC<HomeTrialsListProps> = ({ trials, navigation }) => {
   };
 
   const handleTeamTrialsPress = () => {
-    return; // not implemented yet
+    navigation.navigate(ScreenName.TEAM_TRIALS);
   };
 
   // Additional links
 
   const showAllTrialsLink = trials.length > MAX_DISPLAYED_TRIALS;
   const showTeamTrialsLink =
-    TEAM_TRIALS_IN_APP_ENABLED && !!settings?.schoolAccount?.connected;
+    TEAM_TRIALS_IN_APP_ENABLED && settings.schoolAccount.connected;
 
   const allTrialsLink = (
     <TrialListItem
@@ -59,7 +58,7 @@ const HomeTrialsList: FC<HomeTrialsListProps> = ({ trials, navigation }) => {
         <MaterialIcons
           name="history"
           size={24}
-          color={colors.BACKGROUND_GRAY}
+          color={theme === Theme.DARK ? 'white' : colors.BACKGROUND_GRAY}
         />
       }
     />

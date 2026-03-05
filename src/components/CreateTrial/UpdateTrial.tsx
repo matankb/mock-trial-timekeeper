@@ -59,7 +59,7 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
   const isBeforeUpload = route.params?.isBeforeUpload;
 
   // Create Trial State
-  const settings = useSettings();
+  const { settings } = useSettings();
   const [name, setName] = useState(trial.name);
   const [allLossTime, setAllLossTime] = useState(trial.loss);
 
@@ -107,7 +107,7 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
 
   // Load the tournament details from the db into the context
   const loadTournament = useCallback(async () => {
-    if (!settings?.schoolAccount?.connected || !trial.details?.tournamentId) {
+    if (!settings.schoolAccount.connected || !trial.details?.tournamentId) {
       return;
     }
 
@@ -172,7 +172,7 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
       },
     };
 
-    if (settings?.schoolAccount?.connected) {
+    if (settings.schoolAccount.connected) {
       newTrial.details = {
         ...trial.details,
         tournamentId: createTrialState.tournamentId,

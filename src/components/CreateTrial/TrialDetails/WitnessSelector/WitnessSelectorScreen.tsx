@@ -7,7 +7,7 @@ import { ScreenName } from '../../../../constants/screen-names';
 import WitnessSelector from './WitnessSelector';
 import { FC } from 'react';
 import LinkButton from '../../../LinkButton';
-import { useSettingsLeague } from '../../../../hooks/useSettings';
+import { useSettingsLeague } from '../../../../hooks/useLeague';
 
 export const witnessSelectorScreenOptions: ScreenNavigationOptions<
   ScreenName.WITNESS_SELECTOR
@@ -24,12 +24,8 @@ export const witnessSelectorScreenOptions: ScreenNavigationOptions<
 const WitnessSelectorScreen: FC<
   ScreenProps<ScreenName.WITNESS_SELECTOR>
 > = () => {
+  // TODO: (CRITICAL??): I think we should be passing in the league here in some way...
   const league = useSettingsLeague();
-
-  if (!league) {
-    return;
-  }
-
   return <WitnessSelector inline={false} league={league} />;
 };
 

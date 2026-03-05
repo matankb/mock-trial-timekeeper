@@ -12,7 +12,7 @@ import { useUploadTrial } from '../../hooks/useUploadTrial';
 
 import { NavigationProp } from '../../types/navigation';
 import { LeagueFeature } from '../../constants/leagues';
-import { useLeagueFeatureFlag } from '../../hooks/useLeagueFeatureFlag';
+import { useLeagueFeatureFlag } from '../../hooks/useLeague';
 import { Falsy, isFalsy } from 'utility-types';
 import LinkButton from '../LinkButton';
 
@@ -45,7 +45,7 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
   const { showActionSheetWithOptions } = useActionSheet();
   // TODO: check if this is reactive in the case where the view is not reloaded because
   // the same trial is visited
-  const settings = useSettings();
+  const { settings } = useSettings();
 
   const witnessSelectionEnabled = useLeagueFeatureFlag(
     LeagueFeature.WITNESS_SELECTION,
@@ -68,7 +68,7 @@ const OptionsMenu: FC<OptionsMenuProps> = ({
 
   const options: (OptionConfig | Falsy)[] = [
     { name: editTrialLabel, onPress: () => handleEditTrialPress() },
-    settings?.schoolAccount?.connected && {
+    settings.schoolAccount.connected && {
       name: 'Upload to Team Account',
       onPress: () => handleUpload(),
     },

@@ -12,6 +12,7 @@ interface TeamAccountPromoProps {
 
 const TeamAccountPromo: FC<TeamAccountPromoProps> = ({ inline }) => {
   const navigation = useNavigation();
+  const { settings } = useSettings();
 
   if (!TEAM_ACCOUNT_PROMO_ENABLED) {
     return null;

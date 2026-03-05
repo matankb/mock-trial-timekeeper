@@ -22,10 +22,10 @@ const Home: FC<ScreenProps<ScreenName.HOME>> = ({ navigation, route }) => {
     trials: { trials },
   } = useProvidedContext();
 
-  const settings = useSettings();
+  const { settings } = useSettings();
 
   useEffect(() => {
-    if (settings && settings.league.league === null) {
+    if (settings.league.league === null) {
       navigation.replace(ScreenName.WELCOME);
     }
   }, [settings, navigation]);
