@@ -1,21 +1,17 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Platform, StyleSheet, Alert, ScrollView } from 'react-native';
+import { Alert, Platform, ScrollView, StyleSheet } from 'react-native';
 
 import { CreateTrialHeaderLeft } from './CreateTrialHeader';
 import TrialDetails from './TrialDetails/TrialDetails';
-import TrialNameInput from './TrialNameInput';
 import colors from '../../constants/colors';
 import { ScreenName } from '../../constants/screen-names';
 import { CreateTrialState } from '../../context/CreateTrialContext';
 import { Theme } from '../../types/theme';
-import {
-  uploadTrialToSchoolAccount,
-  validateTrialDetails,
-} from '../../controllers/trial';
+import { validateTrialDetails } from '../../controllers/trial';
 import useTheme from '../../hooks/useTheme';
 import useTrial from '../../hooks/useTrial';
 import { Side } from '../../types/side';
-import { openBugReportEmail, showBugReportAlert } from '../../utils/bug-report';
+import { showBugReportAlert } from '../../utils/bug-report';
 import {
   supabase,
   supabaseDbErrorToReportableError,
@@ -26,13 +22,16 @@ import { WitnessSelectorInline } from './TrialDetails/WitnessSelector/WitnessSel
 import { RoundNumber } from '../../types/round-number';
 import AllLossSelector from './AllLossSelector';
 import { useProvidedContext } from '../../context/ContextProvider';
-import { useSettings, useSettingsLeague } from '../../hooks/useSettings';
+import { useSettings } from '../../hooks/useSettings';
 import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
-import { useLeagueFeatureFlag } from '../../hooks/useLeagueFeatureFlag';
+import { useLeagueFeatureFlag } from '../../hooks/useLeague';
 import { LeagueFeature } from '../../constants/leagues';
+import TextInput from '../TextInput';
+import { useUploadTrial } from '../../hooks/useUploadTrial';
 export interface UpdateTrialRouteProps {
   trialId: string;
   isBeforeUpload?: boolean;
+  onlyWitnessesMissing?: boolean;
 }
 
 export const updateTrialScreenOptions: ScreenNavigationOptions<
@@ -73,7 +72,6 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
 
   // UI state
   const [tournamentLoading, setTournamentLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
 
   // Load the trial details into the local state
   useEffect(() => {
@@ -123,7 +121,7 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
       showBugReportAlert(
         'Error loading tournament information',
         'Please make sure you are connected to the internet and try again, or contact support',
-        error,
+        supabaseDbErrorToReportableError(error),
       );
       return;
     }
@@ -194,6 +192,8 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
     allLossTime,
   ]);
 
+  const { handleUpload, uploading } = useUploadTrial({ trial: mergedTrial });
+
   const handleSavePress = useCallback(async () => {
     setTrial(mergedTrial);
 
@@ -203,55 +203,34 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
     }
 
     // This should not happen, since save button is disabled if trial details are not valid
-    if (!validateTrialDetails(mergedTrial)) {
+    if (!validateTrialDetails(mergedTrial, false)) {
       Alert.alert('Please fill out all trial details before uploading');
       return;
     }
 
     // Upload the trial to the dashboard
-    setUploading(true);
-    const { error } = await uploadTrialToSchoolAccount(mergedTrial);
-    setUploading(false);
+    await handleUpload();
 
-    if (error) {
-      Alert.alert(
-        'There was a problem uploading your trial',
-        'Make sure you are connected to the internet and try again, or contact support.',
-        [
-          {
-            text: 'Close',
-            style: 'cancel',
-          },
-          {
-            text: 'Contact Support',
-            onPress: () => {
-              const reportableError = supabaseDbErrorToReportableError(error);
-              openBugReportEmail(reportableError);
-            },
-          },
-        ],
-      );
-    } else {
-      Alert.alert('Trial uploaded!', '', [
-        {
-          text: 'Close',
-          style: 'cancel',
-          onPress: () => {
-            navigation.goBack();
-          },
+    Alert.alert('Trial uploaded!', '', [
+      {
+        text: 'Close',
+        style: 'cancel',
+        onPress: () => {
+          navigation.goBack();
         },
-      ]);
-    }
-  }, [mergedTrial, isBeforeUpload, navigation, setTrial]);
+      },
+    ]);
+  }, [mergedTrial, isBeforeUpload, navigation, setTrial, handleUpload]);
 
   const trialDetailsValid = useMemo(() => {
-    const valid = validateTrialDetails(mergedTrial);
-    return valid;
-  }, [mergedTrial]);
+    const validForUpload = validateTrialDetails(mergedTrial, false);
+    const validWithWitnesses = validateTrialDetails(mergedTrial, true);
 
-  if (!settings) {
-    return null;
-  }
+    return {
+      validForUpload,
+      validWithWitnesses,
+    };
+  }, [mergedTrial]);
 
   const showWitnessSelector =
     !settings.schoolAccount.connected && witnessSelectionEnabled;
@@ -267,11 +246,22 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
     >
       {route.params.isBeforeUpload && (
         <Text style={styles.unfinishedDetailsWarning}>
-          Please finish setting up your trial before uploading to your school
-          account
+          {route.params.onlyWitnessesMissing ? (
+            // TODO: better copy here...
+            <Text style={{ fontWeight: 'normal' }}>
+              <Text style={{ fontWeight: 'bold' }}>
+                Do you want to select the witnesses that were called?&nbsp;
+              </Text>{' '}
+              It is optional, but can be helpful for your teammates to find
+              their times.
+            </Text>
+          ) : (
+            'Please finish setting up your trial before uploading to your school'
+          )}
         </Text>
       )}
-      <TrialNameInput name={name} setName={setName} autoFocus={false} />
+
+      <TextInput value={name} onChangeText={setName} />
       {settings.schoolAccount.connected && (
         <TrialDetails
           navigation={navigation}
@@ -292,8 +282,15 @@ const UpdateTrial: FC<ScreenProps<ScreenName.UPDATE_TRIAL>> = ({
       {showWitnessSelector && <WitnessSelectorInline league={trial.league} />}
       {isBeforeUpload && !uploading && (
         <Button
-          title={route.params?.isBeforeUpload ? 'Save and Upload' : 'Save'}
-          disabled={!trialDetailsValid}
+          title={
+            route.params?.isBeforeUpload
+              ? route.params.onlyWitnessesMissing &&
+                !trialDetailsValid.validWithWitnesses
+                ? 'Upload With Missing Witnesses'
+                : 'Save and Upload'
+              : 'Save'
+          }
+          disabled={!trialDetailsValid.validForUpload}
           onPress={handleSavePress}
         />
       )}
