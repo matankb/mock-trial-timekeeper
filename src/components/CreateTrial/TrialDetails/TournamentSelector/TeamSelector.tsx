@@ -1,13 +1,11 @@
-import {
-  ActivityIndicator,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import Card from '../../../Card';
 import { FC, useEffect, useState } from 'react';
 import Text from '../../../Text';
-import { supabase } from '../../../../utils/supabase';
+import {
+  supabase,
+  supabaseDbErrorToReportableError,
+} from '../../../../utils/supabase';
 import { showBugReportAlert } from '../../../../utils/bug-report';
 import { getSettings } from '../../../../controllers/settings';
 import { Tables } from '../../../../types/supabase';
@@ -39,7 +37,7 @@ const TeamSelector: FC<TeamSelectorProps> = ({
       showBugReportAlert(
         'There was a problem loading your teams',
         'Please try again, or contact support.',
-        error,
+        supabaseDbErrorToReportableError(error),
       );
       return;
     }
@@ -77,9 +75,13 @@ const TeamSelector: FC<TeamSelectorProps> = ({
       <Text style={styles.sectionName}>Your Team</Text>
       <View>
         {loadingTeams ? (
-          <ActivityIndicator size="small" color="gray" />
+          <ActivityIndicator
+            size="small"
+            color="gray"
+            style={styles.loadingIndicator}
+          />
         ) : (
-          <TouchableOpacity style={styles.teamSelector}>
+          <View style={styles.teamSelector}>
             <Text
               style={[
                 styles.teamName,
@@ -92,9 +94,9 @@ const TeamSelector: FC<TeamSelectorProps> = ({
             <Entypo
               name="chevron-small-down"
               size={25}
-              color={colors.HEADER_BLUE}
+              color={colors.PLACEHOLDER_GRAY}
             />
-          </TouchableOpacity>
+          </View>
         )}
       </View>
 
@@ -128,7 +130,10 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   placeholderText: {
-    color: '#999',
+    color: colors.PLACEHOLDER_GRAY,
+  },
+  loadingIndicator: {
+    marginRight: 8,
   },
 });
 
