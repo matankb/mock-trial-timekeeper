@@ -63,9 +63,13 @@ const TournamentList: FC<TournamentListProps> = ({
           >
             {tournament.name}
           </Text>
-          {selectedTournamentId === tournament.id && (
-            <MaterialIcons name="check" size={20} color={colors.HEADER_BLUE} />
-          )}
+          {/* modify opacity to fix layout shift when it becomes selected */}
+          <MaterialIcons
+            style={{ opacity: selectedTournamentId === tournament.id ? 1 : 0 }}
+            name="check"
+            size={20}
+            color={colors.HEADER_BLUE}
+          />
         </TouchableOpacity>
       ))}
       <AddTournament onAddNewTournament={onAddNewTournament} />
