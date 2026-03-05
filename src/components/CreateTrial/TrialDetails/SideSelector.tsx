@@ -1,15 +1,14 @@
-import { useState } from 'react';
-
 import TrialDetailsItem from './TrialDetailsItem';
 import { Side } from '../../../types/side';
-import Picker from '../../Picker';
-import { getSideName } from '../../../hooks/useLeagueFeatureFlag';
-import { useSettingsLeague } from '../../../hooks/useSettings';
+import { getSideName, useSettingsLeague } from '../../../hooks/useLeague';
+import TrialDetailsSelector from './TrialDetailsSelector';
 
 interface SideSelectorProps {
   side: Side | null;
   onSelect: (side: Side) => void;
   warning?: boolean;
+  expanded?: boolean;
+  onExpandChange: (expanded: boolean) => void;
 }
 
 interface SideOption {
@@ -17,12 +16,14 @@ interface SideOption {
   value: Side;
 }
 
-const SideSelector = ({ side, onSelect, warning }: SideSelectorProps) => {
+const SideSelector = ({
+  side,
+  onSelect,
+  warning,
+  expanded,
+  onExpandChange,
+}: SideSelectorProps) => {
   const league = useSettingsLeague();
-  const [open, setOpen] = useState(false);
-
-    return null;
-  }
 
   const sideOptions: SideOption[] = [
     { label: getSideName('p', league), value: 'p' },
@@ -32,24 +33,24 @@ const SideSelector = ({ side, onSelect, warning }: SideSelectorProps) => {
   const sideLabel = side ? getSideName(side, league) : null;
   const label = sideLabel ?? 'Not Set';
 
-  return [
-    <TrialDetailsItem
-      key="selector"
-      title="Side"
-      value={label}
-      onPress={() => setOpen(true)}
-      warning={warning}
-    />,
-    <Picker
-      key="picker"
-      title="Select Side"
+  const selector = (
+    <TrialDetailsSelector
       items={sideOptions}
       selected={side ?? undefined}
       onSelect={onSelect}
-      onClose={() => setOpen(false)}
-      visible={open}
-    />,
-  ];
+    />
+  );
+
+  return (
+    <TrialDetailsItem
+      title="Side"
+      value={label}
+      warning={warning}
+      expandedContent={selector}
+      expanded={expanded}
+      onExpandChange={onExpandChange}
+    />
+  );
 };
 
 export default SideSelector;

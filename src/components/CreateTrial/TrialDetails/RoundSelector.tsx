@@ -1,13 +1,13 @@
-import { useState } from 'react';
-
 import TrialDetailsItem from './TrialDetailsItem';
-import Picker from '../../Picker';
 import { RoundNumber } from '../../../types/round-number';
+import TrialDetailsSelector from './TrialDetailsSelector';
 
 interface RoundSelectorProps {
   round: RoundNumber | null;
   onSelect: (round: RoundNumber) => void;
   warning?: boolean;
+  expanded?: boolean;
+  onExpandChange: (expanded: boolean) => void;
 }
 
 interface RoundOption {
@@ -27,27 +27,31 @@ const roundOptions: RoundOptions = {
 };
 const roundOptionsArray = Object.values(roundOptions);
 
-const RoundSelector = ({ round, onSelect, warning }: RoundSelectorProps) => {
-  const [open, setOpen] = useState(false);
-
-  return [
-    <TrialDetailsItem
-      key="round-selector"
-      title="Round"
-      value={round ? `Round ${round}` : 'Not Set'}
-      onPress={() => setOpen(true)}
-      warning={warning}
-    />,
-    <Picker
-      key="round-picker"
-      title="Select Round"
+const RoundSelector = ({
+  round,
+  onSelect,
+  warning,
+  expanded,
+  onExpandChange,
+}: RoundSelectorProps) => {
+  const selector = (
+    <TrialDetailsSelector
       items={roundOptionsArray}
       selected={round ?? undefined}
       onSelect={onSelect}
-      onClose={() => setOpen(false)}
-      visible={open}
-    />,
-  ];
+    />
+  );
+
+  return (
+    <TrialDetailsItem
+      title="Round"
+      value={round ? `Round ${round}` : 'Not Set'}
+      warning={warning}
+      expandedContent={selector}
+      expanded={expanded}
+      onExpandChange={onExpandChange}
+    />
+  );
 };
 
 export default RoundSelector;
