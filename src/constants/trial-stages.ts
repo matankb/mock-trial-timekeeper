@@ -39,6 +39,9 @@ export const stages = [
   'close.def',
   'rebuttal',
   'joint.conference',
+  'joint.cnmi.dispute.determine',
+  'joint.cnmi.dispute.file',
+  'joint.cnmi.dispute.respond',
 ] as const;
 
 export type TrialStage = (typeof stages)[number];
@@ -70,6 +73,12 @@ export function getTrialStages(trial: Trial): readonly Partial<TrialStage>[] {
   if (!trial.setup.reexaminationsEnabled) {
     trialStages = trialStages.filter(
       (stage) => !stage.includes('redirect') && !stage.includes('recross'),
+    );
+  }
+
+  if (trial.league !== League.CNMI) {
+    trialStages = trialStages.filter(
+      (stage) => !stage.startsWith('joint.cnmi'),
     );
   }
 
