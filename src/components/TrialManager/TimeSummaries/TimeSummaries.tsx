@@ -5,6 +5,7 @@ import SideTimeSummary, { TimeSummaryRowType } from './SideTimeSummary';
 import { getTotalTimes, Trial } from '../../../controllers/trial';
 import JointTimeSummary from './JointTimeSummary';
 import { Platform } from 'react-native';
+import IndependentReexaminationTimeSummary from './IndependentReexaminationTimeSummary';
 
 interface TimeSummariesProps {
   trial: Trial;
@@ -50,10 +51,13 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial, editingTimes }) => {
   };
 
   const jointTimeVisible = stage.includes('joint');
+  const independentReexaminationVisible =
+    trial.setup.reexaminationsIndependent &&
+    (stage.includes('redirect') || stage.includes('recross'));
 
   return (
     <View style={styles.container}>
-      {!jointTimeVisible && (
+      {!jointTimeVisible && !independentReexaminationVisible && (
         <View style={styles.sideSummariesContainer}>
           <SideTimeSummary
             side="p"
@@ -76,6 +80,10 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial, editingTimes }) => {
 
       {jointTimeVisible && (
         <JointTimeSummary trial={trial} editingTimes={editingTimes} />
+      )}
+
+      {independentReexaminationVisible && (
+        <IndependentReexaminationTimeSummary trial={trial} />
       )}
     </View>
   );
