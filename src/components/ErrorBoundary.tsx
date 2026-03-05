@@ -10,7 +10,8 @@ import Button from './Button';
 import { openBugReportEmail } from '../utils/bug-report';
 
 const ErrorFallback = ({ error }: FallbackProps) => {
-  console.log('error', error);
+  console.log('error caught by error boundary', error);
+  console.log('error stack', error.stack);
   return (
     <View style={styles.container}>
       <MaterialIcons

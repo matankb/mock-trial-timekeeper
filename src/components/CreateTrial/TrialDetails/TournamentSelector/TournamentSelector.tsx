@@ -1,12 +1,15 @@
 import { useNetworkState } from 'expo-network';
 import React, { FC, useEffect, useState } from 'react';
-import { StyleSheet, Platform, ScrollView } from 'react-native';
+import { Platform, ScrollView, StyleSheet } from 'react-native';
 
 import TournamentList from './TournamentList';
 import { getSettings } from '../../../../controllers/settings';
 import { Tables } from '../../../../types/supabase';
 import { showBugReportAlert } from '../../../../utils/bug-report';
-import { supabase } from '../../../../utils/supabase';
+import {
+  supabase,
+  supabaseDbErrorToReportableError,
+} from '../../../../utils/supabase';
 import Card from '../../../Card';
 import { ScreenName } from '../../../../constants/screen-names';
 import { ScreenNavigationOptions } from '../../../../types/navigation';
@@ -128,7 +131,7 @@ const TournamentSelector: FC = () => {
       showBugReportAlert(
         'There was a problem adding a new tournament',
         'Please try again, or contact support.',
-        error,
+        supabaseDbErrorToReportableError(error),
       );
       return;
     }

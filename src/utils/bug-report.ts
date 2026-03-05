@@ -47,10 +47,19 @@ export function openBugReportEmail(error: Error) {
   );
 }
 
-export function openSupportEmail() {
-  Linking.openURL(
-    `mailto:205matan@gmail.com?subject=${encodeURIComponent(
-      'Mock Trial Timer',
-    )}`,
-  );
+export async function openSupportEmail() {
+  // Note: Linking.canOpenURL has a number of limitations that make it unsuitable for this use case
+  try {
+    await Linking.openURL(
+      `mailto:205matan@gmail.com?subject=${encodeURIComponent(
+        'Mock Trial Timer',
+      )}`,
+    );
+  } catch (error) {
+    posthog.capture('error', {
+      message: 'Error opening support email',
+      error: JSON.stringify(error),
+    });
+    await Linking.openURL('https://mocktrialtimer.com/support');
+  }
 }
