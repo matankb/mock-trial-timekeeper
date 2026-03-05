@@ -1,13 +1,15 @@
 /**
  * The settings for the school account, when the user is *not* signed in to a school account
  */
-import { MaterialIcons } from '@expo/vector-icons';
-import { FC } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { FC } from "react";
+import { StyleSheet, View } from "react-native";
 
-import Text from '../../Text';
-import SettingSection from '../SettingSection';
-import TeamAccountPromo from '../../Home/Promos/TeamAccountPromo';
+import SettingSection from "../SettingSection";
+import TeamAccountPromo from "../../Home/Promos/TeamAccountPromo";
+import Link from "../../Link";
+import { ScreenName } from "../../../constants/screen-names";
+import { useNavigation } from "../../../types/navigation";
+import { TEAM_ACCOUNT_PROMO_ENABLED } from "../../../constants/feature-flags";
 
 interface SchoolAccountUnconnectedSettingsProps {
   onPress: () => void;
@@ -16,23 +18,36 @@ interface SchoolAccountUnconnectedSettingsProps {
 const SchoolAccountUnconnectedSettings: FC<
   SchoolAccountUnconnectedSettingsProps
 > = ({ onPress }) => {
+  const navigation = useNavigation();
+
   return (
     <SettingSection title="School Account">
       <View style={styles.promoContainer}>
         <TeamAccountPromo inline />
       </View>
-      <TouchableOpacity style={styles.container} onPress={onPress}>
-        <Text style={styles.text}>Connect Account</Text>
-        <MaterialIcons name="navigate-next" size={28} color="gray" />
-      </TouchableOpacity>
+      <View style={styles.links}>
+        <Link title="Connect School Account" onPress={onPress} inline />
+        {TEAM_ACCOUNT_PROMO_ENABLED && (
+          <Link
+            title="Create School Account"
+            onPress={() => navigation.navigate(ScreenName.TEAM_ACCOUNT_SIGNUP)}
+            inline
+          />
+        )}
+      </View>
     </SettingSection>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  links: {
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+    gap: 10,
   },
   promoContainer: {
     paddingHorizontal: 10,

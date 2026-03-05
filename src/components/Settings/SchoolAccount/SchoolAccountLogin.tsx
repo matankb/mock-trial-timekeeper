@@ -4,7 +4,6 @@ import {
   Alert,
   ScrollView,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -22,6 +21,7 @@ import { Theme } from '../../../types/theme';
 import { Image } from 'expo-image';
 import { MaterialIcons } from '@expo/vector-icons';
 import Text from '../../Text';
+import TextInput from '../../TextInput';
 
 export const schoolAccountLoginScreenOptions = {
   title: 'Connect School Account',
@@ -187,8 +187,8 @@ const SchoolAccountLogin: FC<SchoolAccountLoginProps> = ({ navigation }) => {
   const scrollViewStyle = [
     styles.scrollView,
     {
-      backgroundColor:
-        theme === Theme.LIGHT ? '#f5f5f7' : colors.BACKGROUND_GRAY,
+      // TODO: improve this styling
+      backgroundColor: theme === Theme.LIGHT ? '#f5f5f7' : 'black',
     },
   ];
 
@@ -301,7 +301,7 @@ const SchoolAccountLogin: FC<SchoolAccountLoginProps> = ({ navigation }) => {
       />
 
       <TextInput
-        style={inputStyle}
+        // style={inputStyle}
         value={password}
         onChangeText={setPassword}
         placeholder="School Password"

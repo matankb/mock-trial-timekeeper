@@ -10,20 +10,23 @@ import {
 } from 'react-native';
 
 import { MaterialIcons } from '@expo/vector-icons';
-import TextInput from '../TextInput';
+import TextInput from '../../TextInput';
 import { validate } from 'email-validator';
 
-import { ScreenProps, useNavigation } from '../../types/navigation';
-import { ScreenName } from '../../constants/screen-names';
-import Button from '../Button';
-import Text from '../Text';
-import useTheme from '../../hooks/useTheme';
-import { Theme } from '../../types/theme';
-import colors from '../../constants/colors';
-import { openSupportEmail, showBugReportAlert } from '../../utils/bug-report';
-import Link from '../Link';
-import { supabase } from '../../utils/supabase';
-import { setSettings } from '../../controllers/settings';
+import { ScreenProps, useNavigation } from '../../../types/navigation';
+import { ScreenName } from '../../../constants/screen-names';
+import Button from '../../Button';
+import Text from '../../Text';
+import useTheme from '../../../hooks/useTheme';
+import { Theme } from '../../../types/theme';
+import colors from '../../../constants/colors';
+import {
+  openSupportEmail,
+  showBugReportAlert,
+} from '../../../utils/bug-report';
+import Link from '../../Link';
+import { supabase } from '../../../utils/supabase';
+import { setSettings } from '../../../controllers/settings';
 import AddTeam from './AddTeam';
 
 type TeamAccountSignupProps = ScreenProps<ScreenName.TEAM_ACCOUNT_SIGNUP>;

@@ -11,6 +11,7 @@ interface SchoolAccountOfflineProps {
 const SchoolAccountOffline: FC<SchoolAccountOfflineProps> = ({
   accountConnected,
 }) => {
+  // TODO: bring back description
   const description = accountConnected
     ? 'Connected to your school account'
     : undefined;
@@ -20,7 +21,7 @@ const SchoolAccountOffline: FC<SchoolAccountOfflineProps> = ({
     : 'Turn on Wi-Fi to connect to your school account.';
 
   return (
-    <SettingSection title="School Account" description={description}>
+    <SettingSection title="School Account">
       <View style={styles.container}>
         <Feather name="wifi-off" size={20} color="gray" />
         <Text style={styles.text}>{text}</Text>

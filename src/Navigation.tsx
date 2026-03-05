@@ -5,7 +5,7 @@ import {
   NavigationContainer,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { setStatusBarStyle, StatusBar } from 'expo-status-bar';
+import { StatusBar } from 'expo-status-bar';
 import React, { FC } from 'react';
 
 import { ScreenName } from './constants/screen-names';
@@ -63,14 +63,14 @@ import SetupSettings, {
 import { Version, versionScreenOptions } from './components/About/Version';
 import TeamAccountExplainer, {
   teamAccountExplainerScreenOptions,
-} from './components/About/TeamAccountExplainer';
+} from './components/Settings/SchoolAccount/TeamAccountExplainer';
 import TeamAccountHowItWorks, {
   TeamAccountHowItWorksRouteProps,
   teamAccountHowItWorksScreenOptions,
-} from './components/About/TeamAccountHowItWorks';
+} from './components/Settings/SchoolAccount/TeamAccountHowItWorks';
 import TeamAccountSignup, {
   teamAccountSignupScreenOptions,
-} from './components/About/TeamAccountSignup';
+} from './components/Settings/SchoolAccount/TeamAccountSignup';
 import {
   TeamTrials,
   teamTrialsScreenOptions,
@@ -78,7 +78,6 @@ import {
 import SchoolAccountManager, {
   schoolAccountManagerScreenOptions,
 } from './components/Settings/SchoolAccount/SchoolAccountManager';
-import { Platform } from 'react-native';
 
 const Stack = createNativeStackNavigator<RouteProps>();
 

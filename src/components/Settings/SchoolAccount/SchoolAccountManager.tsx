@@ -24,6 +24,8 @@ import {
 import Text from '../../Text';
 import Link from '../../Link';
 import { usePostHog } from 'posthog-react-native';
+import { Theme } from '../../../types/theme';
+import useTheme from '../../../hooks/useTheme';
 
 export const schoolAccountManagerScreenOptions: ScreenNavigationOptions<ScreenName.SCHOOL_ACCOUNT_MANAGER> =
   {
@@ -34,6 +36,7 @@ type Team = Pick<Tables<'teams'>, 'name' | 'id'>;
 
 const SchoolAccountManager: FC = () => {
   const posthog = usePostHog();
+  const theme = useTheme();
 
   const [teams, setTeams] = useState<Team[] | null>(null);
   const [schoolId, setSchoolId] = useState<string | null>(null);
@@ -172,7 +175,13 @@ const SchoolAccountManager: FC = () => {
           {teams?.map((team) => (
             <TouchableOpacity
               key={team.id}
-              style={styles.teamItem}
+              style={[
+                styles.teamItem,
+                {
+                  backgroundColor:
+                    theme === Theme.DARK ? colors.BACKGROUND_GRAY : 'white',
+                },
+              ]}
               onPress={() => handleRenameTeam(team.id, team.name)}
             >
               <Text style={styles.teamName}>{team.name}</Text>
@@ -181,8 +190,14 @@ const SchoolAccountManager: FC = () => {
           ))}
 
           <TouchableOpacity
-            style={styles.addTeamButton}
             onPress={handleAddTeam}
+            style={[
+              styles.addTeamButton,
+              {
+                backgroundColor:
+                  theme === Theme.DARK ? colors.BACKGROUND_GRAY : 'white',
+              },
+            ]}
           >
             <Ionicons
               name="add-circle-outline"
