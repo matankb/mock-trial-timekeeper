@@ -2,7 +2,7 @@ import { Mutable } from 'utility-types';
 import { Trial } from '../controllers/trial';
 import { Side } from '../types/side';
 import { Prefixes } from '../utils';
-import { getSideName } from '../hooks/useLeagueFeatureFlag';
+import { getSideName } from '../hooks/useLeague';
 import { League } from './leagues';
 
 export const stages = [
@@ -172,7 +172,6 @@ export const getStageName = (
     return 'Rebuttal';
   } else if (stage === 'joint.prep.closings') {
     return 'Preparation for Closings';
-    // TODO: maybe rename this to "posttrial or something, to make it generic"
   } else if (stage === 'joint.conference') {
     if (trial.league === League.Idaho) {
       return 'Judge Comments (Regionals Only)';

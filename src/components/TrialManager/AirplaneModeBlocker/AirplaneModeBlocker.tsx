@@ -10,7 +10,7 @@ import useTheme from '../../../hooks/useTheme';
 import Button from '../../Button';
 import LinkButton from '../../LinkButton';
 import Text from '../../Text';
-import { useSettingsLeague } from '../../../hooks/useSettings';
+import { useSettingsLeague } from '../../../hooks/useLeague';
 import { leagueNames } from '../../../constants/leagues';
 
 interface AirplaneModeBlockerProps {

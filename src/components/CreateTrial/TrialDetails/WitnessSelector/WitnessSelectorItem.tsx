@@ -15,7 +15,7 @@ import { Side } from '../../../../types/side';
 import Text from '../../../Text';
 import { useProvidedContext } from '../../../../context/ContextProvider';
 import { LeagueWitnessSet } from '../../../../constants/leagues';
-import { useLeagueSideName } from '../../../../hooks/useLeagueFeatureFlag';
+import { useLeagueSideName } from '../../../../hooks/useLeague';
 
 interface WitnessSelectorItemProps {
   leagueWitnesses: LeagueWitnessSet;

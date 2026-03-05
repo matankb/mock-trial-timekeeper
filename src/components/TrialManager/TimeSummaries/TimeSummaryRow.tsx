@@ -6,7 +6,7 @@ import { Theme } from '../../../types/theme';
 import useTheme from '../../../hooks/useTheme';
 import TimeEditor from '../../TimeEditor/TimeEditor';
 import { formatTime } from '../../../utils';
-import { getSideName } from '../../../hooks/useLeagueFeatureFlag';
+import { getSideName } from '../../../hooks/useLeague';
 import { Side } from '../../../types/side';
 import { useRoute } from '../../../types/navigation';
 import { ScreenName } from '../../../constants/screen-names';
@@ -33,6 +33,7 @@ interface TimeSummaryRowProps {
 /**
  * Given a TimeSummaryRowType for a Side, return an arbitrary stage that falls in that row.
  * TODO: explain more!
+ * TODO: this is lowkey a mess - but I think it works - yeah.
  */
 function getTrialStageFromTimeSummaryRowType(
   rowType: TimeSummaryRowType,

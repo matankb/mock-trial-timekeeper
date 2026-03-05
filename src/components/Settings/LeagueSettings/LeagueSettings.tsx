@@ -5,7 +5,7 @@ import { useNavigation } from '../../../types/navigation';
 import SettingSection from '../SettingSection';
 import Link from '../../Link';
 import { StyleSheet, View } from 'react-native';
-import { useSettingsLeague } from '../../../hooks/useSettings';
+import { useSettingsLeague } from '../../../hooks/useLeague';
 import { leagueNames, League } from '../../../constants/leagues';
 
 const LeagueSettings: FC = () => {

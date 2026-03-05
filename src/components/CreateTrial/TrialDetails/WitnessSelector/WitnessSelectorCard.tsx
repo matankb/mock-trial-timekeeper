@@ -6,7 +6,7 @@ import { Side } from '../../../../types/side';
 import Card from '../../../Card';
 import { TrialWitnessCall } from '../../../../controllers/trial';
 import { LeagueWitnessSet } from '../../../../constants/leagues';
-import { useLeagueSideName } from '../../../../hooks/useLeagueFeatureFlag';
+import { useLeagueSideName } from '../../../../hooks/useLeague';
 
 interface WitnessSelectorCardProps {
   side: Side;
