@@ -3,6 +3,7 @@ import { isTrialStage, TrialStage } from '../constants/trial-stages';
 import { defaultSettings } from '../controllers/settings';
 import { Trial } from '../controllers/trial';
 import { isRoundNumber, RoundNumber } from '../types/round-number';
+import { duration } from '../utils';
 import { createArrayMigration } from './migration';
 
 interface TrialSchema_1_0_0 {
@@ -178,9 +179,95 @@ interface TrialSchema_2_3_0 {
     side: 'p' | 'd';
   };
 }
+interface TrialSchema_2_4_0 {
+  id: string;
+  name: string;
+  date: number;
+  stage: string;
+  loss: number;
+  league: League;
+  times: {
+    pretrial: { pros: number; def: number };
+    open: { pros: number; def: number };
+    close: { pros: number; def: number };
+    rebuttal: number;
+    prosCic: {
+      witnessOne: {
+        direct: number;
+        cross: number;
+        redirect: number;
+        recross: number;
+      };
+      witnessTwo: {
+        direct: number;
+        cross: number;
+        redirect: number;
+        recross: number;
+      };
+      witnessThree: {
+        direct: number;
+        cross: number;
+        redirect: number;
+        recross: number;
+      };
+    };
+    defCic: {
+      witnessOne: {
+        direct: number;
+        cross: number;
+        redirect: number;
+        recross: number;
+      };
+      witnessTwo: {
+        direct: number;
+        cross: number;
+        redirect: number;
+        recross: number;
+      };
+      witnessThree: {
+        direct: number;
+        cross: number;
+        redirect: number;
+        recross: number;
+      };
+    };
+    joint: {
+      prepClosings: number;
+      conference: number;
+    };
+  };
+  setup: {
+    pretrialEnabled: boolean;
+    statementsSeparate: boolean;
+    allLossEnabled: boolean;
+    flexEnabled: boolean;
+    pretrialTime?: number;
+    statementTime?: number;
+    openTime?: number;
+    closeTime?: number;
+    directTime: number;
+    crossTime: number;
+    rebuttalMaxEnabled: boolean;
+    jointPrepClosingsEnabled: boolean;
+    jointConferenceEnabled: boolean;
+    rebuttalMaxTime: number;
+    jointPrepClosingsTime: number;
+    jointConferenceTime: number;
+    reexaminationsEnabled: boolean;
+  };
+  witnesses: {
+    p: [string | null, string | null, string | null];
+    d: [string | null, string | null, string | null];
+  };
+  details?: {
+    tournamentId: string;
+    round: RoundNumber | null;
+    side: 'p' | 'd';
+  };
+}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- This is the current schema
-interface TrialSchema_2_4_0 extends Trial {}
+interface TrialSchema_2_5_0 extends Trial {}
 
 export const trialMigrations = [
   // 1.0.0 -> 2.1.0: Add pretrial and loss fields
@@ -353,6 +440,38 @@ export const trialMigrations = [
         setup: {
           ...trial.setup,
           reexaminationsEnabled: isFlorida,
+        },
+      };
+    },
+  }),
+
+  // 2.4.0 -> 2.5.0: Added reexamination independent time and CNMI dispute times
+  createArrayMigration<TrialSchema_2_4_0, TrialSchema_2_5_0>({
+    from: '2.4.0',
+    to: '2.5.0',
+    migrate: (trial) => {
+      const isMissouri = trial.league === League.Missouri; // some MO teams have already been using this feature
+
+      return {
+        ...trial,
+        stage: trial.stage as TrialStage,
+        setup: {
+          ...trial.setup,
+          reexaminationsIndependent: isMissouri,
+          reexaminationIndependentTime: isMissouri
+            ? duration.minutes(1)
+            : duration.minutes(0),
+        },
+        times: {
+          ...trial.times,
+          joint: {
+            ...trial.times.joint,
+            cnmi: {
+              disputeDetermine: 0,
+              disputeFile: 0,
+              disputeRespond: 0,
+            },
+          },
         },
       };
     },
