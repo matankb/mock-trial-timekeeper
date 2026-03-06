@@ -40,7 +40,7 @@ const TeamAccountExplainer: FC<TeamAccountExplainerProps> = ({
         <View style={styles.iconRow}>
           <View style={[styles.iconContainer, styles.appIconContainer]}>
             <Image
-              source={require('../../../assets/icon-transparent.png')}
+              source={require('../../../../assets/icon-transparent.png')}
               style={styles.appIcon}
             />
           </View>
