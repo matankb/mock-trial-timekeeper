@@ -1,6 +1,3 @@
-import { Side } from '../types/side';
-import { League } from '../types/league';
-
 export const pad = (s: number) => s.toString().padStart(2, '0');
 
 // Format time as mm:ss

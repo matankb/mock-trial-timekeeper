@@ -50,9 +50,7 @@ export const TeamTrials: FC<ScreenProps<ScreenName.TEAM_TRIALS>> = ({
   const { settings } = useSettings();
   const posthog = usePostHog();
 
-  const [tournaments, setTournaments] = useState<Awaited<
-    ReturnType<typeof fetchAllData>
-  > | null>(null);
+  const [tournaments, setTournaments] = useState<TournamentData | null>(null);
 
   useEffect(() => {
     const fetchTournaments = async (teamId: string) => {

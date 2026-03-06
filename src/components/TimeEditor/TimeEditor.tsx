@@ -1,12 +1,5 @@
 import React, { FC, useState } from 'react';
-import {
-  Alert,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
 
 import TimeEditorAndroidDialog from './TimeEditorAndroidDialog';
 import { pad } from '../../utils';

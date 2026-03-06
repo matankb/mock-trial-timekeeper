@@ -1,4 +1,4 @@
-import { FC, useRef } from 'react';
+import { useRef } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Image } from 'expo-image';
 import Carousel, {

@@ -1,14 +1,14 @@
-import React, { useEffect } from "react";
-import { Platform, ScrollView, StyleSheet } from "react-native";
+import React, { useEffect } from 'react';
+import { Platform, ScrollView, StyleSheet } from 'react-native';
 
-import TimesBreakdownSection, { TimeSection } from "./TimesBreakdownSection";
-import { ScreenName } from "../../constants/screen-names";
-import { calculateNewTrialTime } from "../../controllers/trial";
-import useTrial from "../../hooks/useTrial";
-import { TrialStage } from "../../constants/trial-stages";
-import { ScreenNavigationOptions, ScreenProps } from "../../types/navigation";
-import { getSideName } from "../../hooks/useLeagueFeatureFlag";
-import TimesBreakdownHeaderButton from "./TimesBreakdownHeaderButton";
+import TimesBreakdownSection, { TimeSection } from './TimesBreakdownSection';
+import { ScreenName } from '../../constants/screen-names';
+import { calculateNewTrialTime } from '../../controllers/trial';
+import useTrial from '../../hooks/useTrial';
+import { TrialStage } from '../../constants/trial-stages';
+import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
+import { getSideName } from '../../hooks/useLeague';
+import TimesBreakdownHeaderButton from './TimesBreakdownHeaderButton';
 
 export interface TimeBreakdownRouteProps {
   trialId: string;
@@ -18,10 +18,11 @@ export interface TimeBreakdownRouteProps {
 export const timesBreakdownScreenOptions: ScreenNavigationOptions<
   ScreenName.TIMES_BREAKDOWN
 > = ({ route }) => ({
-  title: Platform.OS === "ios"
-    ? `${route.params.trialName} Individual Times`
-    : "Individual Times",
-  headerBackButtonDisplayMode: "minimal",
+  title:
+    Platform.OS === 'ios'
+      ? `${route.params.trialName} Individual Times`
+      : 'Individual Times',
+  headerBackButtonDisplayMode: 'minimal',
   headerRight: () => (
     <TimesBreakdownHeaderButton title="Edit" onPress={() => {}} />
   ),
@@ -37,19 +38,17 @@ const TimeBreakdown: React.FC<ScreenProps<ScreenName.TIMES_BREAKDOWN>> = ({
   useEffect(() => {
     navigation.setOptions({
       headerRight: () =>
-        editing
-          ? (
-            <TimesBreakdownHeaderButton
-              title="Done"
-              onPress={() => setEditing(false)}
-            />
-          )
-          : (
-            <TimesBreakdownHeaderButton
-              title="Edit"
-              onPress={() => setEditing(true)}
-            />
-          ),
+        editing ? (
+          <TimesBreakdownHeaderButton
+            title="Done"
+            onPress={() => setEditing(false)}
+          />
+        ) : (
+          <TimesBreakdownHeaderButton
+            title="Edit"
+            onPress={() => setEditing(true)}
+          />
+        ),
     });
   }, [editing]);
 
@@ -78,63 +77,63 @@ const TimeBreakdown: React.FC<ScreenProps<ScreenName.TIMES_BREAKDOWN>> = ({
   };
 
   const { reexaminationsEnabled } = trial.setup;
-  const piSideName = getSideName("p", trial.league);
+  const piSideName = getSideName('p', trial.league);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {trial.setup.pretrialEnabled &&
-        createTimeBreakdownSection("Pretrial", [
-          ["pretrial.pros", "pretrial.def"],
+        createTimeBreakdownSection('Pretrial', [
+          ['pretrial.pros', 'pretrial.def'],
         ])}
-      {createTimeBreakdownSection("Opening Statements", [
-        ["open.pros", "open.def"],
+      {createTimeBreakdownSection('Opening Statements', [
+        ['open.pros', 'open.def'],
       ])}
       {createTimeBreakdownSection(`${piSideName} Case in Chief`, [
         [
-          "cic.pros.one.direct",
-          reexaminationsEnabled && "cic.pros.one.redirect",
-          "cic.pros.one.cross",
-          reexaminationsEnabled && "cic.pros.one.recross",
+          'cic.pros.one.direct',
+          reexaminationsEnabled && 'cic.pros.one.redirect',
+          'cic.pros.one.cross',
+          reexaminationsEnabled && 'cic.pros.one.recross',
         ],
         [
-          "cic.pros.two.direct",
-          reexaminationsEnabled && "cic.pros.two.redirect",
-          "cic.pros.two.cross",
-          reexaminationsEnabled && "cic.pros.two.recross",
+          'cic.pros.two.direct',
+          reexaminationsEnabled && 'cic.pros.two.redirect',
+          'cic.pros.two.cross',
+          reexaminationsEnabled && 'cic.pros.two.recross',
         ],
         [
-          "cic.pros.three.direct",
-          "cic.pros.three.cross",
+          'cic.pros.three.direct',
+          'cic.pros.three.cross',
           ...(trial.setup.reexaminationsEnabled
             ? ([
-              "cic.pros.three.redirect",
-              "cic.pros.three.recross",
-            ] satisfies TrialStage[])
+                'cic.pros.three.redirect',
+                'cic.pros.three.recross',
+              ] satisfies TrialStage[])
             : []),
         ],
       ])}
-      {createTimeBreakdownSection("Defense Case in Chief", [
+      {createTimeBreakdownSection('Defense Case in Chief', [
         [
-          "cic.def.one.direct",
-          reexaminationsEnabled && "cic.def.one.redirect",
-          "cic.def.one.cross",
-          reexaminationsEnabled && "cic.def.one.recross",
+          'cic.def.one.direct',
+          reexaminationsEnabled && 'cic.def.one.redirect',
+          'cic.def.one.cross',
+          reexaminationsEnabled && 'cic.def.one.recross',
         ],
         [
-          "cic.def.two.direct",
-          reexaminationsEnabled && "cic.def.two.redirect",
-          "cic.def.two.cross",
-          reexaminationsEnabled && "cic.def.two.recross",
+          'cic.def.two.direct',
+          reexaminationsEnabled && 'cic.def.two.redirect',
+          'cic.def.two.cross',
+          reexaminationsEnabled && 'cic.def.two.recross',
         ],
         [
-          "cic.def.three.direct",
-          reexaminationsEnabled && "cic.def.three.redirect",
-          "cic.def.three.cross",
-          reexaminationsEnabled && "cic.def.three.recross",
+          'cic.def.three.direct',
+          reexaminationsEnabled && 'cic.def.three.redirect',
+          'cic.def.three.cross',
+          reexaminationsEnabled && 'cic.def.three.recross',
         ],
       ])}
-      {createTimeBreakdownSection("Closing Statements", [
-        ["close.pros", "close.def", "rebuttal"],
+      {createTimeBreakdownSection('Closing Statements', [
+        ['close.pros', 'close.def', 'rebuttal'],
       ])}
     </ScrollView>
   );
@@ -142,14 +141,14 @@ const TimeBreakdown: React.FC<ScreenProps<ScreenName.TIMES_BREAKDOWN>> = ({
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
     paddingBottom: 20,
     ...Platform.select({
       web: {
         width: 600,
-        marginHorizontal: "auto",
+        marginHorizontal: 'auto',
       },
     }),
   },

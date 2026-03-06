@@ -1,10 +1,9 @@
 import React, { FC } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View , Platform } from 'react-native';
 
 import SideTimeSummary, { TimeSummaryRowType } from './SideTimeSummary';
 import { getTotalTimes, Trial } from '../../../controllers/trial';
 import JointTimeSummary from './JointTimeSummary';
-import { Platform } from 'react-native';
 import IndependentReexaminationTimeSummary from './IndependentReexaminationTimeSummary';
 
 interface TimeSummariesProps {
