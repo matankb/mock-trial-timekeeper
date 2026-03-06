@@ -13,8 +13,8 @@ interface SettingsSchema_1_0_0 {
     pretrialEnabled: boolean;
     statementsCombined: boolean;
     pretrialTime: number | null;
-    openTime: number | null;
-    closeTime: number | null;
+    openTime?: number;
+    closeTime?: number;
     statementsSeparate: boolean;
     allLossEnabled: boolean;
   };
@@ -30,8 +30,8 @@ interface SettingsSchema_1_1_0 {
     pretrialEnabled: boolean;
     statementsCombined: boolean;
     pretrialTime: number | null;
-    openTime: number | null;
-    closeTime: number | null;
+    openTime?: number;
+    closeTime?: number;
     statementsSeparate: boolean;
     allLossEnabled: boolean;
   };
@@ -51,8 +51,8 @@ interface SettingsSchema_1_2_0 {
     pretrialEnabled: boolean;
     statementsCombined: boolean;
     pretrialTime: number;
-    openTime: number | null;
-    closeTime: number | null;
+    openTime?: number;
+    closeTime?: number;
     statementsSeparate: boolean;
     allLossEnabled: boolean;
     rebuttalMaxEnabled: boolean;
@@ -74,8 +74,42 @@ interface SettingsSchema_1_2_0 {
   };
 }
 
+interface SettingsSchema_1_3_0 {
+  theme: SettingsTheme;
+  setup: {
+    statementTime: number;
+    directTime: number;
+    crossTime: number;
+    allLoss: number;
+    pretrialEnabled: boolean;
+    statementsCombined: boolean;
+    pretrialTime: number;
+    openTime?: number;
+    closeTime?: number;
+    statementsSeparate: boolean;
+    allLossEnabled: boolean;
+    rebuttalMaxEnabled: boolean;
+    rebuttalMaxTime: number;
+    jointPrepClosingsEnabled: boolean;
+    jointConferenceEnabled: boolean;
+    jointPrepClosingsTime: number;
+    jointConferenceTime: number;
+    reexaminationsEnabled: boolean;
+  };
+  additionalSetup: {
+    allLossDuration: number;
+  };
+  schoolAccount: {
+    connected: boolean;
+    teamId: string | null;
+  };
+  league: {
+    league: League;
+  };
+}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- This is the current schema
-interface SettingsSchema_1_3_0 extends Settings {}
+interface SettingsSchema_1_4_0 extends Settings {}
 
 export const settingsMigrations = [
   createMigration<SettingsSchema_1_0_0, SettingsSchema_1_1_0>({
@@ -132,6 +166,23 @@ export const settingsMigrations = [
         setup: {
           ...settings.setup,
           reexaminationsEnabled: false,
+          jointConferenceTime:
+            settings.setup.jointConferenceTime ?? duration.minutes(0),
+        },
+      };
+    },
+  }),
+  createMigration<SettingsSchema_1_3_0, SettingsSchema_1_4_0>({
+    from: '1.3.0',
+    to: '1.4.0',
+    // TODO: migrate all of these fields so none are optional
+    migrate: (settings) => {
+      return {
+        ...settings,
+        setup: {
+          ...settings.setup,
+          reexaminationsIndependent: false,
+          reexaminationIndependentTime: duration.minutes(0),
         },
       };
     },
