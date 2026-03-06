@@ -2,19 +2,16 @@ import React, { FC } from 'react';
 
 import TimeSummaryRow from './TimeSummaryRow';
 import colors from '../../../constants/colors';
-import { TotalTimeRemaining, Trial } from '../../../controllers/trial';
+import { TotalTimeSet, Trial } from '../../../controllers/trial';
 import { Side } from '../../../types/side';
-import {
-  getSideName,
-  useLeagueFeatureFlag,
-} from '../../../hooks/useLeagueFeatureFlag';
+import { getSideName, useLeagueFeatureFlag } from '../../../hooks/useLeague';
 import TimeSummaryCard from './TimeSummaryCard';
 import { LeagueFeature } from '../../../constants/leagues';
 
 interface TimeSummaryProps {
   side: Side;
   trial: Trial;
-  timeRemaining: TotalTimeRemaining;
+  timeRemaining: TotalTimeSet;
   overtime: number;
   highlightRow?: TimeSummaryRowType;
   editingTimes: boolean;
@@ -29,6 +26,7 @@ export enum TimeSummaryRowType {
   Cross = 'Cross Examinations',
   JointConference = 'Team Conference',
   JointPrepClosings = 'Preparation for Closings',
+  Reexamination = 'Reexamination',
 }
 
 const SideTimeSummary: FC<TimeSummaryProps> = ({
