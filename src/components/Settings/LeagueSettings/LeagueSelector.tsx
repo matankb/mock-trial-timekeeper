@@ -8,12 +8,12 @@ import { LeagueSelectorHelp } from './LeagueSelectorHelp';
 import { useSettings } from '../../../hooks/useSettings';
 import { setLeague } from '../../../controllers/settings';
 import { useNavigation } from '../../../types/navigation';
-import { ScreenName } from '../../../constants/screen-names';
 import Link from '../../Link';
+import { ScreenName } from '../../../constants/screen-names';
 
 const LeagueSelector: FC = () => {
   const navigation = useNavigation();
-  const { settings } = useSettings();
+  const { settings, setSettings } = useSettings();
 
   const [selected, setSelected] = useState<League | null>(null);
   const [showHelp, setShowHelp] = useState(false);
@@ -26,7 +26,8 @@ const LeagueSelector: FC = () => {
 
   const handleConfirm = async () => {
     if (selected) {
-      await setLeague(selected);
+      const newSettings = await setLeague(selected);
+      setSettings(newSettings);
       navigation.reset({
         index: 0,
         routes: [{ name: ScreenName.HOME }],

@@ -1,12 +1,10 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import Option from './Option';
 import colors from '../../constants/colors';
 import {
-  getSettings,
   setLeague,
-  setSettings,
   SettingsAdditionalSetup,
   SettingsSetup,
 } from '../../controllers/settings';
@@ -18,6 +16,7 @@ import Text from '../Text';
 import { useSettingsLeague } from '../../hooks/useLeague';
 import { leagueNames } from '../../constants/leagues';
 import Button from '../Button';
+import { useSettings } from '../../hooks/useSettings';
 
 export const setupSettingsScreenOptions: ScreenNavigationOptions<ScreenName.SETUP_SETTINGS> =
   {
@@ -25,25 +24,10 @@ export const setupSettingsScreenOptions: ScreenNavigationOptions<ScreenName.SETU
   };
 
 const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = () => {
-  const [setupState, setSetupState] = useState<SettingsSetup | null>(null);
-  const [additionalSetupState, setAdditionalSetupState] =
-    useState<SettingsAdditionalSetup | null>(null);
-
+  const { settings, setSettings } = useSettings();
   const league = useSettingsLeague();
 
-  useEffect(() => {
-    getSettings().then((settings) => {
-      setSetupState(settings.setup);
-      setAdditionalSetupState(settings.additionalSetup);
-    });
-  }, []);
-
-  if (!setupState || !additionalSetupState || !league) {
-    return null;
-  }
-
   const handleSetupChange = (newSetup: SettingsSetup) => {
-    setSetupState(newSetup);
     setSettings({
       setup: newSetup,
     });
@@ -52,7 +36,6 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = () => {
   const handleAdditionalSetupChange = (
     newAdditionalSetup: SettingsAdditionalSetup,
   ) => {
-    setAdditionalSetupState(newAdditionalSetup);
     setSettings({
       additionalSetup: newAdditionalSetup,
     });
@@ -64,10 +47,10 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = () => {
   ) => (
     <Option name={name}>
       <TimeEditor
-        value={setupState[property]}
+        value={settings.setup[property]}
         name={name}
         onChange={(value) => {
-          handleSetupChange({ ...setupState, [property]: value });
+          handleSetupChange({ ...settings.setup, [property]: value });
         }}
       />
     </Option>
@@ -76,8 +59,7 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = () => {
   // Reset the settings to the league's default settings
   const handleReset = async () => {
     const newSettings = await setLeague(league);
-    setSetupState(newSettings.setup);
-    setAdditionalSetupState(newSettings.additionalSetup);
+    setSettings(newSettings);
   };
 
   const createAdditionalSetupTimeOption = (
@@ -86,11 +68,11 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = () => {
   ) => (
     <Option name={name}>
       <TimeEditor
-        value={additionalSetupState[property]}
+        value={settings.additionalSetup[property]}
         name={name}
         onChange={(value) => {
           handleAdditionalSetupChange({
-            ...additionalSetupState,
+            ...settings.additionalSetup,
             [property]: value,
           });
         }}
