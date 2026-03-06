@@ -2,7 +2,7 @@
   "expo": {
     "name": "Mock Timer",
     "slug": "mock-trial-timekeeper",
-    "version": "1.7.0",
+    "version": "1.8.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -34,11 +34,12 @@
       "policy": "sdkVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/819418f5-ad5c-4c81-862c-ff9b72e47baa"
+      "url": "https://u.expo.dev/819418f5-ad5c-4c81-862c-ff9b72e47baa",
+      "fallbackToCacheTimeout": 5000
     },
     "android": {
       "package": "com.matankb.mocktrialtimekeeper",
-      "versionCode": 12
+      "versionCode": 16
     }
   }
 }
