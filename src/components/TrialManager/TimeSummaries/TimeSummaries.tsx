@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { StyleSheet, View , Platform } from 'react-native';
+import { StyleSheet, View, Platform } from 'react-native';
 
 import SideTimeSummary, { TimeSummaryRowType } from './SideTimeSummary';
 import { getTotalTimes, Trial } from '../../../controllers/trial';

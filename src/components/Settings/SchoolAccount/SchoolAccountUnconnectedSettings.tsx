@@ -1,15 +1,15 @@
 /**
  * The settings for the school account, when the user is *not* signed in to a school account
  */
-import { FC } from "react";
-import { StyleSheet, View } from "react-native";
+import { FC } from 'react';
+import { StyleSheet, View } from 'react-native';
 
-import SettingSection from "../SettingSection";
-import TeamAccountPromo from "../../Home/Promos/TeamAccountPromo";
-import Link from "../../Link";
-import { ScreenName } from "../../../constants/screen-names";
-import { useNavigation } from "../../../types/navigation";
-import { TEAM_ACCOUNT_PROMO_ENABLED } from "../../../constants/feature-flags";
+import SettingSection from '../SettingSection';
+import TeamAccountPromo from '../../Home/Promos/TeamAccountPromo';
+import Link from '../../Link';
+import { ScreenName } from '../../../constants/screen-names';
+import { useNavigation } from '../../../types/navigation';
+import { TEAM_ACCOUNT_PROMO_ENABLED } from '../../../constants/feature-flags';
 
 interface SchoolAccountUnconnectedSettingsProps {
   onPress: () => void;
@@ -41,8 +41,8 @@ const SchoolAccountUnconnectedSettings: FC<
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   links: {
     paddingHorizontal: 10,

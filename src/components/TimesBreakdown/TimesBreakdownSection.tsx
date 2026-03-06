@@ -1,13 +1,13 @@
-import React, { FC } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { FC } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
-import { Theme } from "../../types/theme";
-import useTheme from "../../hooks/useTheme";
-import { formatTime } from "../../utils";
-import Card from "../Card";
-import TimeEditor from "../TimeEditor/TimeEditor";
-import { getStageName, TrialStage } from "../../constants/trial-stages";
-import { getStageTime, Trial } from "../../controllers/trial";
+import { Theme } from '../../types/theme';
+import useTheme from '../../hooks/useTheme';
+import { formatTime } from '../../utils';
+import Card from '../Card';
+import TimeEditor from '../TimeEditor/TimeEditor';
+import { getStageName, TrialStage } from '../../constants/trial-stages';
+import { getStageTime, Trial } from '../../controllers/trial';
 
 export type TimeSection = (TrialStage | false)[];
 type SummaryItem = [string, number];
@@ -42,6 +42,7 @@ const TimesBreakdownSection: FC<TimesBreakdownSectionProps> = ({
   editing,
   onEdit,
 }) => {
+  // TODO: replace theme with adaptive <Text> component
   const theme = useTheme();
 
   const createTimeSection = (stages: (TrialStage | false)[]) => {
@@ -60,29 +61,27 @@ const TimesBreakdownSection: FC<TimesBreakdownSectionProps> = ({
           <Text
             style={{
               ...styles.name,
-              ...(theme === Theme.DARK && { color: "white" }),
+              ...(theme === Theme.DARK && { color: 'white' }),
             }}
           >
             {name}
           </Text>
-          {editing
-            ? (
-              <TimeEditor
-                value={value}
-                name={name}
-                onChange={(newTime) => onEdit?.(stage, newTime)}
-              />
-            )
-            : (
-              <Text
-                style={{
-                  ...styles.time,
-                  ...(theme === Theme.DARK && { color: "white" }),
-                }}
-              >
-                {formatTime(value)}
-              </Text>
-            )}
+          {editing ? (
+            <TimeEditor
+              value={value}
+              name={name}
+              onChange={(newTime) => onEdit?.(stage, newTime)}
+            />
+          ) : (
+            <Text
+              style={{
+                ...styles.time,
+                ...(theme === Theme.DARK && { color: 'white' }),
+              }}
+            >
+              {formatTime(value)}
+            </Text>
+          )}
         </View>
       );
     });
@@ -92,10 +91,9 @@ const TimesBreakdownSection: FC<TimesBreakdownSectionProps> = ({
     const [label, value] = item;
     return (
       <View style={styles.row} key={label}>
-        <Text style={[styles.name, styles.summaryValue]}>{label}</Text>
-        <Text style={[styles.time, styles.summaryValue]}>
-          {formatTime(value)}
-        </Text>
+        {/* TODO: maybe add italics back here? */}
+        <Text style={[styles.name]}>{label}</Text>
+        <Text style={[styles.time]}>{formatTime(value)}</Text>
       </View>
     );
   };
@@ -105,7 +103,7 @@ const TimesBreakdownSection: FC<TimesBreakdownSectionProps> = ({
       <View
         style={{
           ...styles.divider,
-          ...(theme === Theme.DARK && { borderColor: "gray" }),
+          ...(theme === Theme.DARK && { borderColor: 'gray' }),
         }}
       />
     );
@@ -118,7 +116,7 @@ const TimesBreakdownSection: FC<TimesBreakdownSectionProps> = ({
       <Text
         style={{
           ...styles.title,
-          ...(theme === Theme.DARK && { color: "white" }),
+          ...(theme === Theme.DARK && { color: 'white' }),
         }}
       >
         {title}
@@ -141,20 +139,20 @@ const styles = StyleSheet.create({
     paddingTop: 7,
     paddingBottom: 12,
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   divider: {
     borderBottomWidth: 1,
-    borderColor: "lightgray",
+    borderColor: 'lightgray',
 
     marginBottom: 5,
     marginLeft: 10,
   },
   row: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   name: {
     padding: 10,
