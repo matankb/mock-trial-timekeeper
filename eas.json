@@ -4,12 +4,6 @@
     "promptToConfigurePushNotifications": false
   },
   "build": {
-    "simulator": {
-      "developmentClient": true,
-      "simulator": true,
-      "distribution": "internal",
-      "channel": "development"
-    },
     "development": {
       "developmentClient": true,
       "distribution": "internal",
