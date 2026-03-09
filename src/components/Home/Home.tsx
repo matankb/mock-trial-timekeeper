@@ -11,6 +11,7 @@ import { useProvidedContext } from '../../context/ContextProvider';
 import HomeTrialsList from './TrialsList/HomeTrialsList';
 import { useSettings } from '../../hooks/useSettings';
 import UpdateAlert from '../UpdateAlert/UpdateAlert';
+import ArizonaPromo from './Promos/ArizonaPromo';
 
 export const homeScreenOptions: ScreenNavigationOptions<ScreenName.HOME> = {
   title: 'Mock Trial Timer',
@@ -63,6 +64,7 @@ const Home: FC<ScreenProps<ScreenName.HOME>> = ({ navigation, route }) => {
       </View>
       <View>
         <TeamAccountPromo />
+        <ArizonaPromo />
         <AirplaneModeWarning />
       </View>
     </ScrollView>

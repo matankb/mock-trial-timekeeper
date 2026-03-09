@@ -24,6 +24,7 @@ export enum ScreenName {
   SCHOOL_ACCOUNT_LOGIN = 'school-account-login',
   SCHOOL_ACCOUNT_MANAGER = 'school-account-manager',
   LEAGUE_SELECTION = 'league-selection',
+  LEAGUE_SELECTOR_HELP = 'league-selector-help',
   SETUP_SETTINGS = 'setup-settings',
 
   // Create Trial

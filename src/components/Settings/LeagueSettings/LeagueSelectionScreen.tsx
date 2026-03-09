@@ -2,7 +2,6 @@ import { FC } from 'react';
 import { ScreenName } from '../../../constants/screen-names';
 import { ScreenNavigationOptions } from '../../../types/navigation';
 import LeagueSelector from './LeagueSelector';
-import { ScrollView } from 'react-native';
 
 export const leagueSelectionScreenOptions: ScreenNavigationOptions<ScreenName.LEAGUE_SELECTION> =
   {
@@ -10,11 +9,7 @@ export const leagueSelectionScreenOptions: ScreenNavigationOptions<ScreenName.LE
   };
 
 const LeagueSelectionScreen: FC = () => {
-  return (
-    <ScrollView>
-      <LeagueSelector />
-    </ScrollView>
-  );
+  return <LeagueSelector />;
 };
 
 export default LeagueSelectionScreen;

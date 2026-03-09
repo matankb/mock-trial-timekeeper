@@ -42,6 +42,11 @@ export const stages = [
   'joint.cnmi.dispute.determine',
   'joint.cnmi.dispute.file',
   'joint.cnmi.dispute.respond',
+  'joint.az.dispute.determine',
+  'joint.az.dispute.file',
+  'joint.az.dispute.respond',
+  'joint.az.dispute.present.filer',
+  'joint.az.dispute.present.respondent',
 ] as const;
 
 export type TrialStage = (typeof stages)[number];
@@ -82,6 +87,10 @@ export function getTrialStages(trial: Trial): readonly Partial<TrialStage>[] {
     );
   }
 
+  if (trial.league !== League.Arizona) {
+    trialStages = trialStages.filter((stage) => !stage.startsWith('joint.az'));
+  }
+
   return trialStages;
 }
 
@@ -118,7 +127,7 @@ const getWitnessName = (trial: Trial, stage: TrialStage, side: Side) => {
 
   // If the witness name has been set, use it
   for (const [prefix, name] of Object.entries(witnessNameMap)) {
-    if (stage.startsWith(prefix) && name !== null) {
+    if (stage.startsWith(prefix) && name !== null && name !== undefined) {
       return name;
     }
   }
@@ -183,6 +192,16 @@ export const getStageName = (
     return 'File dispute';
   } else if (stage === 'joint.cnmi.dispute.respond') {
     return 'Respond to dispute';
+  } else if (stage === 'joint.az.dispute.determine') {
+    return 'Determine whether to file dispute';
+  } else if (stage === 'joint.az.dispute.file') {
+    return 'File dispute form';
+  } else if (stage === 'joint.az.dispute.respond') {
+    return 'Respond in writing';
+  } else if (stage === 'joint.az.dispute.present.filer') {
+    return 'Filing team presentation';
+  } else if (stage === 'joint.az.dispute.present.respondent') {
+    return 'Responding team presentation';
   }
 
   return stage;

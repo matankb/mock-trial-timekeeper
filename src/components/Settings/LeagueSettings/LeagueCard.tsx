@@ -5,6 +5,7 @@ import { Image } from 'expo-image';
 import Card from '../../Card';
 
 interface LeagueProps {
+  index: number;
   name: string;
   image: ImageSourcePropType;
   description?: string;
@@ -13,6 +14,7 @@ interface LeagueProps {
 }
 
 const LeagueCard: FC<LeagueProps> = ({
+  index,
   name,
   image,
   description,
@@ -24,6 +26,7 @@ const LeagueCard: FC<LeagueProps> = ({
       style={StyleSheet.flatten([
         styles.container,
         selected && styles.selected,
+        index === 0 && styles.first,
       ])}
       onPress={onSelect}
     >
@@ -63,6 +66,9 @@ const styles = StyleSheet.create({
   },
   selected: {
     backgroundColor: '#4473ff30',
+  },
+  first: {
+    marginTop: 0,
   },
 });
 

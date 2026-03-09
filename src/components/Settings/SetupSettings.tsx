@@ -14,13 +14,13 @@ import { ScreenNavigationOptions, ScreenProps } from '../../types/navigation';
 import { ScreenName } from '../../constants/screen-names';
 import Text from '../Text';
 import { useSettingsLeague } from '../../hooks/useLeague';
-import { leagueNames } from '../../constants/leagues';
+import { League, leagueNames } from '../../constants/leagues';
 import Button from '../Button';
 import { useSettings } from '../../hooks/useSettings';
 
 export const setupSettingsScreenOptions: ScreenNavigationOptions<ScreenName.SETUP_SETTINGS> =
   {
-    headerTitle: 'Advanced Trial Setup',
+    headerTitle: 'Trial Setup',
   };
 
 const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = () => {
@@ -80,6 +80,33 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = () => {
     </Option>
   );
 
+  if (league === League.Arizona) {
+    return (
+      <ScrollView style={styles.container}>
+        <Text style={[styles.description]}>
+          Time limits for opening statements, direct examinations, and cross
+          examinations are suggested guidelines.
+        </Text>
+        <Text style={styles.description}>
+          Each team has 35 minutes in total. The Mock Trial Timer app uses the
+          suggested guidelines by default. You can change them here.
+        </Text>
+        <Text style={styles.description}>
+          Changes save automatically and will only apply to new trials.
+        </Text>
+        {createSetupTimeOption('Opening Statements', 'openTime')}
+        {createSetupTimeOption('Direct Examinations', 'directTime')}
+        {createSetupTimeOption('Cross Examinations', 'crossTime')}
+        <Button
+          title={`Reset to suggested guidelines`}
+          onPress={handleReset}
+          fullWidth={true}
+          style={styles.resetButton}
+        />
+      </ScrollView>
+    );
+  }
+
   return (
     <ScrollView style={styles.container}>
       <Text style={[styles.description, styles.warningDescription]}>
@@ -88,13 +115,14 @@ const SetupSettings: FC<ScreenProps<ScreenName.SETUP_SETTINGS>> = () => {
       <Text style={styles.description}>
         Changes will only apply to new trials.
       </Text>
-      <View style={styles.divider} />
+      {/* <View style={styles.divider} /> */}
       <Button
         title={`Reset to ${leagueNames[league]} Settings`}
         onPress={handleReset}
         style={styles.resetButton}
+        fullWidth
       />
-      <View style={styles.divider} />
+      {/* <View style={styles.divider} /> */}
       {createSetupTimeOption('Statements', 'statementTime')}
       {createSetupTimeOption('Direct Examinations', 'directTime')}
       {createSetupTimeOption('Cross Examinations', 'crossTime')}

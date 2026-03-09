@@ -14,6 +14,7 @@ export interface TimeSummaryRowData {
 interface TimeSummaryCardProps {
   title: string;
   overtime?: number;
+  total?: number;
   color: string;
   children: React.ReactNode;
   fullWidth?: boolean;
@@ -22,6 +23,7 @@ interface TimeSummaryCardProps {
 const TimeSummaryCard: FC<TimeSummaryCardProps> = ({
   title,
   overtime,
+  total,
   color,
   children,
   fullWidth = false,
@@ -37,6 +39,9 @@ const TimeSummaryCard: FC<TimeSummaryCardProps> = ({
         >
           {title}
         </Text>
+        {total !== undefined && (
+          <Text style={styles.total}>{formatTime(total)}</Text>
+        )}
         {overtime !== undefined && overtime > 0 && (
           <Text style={styles.warning}>{formatTime(overtime)} over time</Text>
         )}
@@ -87,6 +92,13 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
     top: 1.5, // slight adjustment for visual alignment
     borderRadius: 5,
+  },
+  total: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    // backgroundColor: colors.SUCCESS_GREEN,
+    paddingHorizontal: 4,
+    // paddingVertical: 1,
   },
 });
 export default TimeSummaryCard;

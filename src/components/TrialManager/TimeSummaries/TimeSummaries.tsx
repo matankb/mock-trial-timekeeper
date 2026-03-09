@@ -63,6 +63,7 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial, editingTimes }) => {
             trial={trial}
             highlightRow={getHighlightedRow('pros')}
             timeRemaining={totalTimes.p.remaining}
+            timeUsed={totalTimes.p.used}
             overtime={totalTimes.p.overtime}
             editingTimes={editingTimes}
           />
@@ -71,6 +72,7 @@ const TimeSummaries: FC<TimeSummariesProps> = ({ trial, editingTimes }) => {
             trial={trial}
             highlightRow={getHighlightedRow('def')}
             timeRemaining={totalTimes.d.remaining}
+            timeUsed={totalTimes.d.used}
             overtime={totalTimes.d.overtime}
             editingTimes={editingTimes}
           />

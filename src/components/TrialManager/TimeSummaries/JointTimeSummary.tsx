@@ -32,7 +32,8 @@ const JointTimeSummary: FC<JointTimeSummaryProps> = ({
   const isEnabled =
     jointPrepClosingsEnabled ||
     jointConferenceEnabled ||
-    trial.league === League.CNMI;
+    trial.league === League.CNMI ||
+    trial.league === League.Arizona;
   const isCurrentStage = stage.startsWith('joint');
 
   if (!isEnabled || !isCurrentStage) {
@@ -50,21 +51,21 @@ const JointTimeSummary: FC<JointTimeSummaryProps> = ({
 
   const stageName = getStageName(stage, trial);
 
+  const createDisputeRow = (disputeStage: TrialStage, totalTime: number) => (
+    <TimeSummaryRow
+      side="joint"
+      name={getStageName(disputeStage, trial)}
+      timeRemaining={totalTime - getStageTime(trial, disputeStage)}
+      highlighted={stage === disputeStage}
+      highlightColor={colors.PLACEHOLDER_GRAY}
+      editingTimes={editingTimes}
+      rowType={TimeSummaryRowType.JointConference} // this is a whole deal lol
+      league={trial.league}
+    />
+  );
+
   // Special handling for the CNMI dispute stages
   if (stage.startsWith('joint.cnmi.dispute')) {
-    const createDisputeRow = (disputeStage: TrialStage, totalTime: number) => (
-      <TimeSummaryRow
-        side="joint"
-        name={getStageName(disputeStage, trial)}
-        timeRemaining={totalTime - getStageTime(trial, disputeStage)}
-        highlighted={stage === disputeStage}
-        highlightColor={colors.PLACEHOLDER_GRAY}
-        editingTimes={editingTimes}
-        rowType={TimeSummaryRowType.JointConference} // this is a whole deal lol
-        league={trial.league}
-      />
-    );
-
     return (
       <View style={styles.container}>
         <TimeSummaryCard
@@ -78,6 +79,31 @@ const JointTimeSummary: FC<JointTimeSummaryProps> = ({
           )}
           {createDisputeRow('joint.cnmi.dispute.file', duration.minutes(3))}
           {createDisputeRow('joint.cnmi.dispute.respond', duration.minutes(5))}
+        </TimeSummaryCard>
+      </View>
+    );
+  }
+
+  // Special handling for the AZ dispute stages
+  if (stage.startsWith('joint.az.dispute')) {
+    return (
+      <View style={styles.container}>
+        <TimeSummaryCard
+          title={'Dispute Resolution'}
+          color={colors.PLACEHOLDER_GRAY}
+          fullWidth={true}
+        >
+          {createDisputeRow('joint.az.dispute.determine', duration.minutes(2))}
+          {createDisputeRow('joint.az.dispute.file', duration.minutes(2))}
+          {createDisputeRow('joint.az.dispute.respond', duration.minutes(2))}
+          {createDisputeRow(
+            'joint.az.dispute.present.filer',
+            duration.minutes(2),
+          )}
+          {createDisputeRow(
+            'joint.az.dispute.present.respondent',
+            duration.minutes(2),
+          )}
         </TimeSummaryCard>
       </View>
     );

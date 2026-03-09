@@ -1,28 +1,108 @@
-import { FC, useEffect, useState } from 'react';
-import { Alert, Platform, StyleSheet, View } from 'react-native';
+import { FC, useEffect, useMemo, useState } from 'react';
+import { Alert, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import LeagueCard from './LeagueCard';
 import Button from '../../Button';
-import colors from '../../../constants/colors';
+import TextInput from '../../TextInput';
 import { League, leagueNames } from '../../../constants/leagues';
-import { LeagueSelectorHelp } from './LeagueSelectorHelp';
 import { useSettings } from '../../../hooks/useSettings';
 import { setLeague } from '../../../controllers/settings';
 import { useNavigation } from '../../../types/navigation';
 import Link from '../../Link';
 import { ScreenName } from '../../../constants/screen-names';
 
+interface LeagueSelectorItem {
+  league: League;
+  name: string;
+  description?: string;
+  image: number;
+  searchTerms?: string[];
+}
+
+// TODO: type this so it's enforced.
+const LEAGUE_LIST: LeagueSelectorItem[] = [
+  {
+    league: League.AMTA,
+    name: 'College Mock Trial',
+    description: 'American Mock Trial Association',
+    image: require('../../../../assets/leagues/amta.png'),
+    searchTerms: ['amta'],
+  },
+  {
+    league: League.Minnesota,
+    name: 'High School Mock Trial in Minnesota',
+    image: require('../../../../assets/leagues/minnesota.jpg'),
+  },
+  {
+    league: League.Florida,
+    name: 'High School Mock Trial in Florida',
+    image: require('../../../../assets/leagues/florida.png'),
+  },
+  {
+    league: League.Idaho,
+    name: 'High School Mock Trial in Idaho',
+    image: require('../../../../assets/leagues/idaho.jpg'),
+  },
+  {
+    league: League.Missouri,
+    name: 'High School Mock Trial in Missouri',
+    image: require('../../../../assets/leagues/missouri.png'),
+  },
+  {
+    league: League.Arizona,
+    name: 'High School Mock Trial in Arizona',
+    image: require('../../../../assets/leagues/arizona.png'),
+  },
+  {
+    league: League.CNMI,
+    name: 'High School Mock Trial in CNMI',
+    description: 'Commonwealth of the Northern Mariana Islands',
+    image: require('../../../../assets/leagues/cnmi.jpg'),
+  },
+];
+
+const normalizeForSearch = (s: string) => {
+  return s.toLowerCase().trim();
+};
+
 const LeagueSelector: FC = () => {
   const navigation = useNavigation();
   const { settings, setSettings } = useSettings();
 
   const [selected, setSelected] = useState<League | null>(null);
-  const [showHelp, setShowHelp] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     if (selected === null) {
       setSelected(settings.league.league);
     }
   }, [settings, selected]);
+
+  const filteredLeagues = useMemo(() => {
+    const query = normalizeForSearch(searchQuery);
+
+    return LEAGUE_LIST.filter((item) => {
+      if (!query) {
+        return true;
+      }
+
+      const name = normalizeForSearch(item.name);
+      const description = normalizeForSearch(item.description ?? '');
+      const searchTerms =
+        item.searchTerms?.map((term) => normalizeForSearch(term)) || [];
+
+      return (
+        name.includes(query) ||
+        description.includes(query) ||
+        searchTerms.some((term) => term.includes(query))
+      );
+    }).sort((a, b) => {
+      // Ensure the first item is the selected league
+      if (a.league === settings.league.league) return -1;
+      if (b.league === settings.league.league) return 1;
+
+      return 0;
+    });
+  }, [searchQuery, settings.league.league]);
 
   const handleConfirm = async () => {
     if (selected) {
@@ -63,46 +143,27 @@ const LeagueSelector: FC = () => {
 
   return (
     <View style={styles.container}>
-      <View>
-        <LeagueCard
-          selected={selected === League.AMTA}
-          onSelect={() => setSelected(League.AMTA)}
-          name={leagueNames[League.AMTA]}
-          description="American Mock Trial Association"
-          image={require('../../../../assets/leagues/amta.png')}
-        />
-        <LeagueCard
-          selected={selected === League.Minnesota}
-          onSelect={() => setSelected(League.Minnesota)}
-          name="High School Mock Trial in Minnesota"
-          image={require('../../../../assets/leagues/minnesota.jpg')}
-        />
-        <LeagueCard
-          selected={selected === League.Florida}
-          onSelect={() => setSelected(League.Florida)}
-          name="High School Mock Trial in Florida"
-          image={require('../../../../assets/leagues/florida.png')}
-        />
-        <LeagueCard
-          selected={selected === League.Idaho}
-          onSelect={() => setSelected(League.Idaho)}
-          name="High School Mock Trial in Idaho"
-          image={require('../../../../assets/leagues/idaho.jpg')}
-        />
-        <LeagueCard
-          selected={selected === League.Missouri}
-          onSelect={() => setSelected(League.Missouri)}
-          name="High School Mock Trial in Missouri"
-          image={require('../../../../assets/leagues/missouri.png')}
-        />
-        <LeagueCard
-          selected={selected === League.CNMI}
-          onSelect={() => setSelected(League.CNMI)}
-          name="High School Mock Trial in CNMI"
-          description="Commonwealth of the Northern Mariana Islands"
-          image={require('../../../../assets/leagues/cnmi.jpg')}
-        />
-      </View>
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Search leagues"
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+      <ScrollView style={styles.leaguesContainer}>
+        {filteredLeagues.map((item, index) => (
+          <LeagueCard
+            key={item.league}
+            index={index}
+            selected={selected === item.league}
+            onSelect={() => setSelected(item.league)}
+            name={item.name}
+            description={item.description}
+            image={item.image}
+          />
+        ))}
+      </ScrollView>
 
       <View style={styles.buttonsContainer}>
         <Button
@@ -110,15 +171,10 @@ const LeagueSelector: FC = () => {
           onPress={handleContinue}
           disabled={!selected}
         />
-        {showHelp ? (
-          <LeagueSelectorHelp />
-        ) : (
-          <Link
-            title="Which league should I select?"
-            onPress={() => setShowHelp(true)}
-            orientation="vertical"
-          />
-        )}
+        <Link
+          title="Which league should I select?"
+          onPress={() => navigation.navigate(ScreenName.LEAGUE_SELECTOR_HELP)}
+        />
       </View>
     </View>
   );
@@ -126,7 +182,8 @@ const LeagueSelector: FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingBottom: 50,
+    paddingBottom: 30,
+    height: '100%',
     ...Platform.select({
       web: {
         width: 800,
@@ -134,16 +191,18 @@ const styles = StyleSheet.create({
       },
     }),
   },
-  description: {
-    textAlign: 'center',
-    marginBottom: 10,
-    marginTop: 30,
-    fontSize: 16,
-    color: colors.PLACEHOLDER_GRAY,
+  searchBar: {
+    // marginBottom: 10,
+    marginTop: 20,
+  },
+  leaguesContainer: {
+    // backgroundColor: 'red',
+    marginTop: 10,
   },
   buttonsContainer: {
     display: 'flex',
-    gap: 10,
+    gap: 5,
+    // backgroundColor: 'blue',
   },
 });
 

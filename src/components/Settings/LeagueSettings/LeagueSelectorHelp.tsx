@@ -2,11 +2,13 @@ import Card from '../../Card';
 import Text from '../../Text';
 import { openSupportEmail } from '../../../utils/bug-report';
 import { FC } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import Link from '../../Link';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Feather from '@expo/vector-icons/Feather';
+import { ScreenName } from '../../../constants/screen-names';
+import { ScreenNavigationOptions } from '../../../types/navigation';
 
 interface HelpTextProps {
   children: React.ReactNode;
@@ -20,64 +22,76 @@ const HelpText: FC<HelpTextProps> = ({ children }) => {
   );
 };
 
-export const LeagueSelectorHelp: FC = () => {
-  return (
-    <View style={styles.container}>
-      <Card style={styles.card}>
-        <View style={styles.titleContainer}>
-          <MaterialCommunityIcons
-            name="school-outline"
-            size={28}
-            style={styles.icon}
-          />
-          <Text style={styles.title}>Current college students</Text>
-        </View>
-        <HelpText>
-          If you are an undergraduate college student in the United States,
-          select &quot;College Mock Trial&quot;.
-        </HelpText>
-        <HelpText>
-          If you are an undergraduate college student at a Canadian university
-          that competes in the United States, select &quot;College Mock
-          Trial&quot;.
-        </HelpText>
-        <HelpText>
-          If you are a college student in a different country, Mock Trial Timer
-          does not currently support your league.
-        </HelpText>
-        <View style={styles.titleContainer}>
-          <Feather name="book" size={20} style={styles.icon} />
-          <Text style={styles.title}>Current high school students</Text>
-        </View>
-        <HelpText>
-          If you are a high school student in one of the supported states or
-          territories, select &quot;High School Mock Trial&quot; in your state
-          or territory.
-        </HelpText>
-        <HelpText>
-          If you are a high school student or coach in another state, Mock Trial
-          Timer does not currently support your league. Contact support to bring
-          Mock Trial Timer to your state, for free.
-        </HelpText>
+export const leagueSelectorHelpScreenOptions: ScreenNavigationOptions<ScreenName.LEAGUE_SELECTOR_HELP> =
+  {
+    title: 'Which league should I select?',
+  };
 
-        <View style={styles.titleContainer}>
-          <MaterialIcons name="question-mark" size={20} style={styles.icon} />
-          <Text style={styles.title}>Questions?</Text>
-        </View>
-        <HelpText>
-          Please ask your coach, captain, or advisor for assistance, or contact
-          Mock Trial Timer support.
-        </HelpText>
-      </Card>
-      <Link
-        title="Contact Mock Trial Timer Support"
-        onPress={openSupportEmail}
-      />
-    </View>
+const LeagueSelectorHelpScreen: FC = () => {
+  return (
+    <ScrollView style={styles.scrollView}>
+      <View style={styles.container}>
+        <Card style={styles.card}>
+          <View style={styles.titleContainer}>
+            <MaterialCommunityIcons
+              name="school-outline"
+              size={28}
+              style={styles.icon}
+            />
+            <Text style={styles.title}>Current college students</Text>
+          </View>
+          <HelpText>
+            If you are an undergraduate college student in the United States,
+            select &quot;College Mock Trial&quot;.
+          </HelpText>
+          <HelpText>
+            If you are an undergraduate college student at a Canadian university
+            that competes in the United States, select &quot;College Mock
+            Trial&quot;.
+          </HelpText>
+          <HelpText>
+            If you are a college student in a different country, Mock Trial
+            Timer does not currently support your league.
+          </HelpText>
+          <View style={styles.titleContainer}>
+            <Feather name="book" size={20} style={styles.icon} />
+            <Text style={styles.title}>Current high school students</Text>
+          </View>
+          <HelpText>
+            If you are a high school student in one of the supported states or
+            territories, select &quot;High School Mock Trial&quot; in your state
+            or territory.
+          </HelpText>
+          <HelpText>
+            If you are a high school student or coach in another state, Mock
+            Trial Timer does not currently support your league. Contact support
+            to bring Mock Trial Timer to your state, for free.
+          </HelpText>
+
+          <View style={styles.titleContainer}>
+            <MaterialIcons name="question-mark" size={20} style={styles.icon} />
+            <Text style={styles.title}>Questions?</Text>
+          </View>
+          <HelpText>
+            Please ask your coach, captain, or advisor for assistance, or
+            contact Mock Trial Timer support.
+          </HelpText>
+        </Card>
+        <Link
+          title="Contact Mock Trial Timer Support"
+          onPress={openSupportEmail}
+        />
+      </View>
+    </ScrollView>
   );
 };
 
+export default LeagueSelectorHelpScreen;
+
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
   container: {
     display: 'flex',
     flexDirection: 'column',

@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { FC } from 'react';
 import { ScreenNavigationOptions } from '../../types/navigation';
 import { ScreenName } from '../../constants/screen-names';
@@ -14,21 +14,24 @@ export const welcomeScreenOptions: ScreenNavigationOptions<ScreenName.WELCOME> =
 
 const Welcome: FC = () => {
   return (
-    <ScrollView>
+    <View style={styles.container}>
       <Text style={styles.description}>
         Please select your mock trial league
       </Text>
       <LeagueSelector />
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 50,
+    height: '100%',
+  },
   description: {
     color: '#535353',
     fontSize: 16,
     textAlign: 'center',
-    marginBottom: 10,
     marginTop: 20,
     paddingHorizontal: 20,
   },

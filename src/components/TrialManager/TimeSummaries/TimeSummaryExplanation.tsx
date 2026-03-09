@@ -24,7 +24,10 @@ function getExplanation(trial: Trial) {
     return 'Preparation for closings does not count against your time for closing arguments. If teams decide to not use this time, you can skip directly to the next stage.';
   }
 
-  if (league === League.CNMI && stage.startsWith('joint.cnmi.dispute')) {
+  const isDisputeStage =
+    (league === League.CNMI && stage.startsWith('joint.cnmi.dispute')) ||
+    (league === League.Arizona && stage.startsWith('joint.az.dispute'));
+  if (isDisputeStage) {
     return 'Teams may consult with their coaches to determine whether they wish to file a dispute alleging a substantial rules violation. If no team decides to file a dispute, the trial is over.';
   }
 }

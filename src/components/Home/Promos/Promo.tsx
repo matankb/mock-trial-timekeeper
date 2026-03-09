@@ -29,7 +29,7 @@ const Promo: FC<PromoProps> = ({
       onPress={onPress}
     >
       {icon}
-      <View>
+      <View style={styles.content}>
         <View style={styles.titleContainer}>
           {badge && (
             <Text style={[styles.badge, { backgroundColor: badgeColor }]}>
@@ -47,15 +47,21 @@ const Promo: FC<PromoProps> = ({
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    paddingRight: 10,
     display: 'flex',
     flexDirection: 'row',
     gap: 10,
     alignItems: 'center',
   },
+  content: {
+    flex: 1,
+    minWidth: 0,
+  },
   titleContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    flexWrap: 'wrap',
     gap: 8,
   },
   title: {
@@ -64,7 +70,6 @@ const styles = StyleSheet.create({
   subtitle: {
     color: 'gray',
     marginTop: 5,
-    paddingRight: 10,
   },
   badge: {
     fontSize: 12,

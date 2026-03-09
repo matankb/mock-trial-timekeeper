@@ -57,6 +57,9 @@ import Welcome, { welcomeScreenOptions } from './components/Welcome/Welcome';
 import LeagueSelectionScreen, {
   leagueSelectionScreenOptions,
 } from './components/Settings/LeagueSettings/LeagueSelectionScreen';
+import LeagueSelectorHelpScreen, {
+  leagueSelectorHelpScreenOptions,
+} from './components/Settings/LeagueSettings/LeagueSelectorHelp';
 import SetupSettings, {
   setupSettingsScreenOptions,
 } from './components/Settings/SetupSettings';
@@ -107,6 +110,7 @@ export type RouteProps = {
   [ScreenName.SETUP_SETTINGS]: undefined;
   [ScreenName.SCHOOL_ACCOUNT_LOGIN]: undefined;
   [ScreenName.LEAGUE_SELECTION]: undefined;
+  [ScreenName.LEAGUE_SELECTOR_HELP]: undefined;
   [ScreenName.SCHOOL_ACCOUNT_MANAGER]: undefined;
 
   // Create Trial
@@ -148,6 +152,7 @@ const Navigation = () => {
     { name: ScreenName.SETTINGS, component: Settings, options: settingsScreenOptions },
     { name: ScreenName.SCHOOL_ACCOUNT_LOGIN, component: SchoolAccountLogin, options: schoolAccountLoginScreenOptions },
     { name: ScreenName.LEAGUE_SELECTION, component: LeagueSelectionScreen, options: leagueSelectionScreenOptions },
+    { name: ScreenName.LEAGUE_SELECTOR_HELP, component: LeagueSelectorHelpScreen, options: leagueSelectorHelpScreenOptions },
     { name: ScreenName.SETUP_SETTINGS, component: SetupSettings, options: setupSettingsScreenOptions },
     { name: ScreenName.SCHOOL_ACCOUNT_MANAGER, component: SchoolAccountManager, options: schoolAccountManagerScreenOptions }, 
 

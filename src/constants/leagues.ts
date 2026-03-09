@@ -13,6 +13,7 @@ export enum League {
   Idaho = 'idaho',
   Missouri = 'missouri',
   CNMI = 'cnmi',
+  Arizona = 'arizona',
 }
 
 export const leagueNames: Record<League, string> = {
@@ -22,6 +23,7 @@ export const leagueNames: Record<League, string> = {
   [League.Idaho]: 'Idaho High School Mock Trial',
   [League.Missouri]: 'Missouri High School Mock Trial',
   [League.CNMI]: 'CNMI High School Mock Trial',
+  [League.Arizona]: 'Arizona High School Mock Trial',
 };
 
 export enum LeagueFeature {
@@ -75,6 +77,13 @@ export const leagueFeatures: Record<League, Record<LeagueFeature, boolean>> = {
     [LeagueFeature.CUSTOM_TRIAL_NAME_INPUT]: false,
     [LeagueFeature.SHOW_OVERTIME]: false,
   },
+  [League.Arizona]: {
+    [LeagueFeature.TIMES_BREAKDOWN]: true,
+    [LeagueFeature.TEAM_ACCOUNTS]: false,
+    [LeagueFeature.WITNESS_SELECTION]: true,
+    [LeagueFeature.CUSTOM_TRIAL_NAME_INPUT]: false,
+    [LeagueFeature.SHOW_OVERTIME]: false,
+  },
 } as const satisfies Record<League, Record<LeagueFeature, boolean>>;
 
 // TODO: this needs to be typed so that not having p, d, or swing is an error
@@ -107,6 +116,11 @@ export const leagueWitnesses: Record<
     d: ['Vic Vâvrick', 'Kennedy Torres', 'Joseph/Josephine Winston'],
     swing: [], // no swing witnesses in CNMI
   },
+  [League.Arizona]: {
+    p: ['Chris Knight', 'Jamie Chessler', 'Alex Richards'],
+    d: ['Taylor Durden', 'Riley Paulsen', 'Peyton Baker'],
+    swing: [], // no swing witnesses in Arizona
+  },
 };
 
 export const leagueCaseType: Record<League, (date: Date) => CaseType> = {
@@ -116,6 +130,7 @@ export const leagueCaseType: Record<League, (date: Date) => CaseType> = {
   [League.Idaho]: () => CaseType.Civil, // TODO: get the update schedule - I know it's civil this year
   [League.Missouri]: () => CaseType.Civil, // TODO: get the update schedule - I know it's civil this year
   [League.CNMI]: () => CaseType.Civil, // TODO: get the update schedule - I know it's civil this year
+  [League.Arizona]: () => CaseType.Criminal, // TODO: get the update schedule - I know it's criminal this year
 };
 
 /**

@@ -106,17 +106,25 @@ export interface TrialTimes {
   joint: {
     prepClosings: number;
     conference: number;
+    // TODO: this is indeed quite repetitiv
     cnmi: {
       disputeDetermine: number;
       disputeFile: number;
       disputeRespond: number;
+    };
+    az: {
+      disputeDetermine: number;
+      disputeFile: number;
+      disputeRespond: number;
+      disputePresentFiler: number;
+      disputePresentRespondent: number;
     };
   };
   rebuttal: number;
 }
 
 const TRIALS_KEY = 'trials';
-const TRIALS_SCHEMA_VERSION = '2.5.0';
+const TRIALS_SCHEMA_VERSION = '2.6.0';
 const TRIAL_SCHEMA_VERSION_KEY = 'trials_schema_version';
 
 export async function getTrialsFromStorage(): Promise<Trial[]> {
@@ -192,6 +200,13 @@ function generateEmptyTrialTimes(): TrialTimes {
         disputeDetermine: 0,
         disputeFile: 0,
         disputeRespond: 0,
+      },
+      az: {
+        disputeDetermine: 0,
+        disputeFile: 0,
+        disputeRespond: 0,
+        disputePresentFiler: 0,
+        disputePresentRespondent: 0,
       },
     },
   };
@@ -310,6 +325,17 @@ const getTrialTimeChangeObject = (
     'joint.cnmi.dispute.respond': {
       joint: { cnmi: { disputeRespond: newValue } },
     },
+    'joint.az.dispute.determine': {
+      joint: { az: { disputeDetermine: newValue } },
+    },
+    'joint.az.dispute.file': { joint: { az: { disputeFile: newValue } } },
+    'joint.az.dispute.respond': { joint: { az: { disputeRespond: newValue } } },
+    'joint.az.dispute.present.filer': {
+      joint: { az: { disputePresentFiler: newValue } },
+    },
+    'joint.az.dispute.present.respondent': {
+      joint: { az: { disputePresentRespondent: newValue } },
+    },
   };
 
   if (!stageMap[stage]) {
@@ -359,6 +385,12 @@ export const getStageTime = (trial: Trial, stage: TrialStage): number => {
     'joint.cnmi.dispute.determine': times.joint.cnmi.disputeDetermine,
     'joint.cnmi.dispute.file': times.joint.cnmi.disputeFile,
     'joint.cnmi.dispute.respond': times.joint.cnmi.disputeRespond,
+    'joint.az.dispute.determine': times.joint.az.disputeDetermine,
+    'joint.az.dispute.file': times.joint.az.disputeFile,
+    'joint.az.dispute.respond': times.joint.az.disputeRespond,
+    'joint.az.dispute.present.filer': times.joint.az.disputePresentFiler,
+    'joint.az.dispute.present.respondent':
+      times.joint.az.disputePresentRespondent,
   };
 
   const time = stageTimeMap[stage];
@@ -523,6 +555,16 @@ function getOvertime(timeRemaining: TotalTimeSet): number {
   }
 
   return overtime;
+}
+
+// TODO: this only has been tested with Arizona
+export function getTotalTimeUsed(timeUsed: TotalTimeSet): number {
+  return (
+    timeUsed.direct +
+    timeUsed.cross +
+    (timeUsed.open ?? 0) +
+    (timeUsed.close ?? 0)
+  );
 }
 
 const getRebuttalTimeRemaining = (trial: Trial): number => {

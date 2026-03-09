@@ -191,6 +191,26 @@ export const leagueSetupOverrides: Record<League, SettingsSetup> = {
     reexaminationsIndependent: false,
     reexaminationIndependentTime: duration.minutes(0),
   },
+  [League.Arizona]: {
+    allLossEnabled: false,
+    jointPrepClosingsEnabled: false,
+    jointPrepClosingsTime: duration.minutes(0),
+    jointConferenceEnabled: false,
+    jointConferenceTime: duration.minutes(0),
+    rebuttalMaxEnabled: false,
+    rebuttalMaxTime: duration.minutes(0),
+    closeTime: duration.minutes(5), // there is special handling for AZ
+    openTime: duration.minutes(3),
+    directTime: duration.minutes(15),
+    crossTime: duration.minutes(12),
+    pretrialEnabled: false,
+    pretrialTime: duration.minutes(0),
+    statementsSeparate: true,
+    statementTime: duration.minutes(0), // statements are separated
+    reexaminationsEnabled: false,
+    reexaminationsIndependent: false,
+    reexaminationIndependentTime: duration.minutes(0),
+  },
 };
 
 const SETTINGS_KEY = 'settings';
