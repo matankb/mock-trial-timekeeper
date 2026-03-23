@@ -42,11 +42,11 @@ export const stages = [
   'joint.cnmi.dispute.determine',
   'joint.cnmi.dispute.file',
   'joint.cnmi.dispute.respond',
-  'joint.az.dispute.determine',
-  'joint.az.dispute.file',
-  'joint.az.dispute.respond',
-  'joint.az.dispute.present.filer',
-  'joint.az.dispute.present.respondent',
+  'joint.national.dispute.determine',
+  'joint.national.dispute.file',
+  'joint.national.dispute.respond',
+  'joint.national.dispute.present.filer',
+  'joint.national.dispute.present.respondent',
 ] as const;
 
 export type TrialStage = (typeof stages)[number];
@@ -87,8 +87,11 @@ export function getTrialStages(trial: Trial): readonly Partial<TrialStage>[] {
     );
   }
 
-  if (trial.league !== League.Arizona) {
-    trialStages = trialStages.filter((stage) => !stage.startsWith('joint.az'));
+  // ND and AZ use the national dispute stages
+  if (trial.league !== League.NorthDakota && trial.league !== League.Arizona) {
+    trialStages = trialStages.filter(
+      (stage) => !stage.startsWith('joint.national'),
+    );
   }
 
   return trialStages;
@@ -192,15 +195,15 @@ export const getStageName = (
     return 'File dispute';
   } else if (stage === 'joint.cnmi.dispute.respond') {
     return 'Respond to dispute';
-  } else if (stage === 'joint.az.dispute.determine') {
+  } else if (stage === 'joint.national.dispute.determine') {
     return 'Determine whether to file dispute';
-  } else if (stage === 'joint.az.dispute.file') {
+  } else if (stage === 'joint.national.dispute.file') {
     return 'File dispute form';
-  } else if (stage === 'joint.az.dispute.respond') {
+  } else if (stage === 'joint.national.dispute.respond') {
     return 'Respond in writing';
-  } else if (stage === 'joint.az.dispute.present.filer') {
+  } else if (stage === 'joint.national.dispute.present.filer') {
     return 'Filing team presentation';
-  } else if (stage === 'joint.az.dispute.present.respondent') {
+  } else if (stage === 'joint.national.dispute.present.respondent') {
     return 'Responding team presentation';
   }
 

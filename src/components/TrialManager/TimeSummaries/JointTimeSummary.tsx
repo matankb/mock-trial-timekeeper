@@ -33,7 +33,9 @@ const JointTimeSummary: FC<JointTimeSummaryProps> = ({
     jointPrepClosingsEnabled ||
     jointConferenceEnabled ||
     trial.league === League.CNMI ||
-    trial.league === League.Arizona;
+    trial.league === League.Arizona ||
+    trial.league === League.NorthDakota; // TODO: this should probably be moved into config somewhere.
+
   const isCurrentStage = stage.startsWith('joint');
 
   if (!isEnabled || !isCurrentStage) {
@@ -84,8 +86,8 @@ const JointTimeSummary: FC<JointTimeSummaryProps> = ({
     );
   }
 
-  // Special handling for the AZ dispute stages
-  if (stage.startsWith('joint.az.dispute')) {
+  // Special handling for the National dispute stages
+  if (stage.startsWith('joint.national.dispute')) {
     return (
       <View style={styles.container}>
         <TimeSummaryCard
@@ -93,15 +95,21 @@ const JointTimeSummary: FC<JointTimeSummaryProps> = ({
           color={colors.PLACEHOLDER_GRAY}
           fullWidth={true}
         >
-          {createDisputeRow('joint.az.dispute.determine', duration.minutes(2))}
-          {createDisputeRow('joint.az.dispute.file', duration.minutes(2))}
-          {createDisputeRow('joint.az.dispute.respond', duration.minutes(2))}
           {createDisputeRow(
-            'joint.az.dispute.present.filer',
+            'joint.national.dispute.determine',
+            duration.minutes(2),
+          )}
+          {createDisputeRow('joint.national.dispute.file', duration.minutes(2))}
+          {createDisputeRow(
+            'joint.national.dispute.respond',
             duration.minutes(2),
           )}
           {createDisputeRow(
-            'joint.az.dispute.present.respondent',
+            'joint.national.dispute.present.filer',
+            duration.minutes(2),
+          )}
+          {createDisputeRow(
+            'joint.national.dispute.present.respondent',
             duration.minutes(2),
           )}
         </TimeSummaryCard>

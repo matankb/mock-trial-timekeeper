@@ -26,9 +26,12 @@ function getExplanation(trial: Trial) {
 
   const isDisputeStage =
     (league === League.CNMI && stage.startsWith('joint.cnmi.dispute')) ||
-    (league === League.Arizona && stage.startsWith('joint.az.dispute'));
+    (league === League.Arizona && stage.startsWith('joint.national.dispute')) ||
+    (league === League.NorthDakota &&
+      stage.startsWith('joint.national.dispute'));
+
   if (isDisputeStage) {
-    return 'Teams may consult with their coaches to determine whether they wish to file a dispute alleging a substantial rules violation. If no team decides to file a dispute, the trial is over.';
+    return 'Teams may consult with their coach to determine whether they wish to file a dispute alleging a substantial rules violation. If neither team files a dispute, the trial is over.';
   }
 }
 

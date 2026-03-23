@@ -211,6 +211,26 @@ export const leagueSetupOverrides: Record<League, SettingsSetup> = {
     reexaminationsIndependent: false,
     reexaminationIndependentTime: duration.minutes(0),
   },
+  [League.NorthDakota]: {
+    allLossEnabled: false,
+    jointPrepClosingsEnabled: false,
+    jointPrepClosingsTime: duration.minutes(0),
+    jointConferenceEnabled: false,
+    jointConferenceTime: duration.minutes(0),
+    rebuttalMaxEnabled: false,
+    rebuttalMaxTime: duration.minutes(0),
+    closeTime: duration.minutes(5),
+    openTime: duration.minutes(5),
+    directTime: duration.minutes(25),
+    crossTime: duration.minutes(20),
+    pretrialEnabled: false,
+    pretrialTime: duration.minutes(0),
+    statementsSeparate: true,
+    statementTime: duration.minutes(0), // statements are separated
+    reexaminationsEnabled: false,
+    reexaminationsIndependent: false,
+    reexaminationIndependentTime: duration.minutes(0),
+  },
 };
 
 const SETTINGS_KEY = 'settings';

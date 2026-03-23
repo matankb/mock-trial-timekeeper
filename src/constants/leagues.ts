@@ -14,6 +14,7 @@ export enum League {
   Missouri = 'missouri',
   CNMI = 'cnmi',
   Arizona = 'arizona',
+  NorthDakota = 'north-dakota',
 }
 
 export const leagueNames: Record<League, string> = {
@@ -24,6 +25,7 @@ export const leagueNames: Record<League, string> = {
   [League.Missouri]: 'Missouri High School Mock Trial',
   [League.CNMI]: 'CNMI High School Mock Trial',
   [League.Arizona]: 'Arizona High School Mock Trial',
+  [League.NorthDakota]: 'North Dakota High School Mock Trial',
 };
 
 export enum LeagueFeature {
@@ -84,6 +86,13 @@ export const leagueFeatures: Record<League, Record<LeagueFeature, boolean>> = {
     [LeagueFeature.CUSTOM_TRIAL_NAME_INPUT]: false,
     [LeagueFeature.SHOW_OVERTIME]: false,
   },
+  [League.NorthDakota]: {
+    [LeagueFeature.TIMES_BREAKDOWN]: true,
+    [LeagueFeature.TEAM_ACCOUNTS]: false,
+    [LeagueFeature.WITNESS_SELECTION]: true,
+    [LeagueFeature.CUSTOM_TRIAL_NAME_INPUT]: false,
+    [LeagueFeature.SHOW_OVERTIME]: false,
+  },
 } as const satisfies Record<League, Record<LeagueFeature, boolean>>;
 
 // TODO: this needs to be typed so that not having p, d, or swing is an error
@@ -121,6 +130,11 @@ export const leagueWitnesses: Record<
     d: ['Taylor Durden', 'Riley Paulsen', 'Peyton Baker'],
     swing: [], // no swing witnesses in Arizona
   },
+  [League.NorthDakota]: {
+    p: ['Nouvel Hakim', 'Morgan Smiley', 'Peyton Porter'],
+    d: ['Dr. Lane Lois', 'Raynie Smiley', 'Logan Stirling'],
+    swing: [], // no swing witnesses in North Dakota
+  },
 };
 
 export const leagueCaseType: Record<League, (date: Date) => CaseType> = {
@@ -131,6 +145,7 @@ export const leagueCaseType: Record<League, (date: Date) => CaseType> = {
   [League.Missouri]: () => CaseType.Civil, // TODO: get the update schedule - I know it's civil this year
   [League.CNMI]: () => CaseType.Civil, // TODO: get the update schedule - I know it's civil this year
   [League.Arizona]: () => CaseType.Criminal, // TODO: get the update schedule - I know it's criminal this year
+  [League.NorthDakota]: () => CaseType.Criminal, // TODO: get the update schedule - I know it's criminal this year
 };
 
 /**

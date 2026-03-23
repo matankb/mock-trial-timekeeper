@@ -360,8 +360,109 @@ interface TrialSchema_2_5_0 {
   };
 }
 
+interface TrialSchema_2_6_0 {
+  id: string;
+  name: string;
+  date: number;
+  stage: string;
+  loss: number;
+  league: League;
+  times: {
+    pretrial: { pros: number; def: number };
+    open: { pros: number; def: number };
+    close: { pros: number; def: number };
+    rebuttal: number;
+    prosCic: {
+      witnessOne: {
+        direct: number;
+        cross: number;
+        redirect: number;
+        recross: number;
+      };
+      witnessTwo: {
+        direct: number;
+        cross: number;
+        redirect: number;
+        recross: number;
+      };
+      witnessThree: {
+        direct: number;
+        cross: number;
+        redirect: number;
+        recross: number;
+      };
+    };
+    defCic: {
+      witnessOne: {
+        direct: number;
+        cross: number;
+        redirect: number;
+        recross: number;
+      };
+      witnessTwo: {
+        direct: number;
+        cross: number;
+        redirect: number;
+        recross: number;
+      };
+      witnessThree: {
+        direct: number;
+        cross: number;
+        redirect: number;
+        recross: number;
+      };
+    };
+    joint: {
+      prepClosings: number;
+      conference: number;
+      cnmi: {
+        disputeDetermine: number;
+        disputeFile: number;
+        disputeRespond: number;
+      };
+      az: {
+        disputeDetermine: number;
+        disputeFile: number;
+        disputeRespond: number;
+        disputePresentFiler: number;
+        disputePresentRespondent: number;
+      };
+    };
+  };
+  setup: {
+    pretrialEnabled: boolean;
+    statementsSeparate: boolean;
+    allLossEnabled: boolean;
+    flexEnabled: boolean;
+    pretrialTime?: number;
+    statementTime?: number;
+    openTime?: number;
+    closeTime?: number;
+    directTime: number;
+    crossTime: number;
+    rebuttalMaxEnabled: boolean;
+    jointPrepClosingsEnabled: boolean;
+    jointConferenceEnabled: boolean;
+    rebuttalMaxTime: number;
+    jointPrepClosingsTime: number;
+    jointConferenceTime: number;
+    reexaminationsEnabled: boolean;
+    reexaminationsIndependent: boolean;
+    reexaminationIndependentTime: number;
+  };
+  witnesses: {
+    p: [string | null, string | null, string | null];
+    d: [string | null, string | null, string | null];
+  };
+  details?: {
+    tournamentId: string;
+    round: RoundNumber | null;
+    side: 'p' | 'd';
+  };
+}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- This is the current schema
-interface TrialSchema_2_6_0 extends Trial {}
+interface TrialSchema_2_7_0 extends Trial {}
 
 export const trialMigrations = [
   // 1.0.0 -> 2.1.0: Add pretrial and loss fields
@@ -584,6 +685,35 @@ export const trialMigrations = [
           joint: {
             ...trial.times.joint,
             az: {
+              disputeDetermine: 0,
+              disputeFile: 0,
+              disputeRespond: 0,
+              disputePresentFiler: 0,
+              disputePresentRespondent: 0,
+            },
+          },
+        },
+      };
+    },
+  }),
+
+  // 2.6.0 -> 2.7.0: Added national dispute times, move AZ to national
+  createArrayMigration<TrialSchema_2_6_0, TrialSchema_2_7_0>({
+    from: '2.6.0',
+    to: '2.7.0',
+    migrate: (trial) => {
+      const newStage = trial.stage.includes('joint.az')
+        ? trial.stage.replace('joint.az', 'joint.national')
+        : trial.stage;
+      return {
+        ...trial,
+        stage: newStage as TrialStage,
+        times: {
+          ...trial.times,
+          joint: {
+            ...trial.times.joint,
+            az: undefined,
+            national: trial.times.joint.az ?? {
               disputeDetermine: 0,
               disputeFile: 0,
               disputeRespond: 0,

@@ -28,9 +28,15 @@ const LEAGUE_LIST: LeagueSelectorItem[] = [
     searchTerms: ['amta'],
   },
   {
-    league: League.Minnesota,
-    name: 'High School Mock Trial in Minnesota',
-    image: require('../../../../assets/leagues/minnesota.jpg'),
+    league: League.Arizona,
+    name: 'High School Mock Trial in Arizona',
+    image: require('../../../../assets/leagues/arizona.png'),
+  },
+  {
+    league: League.CNMI,
+    name: 'High School Mock Trial in CNMI',
+    description: 'Commonwealth of the Northern Mariana Islands',
+    image: require('../../../../assets/leagues/cnmi.jpg'),
   },
   {
     league: League.Florida,
@@ -43,20 +49,19 @@ const LEAGUE_LIST: LeagueSelectorItem[] = [
     image: require('../../../../assets/leagues/idaho.jpg'),
   },
   {
+    league: League.Minnesota,
+    name: 'High School Mock Trial in Minnesota',
+    image: require('../../../../assets/leagues/minnesota.jpg'),
+  },
+  {
     league: League.Missouri,
     name: 'High School Mock Trial in Missouri',
     image: require('../../../../assets/leagues/missouri.png'),
   },
   {
-    league: League.Arizona,
-    name: 'High School Mock Trial in Arizona',
-    image: require('../../../../assets/leagues/arizona.png'),
-  },
-  {
-    league: League.CNMI,
-    name: 'High School Mock Trial in CNMI',
-    description: 'Commonwealth of the Northern Mariana Islands',
-    image: require('../../../../assets/leagues/cnmi.jpg'),
+    league: League.NorthDakota,
+    name: 'High School Mock Trial in North Dakota',
+    image: require('../../../../assets/leagues/north-dakota.png'),
   },
 ];
 
