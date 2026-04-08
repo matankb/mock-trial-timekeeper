@@ -101,9 +101,9 @@ export const leagueWitnesses: Record<
   LeagueWitnessSet
 > = {
   [League.AMTA]: {
-    p: ['Riley Kaye', 'Atlas Hartley', 'Taren Rivera', 'Rowan Patel'],
-    d: ['Charlie Martin', 'Grey Marlowe', 'Micah Lin'],
-    swing: ['Nel Doos', 'Indigo Quade', 'Taylor Jha', 'Lennox Reynolds'],
+    p: ['Dyllan Balassi', 'Hunter Daisy', 'Emile Spears'],
+    d: ['Alex Guadagno', 'Parker Lauren', 'Jonny Schaefer', 'Madison Thomas'],
+    swing: ['August Amber', 'Sammy Celeste'],
   },
   [League.Florida]: {
     p: ['Cheyenne Overstone', 'Cal Herron', 'Bobbie Chaney'],
